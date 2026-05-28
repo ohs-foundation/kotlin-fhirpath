@@ -23,10 +23,32 @@ import dev.ohs.fhir.fhirpath.ucum.Prefix
 import dev.ohs.fhir.fhirpath.ucum.Unit
 import kotlin.math.pow
 
-internal fun FhirPathQuantity.toEqualCanonicalized() =
+/**
+ * Reduces this quantity to base UCUM units for FHIRPath `=` (equal) comparisons.
+ *
+ * For example: `1 'kg'` becomes `1000 'g1'`, and `1 'h'` becomes `3600 's1'`.
+ *
+ * Calendar keywords up to `week` (such as `weeks` to `'wk'`) are converted, but `year` and `month`
+ * are not. Their length in seconds varies (a month is 28 to 31 days, a year 365 or 366), so they
+ * cannot be treated as equal to a fixed UCUM duration. Use [toEquivalentCanonicalized] when that
+ * approximation is acceptable.
+ *
+ * See [FHIRPath, Time-valued quantities](https://hl7.org/fhirpath/N1/#time-valued-quantities).
+ */
+public fun FhirPathQuantity.toEqualCanonicalized(): FhirPathQuantity =
   toEqualUcumDefiniteDuration().stripUcumPrefix().toCanonicalizedUcumUnit()
 
-internal fun FhirPathQuantity.toEquivalentCanonicalized() =
+/**
+ * Reduces this quantity to base UCUM units for FHIRPath `~` (equivalent) comparisons.
+ *
+ * For example: `1 'kg'` becomes `1000 'g1'`, and `1 'h'` becomes `3600 's1'`.
+ *
+ * Same as [toEqualCanonicalized], but also converts `year` (to `'a'`) and `month` (to `'mo'`) using
+ * UCUM's nominal lengths. Equivalence tolerates that approximation, whereas equality does not.
+ *
+ * See [FHIRPath, Time-valued quantities](https://hl7.org/fhirpath/N1/#time-valued-quantities).
+ */
+public fun FhirPathQuantity.toEquivalentCanonicalized(): FhirPathQuantity =
   toEquivalentUcumDefiniteDuration().stripUcumPrefix().toCanonicalizedUcumUnit()
 
 /**
