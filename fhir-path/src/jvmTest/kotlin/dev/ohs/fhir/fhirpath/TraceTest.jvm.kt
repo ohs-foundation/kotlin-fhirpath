@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.fhir.fhirpath
+package dev.ohs.fhir.fhirpath
 
-import com.google.fhir.model.r4.FhirR4Json
-import com.google.fhir.model.r4.Resource
+import dev.ohs.fhir.model.r4.FhirR4Json
+import dev.ohs.fhir.model.r4.Resource
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
