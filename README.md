@@ -331,15 +331,10 @@ The number of passing test cases is displayed on a badge at the top of this page
 
 ### Publishing
 
-For a comprehensive understanding of publishing KMP libraries to Maven Central, see the
-[Kotlin Multiplatform Publishing Guide](https://kotlinlang.org/docs/multiplatform-publish-lib.html)
-and the
-[Maven Central Publishing Guide](https://central.sonatype.org/publish/publish-portal-guide/).
-
-> **Note:** The project has already been set up to be released to Maven using the
-> [`gradle-maven-publish-plugin`](https://github.com/vanniktech/gradle-maven-publish-plugin). The
-> following sections outline the additional setup required for a developer to publish to Maven Local
-> and Maven Central.
+Publishing is handled by the
+[`gradle-maven-publish-plugin`](https://github.com/vanniktech/gradle-maven-publish-plugin). The
+following sections outline the additional setup required for a developer to publish to Maven Local
+and Maven Central.
 
 #### Maven Local
 
@@ -352,37 +347,52 @@ testing, run:
 
 #### Maven Central
 
-To publish a new release to Maven Central, first set up your GPG signing key and repository
-credentials to Gradle following the aforementioned official guides.
+Publishing to Maven Central requires two sets of credentials:
 
-**Best Practice**: Store these sensitive details in your **Global Gradle Properties** file at
-`~/.gradle/gradle.properties` (User Home directory). This ensures they are available to all your
-projects but are never accidentally committed to the Git repository.
+1. Maven Central credentials: your Sonatype portal username and password tokens.
+2. GPG signing: a GPG key and its passphrase, used to sign all published artifacts.
 
-Your `~/.gradle/gradle.properties` should contain:
+See the
+[Kotlin Multiplatform Publishing Guide](https://kotlinlang.org/docs/multiplatform/multiplatform-publish-libraries-to-maven.html)
+and the
+[Maven Central Publishing Guide](https://central.sonatype.org/publish/publish-portal-guide/) for
+more information on how to set up these credentials.
+
+##### Publishing to Maven Central manually
+
+For manual publishing, store the credentials in the global `~/.gradle/gradle.properties` (not the
+project's `gradle.properties`) so they are never committed to the repository:
 
 ```properties
 # Maven Central Credentials
-mavenCentralUsername=YOUR_USERNAME
-mavenCentralPassword=YOUR_PASSWORD
+mavenCentralUsername=YOUR_USERNAME_TOKEN
+mavenCentralPassword=YOUR_PASSWORD_TOKEN
 
-# GPG Key Details
+# GPG Signing (file-based)
 signing.keyId=YOUR_KEY_ID
 signing.password=YOUR_KEY_PASSWORD
 signing.secretKeyRingFile=/path/to/secring.gpg
 ```
 
-You can verify your signing setup by running:
-
-```bash
-./gradlew :fhir-path:checkSigningConfiguration
-```
-
-To publish to Maven Central, run:
+Then run:
 
 ```bash
 ./gradlew :fhir-path:publishToMavenCentral
 ```
+
+##### Publishing to Maven Central using GitHub Actions
+
+The project includes a GitHub Actions [workflow](.github/workflows/publish.yml) that publishes to
+Maven Central when a new GitHub release (or pre-release) is created.
+
+The workflow requires the following GitHub organization or repository secrets:
+
+| Secret                   | Description                                                                           |
+|:-------------------------|:--------------------------------------------------------------------------------------|
+| `MAVEN_CENTRAL_USERNAME` | Same as `mavenCentralUsername`                                                        |
+| `MAVEN_CENTRAL_PASSWORD` | Same as `mavenCentralPassword`                                                        |
+| `GPG_KEY_CONTENTS`       | Needs to be exported using the command `gpg --armor --export-secret-keys YOUR_KEY_ID` |
+| `SIGNING_PASSWORD`       | Same as `signing.password`                                                            |
 
 ### Third Party
 
