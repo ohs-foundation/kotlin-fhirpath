@@ -241,7 +241,7 @@ the `kotlin` block of the module's `build.gradle.kts` file (e.g., `composeApp/bu
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.ohs.fhir:fhir-path:1.0.0-beta02")
+            implementation("dev.ohs.fhir:fhir-path:1.0.0-beta03")
         }
     }
 }
@@ -255,7 +255,7 @@ For Android projects, add the dependency to the `dependency` block in the module
 ```
 // e.g., app/build.gradle.kts
 dependencies {
-    implementation("dev.ohs.fhir:fhir-path:1.0.0-beta02")
+    implementation("dev.ohs.fhir:fhir-path:1.0.0-beta03")
 }
 ```
 
