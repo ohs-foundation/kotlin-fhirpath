@@ -6,9 +6,9 @@
 [![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-wasm-wasi?color=yellow&label=wasm-wasi)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-wasm-wasi)
 [![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-js?color=yellow&label=js)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-js)
 [![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-android?color=yellow&label=android)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-android)
-[![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iosx64?color=yellow&label=ios-x64)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iosx64)
-[![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iosarm64?color=yellow&label=ios-arm64)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iosarm64)
-[![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iossimulatorarm64?color=yellow&label=ios-simulator)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iossimulatorarm64)
+[![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iossimulatorarm64?color=yellow&label=iossimulatorarm64)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iossimulatorarm64)
+[![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iosarm64?color=yellow&label=iosarm64)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iosarm64)
+[![Release](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iosx64?color=yellow&label=iosx64)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iosx64)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Kotlin FHIRPath is an implementation of [HL7® FHIR®](https://www.hl7.org/fhir/overview.html)'s
@@ -37,6 +37,28 @@ experimental nature of the sections marked as STU (Standard for Trial Use) in th
 ## FHIR version support
 
 The library supports FHIR R4, R4B and R5. Support will be added for future FHIR versions.
+
+## Supported platforms
+
+The library supports the following
+[target platforms](https://kotlinlang.org/docs/multiplatform-dsl-reference.html#targets):
+
+| Target platform                    | Gradle target  | Artifact suffix  | Support |
+|:-----------------------------------|:---------------|:-----------------|:--------|
+| Kotlin/JVM                         | `jvm`          | `-jvm`           | ✅       |
+| Kotlin/Wasm                        | `wasmJs`       | `-wasm-js`       | ✅       |
+| Kotlin/Wasm                        | `wasmWasi`     | `-wasm-wasi`     | ✅       |
+| Kotlin/JS                          | `js`           | `-js`            | ✅       |
+| Android applications and libraries | `android`      | `-android`       | ✅       |
+
+The library also supports the following
+[Kotlin/Native targets](https://kotlinlang.org/docs/native-target-support.html):
+
+| Gradle target      | Artifact suffix      | Tier | Support |
+|:-------------------|:---------------------|:-----|:--------|
+| iosSimulatorArm64  | `-iossimulatorarm64` | 1    | ✅       |
+| iosArm64           | `-iosarm64`          | 1    | ✅       |
+| iosX64             | `-iosx64`            | 3    | ✅       |
 
 ## Implementation
 

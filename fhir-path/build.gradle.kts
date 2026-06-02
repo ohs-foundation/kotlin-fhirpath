@@ -2,7 +2,6 @@ import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import dev.ohs.fhir.fhirpath.codegen.model.FhirModelHelperGenerationTask
 import dev.ohs.fhir.fhirpath.codegen.ucum.UcumHelperGenerationTask
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
@@ -76,7 +75,7 @@ kotlin {
     jvmToolchain(21)
 
     jvm()
-    @OptIn(ExperimentalWasmDsl::class) wasmJs {
+    wasmJs {
         browser {
             val rootDirPath = project.rootDir.path
             val projectDirPath = project.projectDir.path
@@ -91,7 +90,7 @@ kotlin {
             }
         }
     }
-    @OptIn(ExperimentalWasmDsl::class) wasmWasi {
+    wasmWasi {
         nodejs()
         binaries.library()
     }
@@ -110,9 +109,9 @@ kotlin {
         }
     }
     listOf(
-        iosX64(),
+        iosSimulatorArm64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosX64(),
     ).forEach {
         it.binaries.framework {
             baseName = "KotlinFhirPath"
