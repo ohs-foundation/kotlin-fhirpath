@@ -20,7 +20,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
-import dev.ohs.fhir.model.r4.FhirR4Json
+import kotlinx.serialization.json.Json
 import dev.ohs.fhir.model.r4.Resource
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
@@ -32,7 +32,7 @@ import nl.adaptivity.xmlutil.serialization.XML
 private const val TEST_RESOURCE_DIR = "third_party/fhir-test-cases/r4"
 private const val TEST_INPUT_DIR = "${TEST_RESOURCE_DIR}/resources"
 
-private val jsonR4 = FhirR4Json()
+private val jsonR4 = Json { ignoreUnknownKeys = true }
 
 private val fhirPathEngine = FhirPathEngine.forR4()
 

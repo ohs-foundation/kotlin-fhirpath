@@ -1,9 +1,12 @@
 [versions]
 agp = "8.13.0"
 antlr-kotlin = "1.0.10"
+bignum = "0.3.10"
 kotest = "6.1.11"
 kotlin = "2.3.20"
-kotlin-fhir = "1.0.0-beta03"
+kotlin-fhir = "1.0.0-beta05"
+kotlin-poet = "2.0.0"
+kotlinx-datetime = "0.8.0"
 kotlinx-serialization-json = "1.8.1"
 ksp = "2.3.6"
 maven-publish = "0.36.0"
@@ -11,23 +14,29 @@ spotless = "7.0.1"
 xmlutil = "0.91.2"
 
 [libraries]
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 antlr-kotlin-runtime = { module = "com.strumenta:antlr-kotlin-runtime", version.ref = "antlr-kotlin" }
+bignum = { group = "com.ionspin.kotlin", name = "bignum", version.ref = "bignum" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-kotest-framework-engine = {module = "io.kotest:kotest-framework-engine", version.ref = "kotest"}
+kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotlin-fhir = { module = "dev.ohs.fhir:fhir-model", version.ref = "kotlin-fhir" }
+kotlin-fhir-r4 = { module = "dev.ohs.fhir:fhir-model-r4", version.ref = "kotlin-fhir" }
+kotlin-poet = { module = "com.squareup:kotlinpoet", version.ref = "kotlin-poet" }
+kotlin-fhir-r4b = { module = "dev.ohs.fhir:fhir-model-r4b", version.ref = "kotlin-fhir" }
+kotlin-fhir-r5 = { module = "dev.ohs.fhir:fhir-model-r5", version.ref = "kotlin-fhir" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+maven-publish-plugin = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version.ref = "maven-publish" }
 xmlutil-core = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "xmlutil" }
 xmlutil-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlutil" }
 
 [plugins]
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
 antlr-kotlin = { id = "com.strumenta.antlr-kotlin", version.ref = "antlr-kotlin" }
 kotest = { id = "io.kotest", version.ref = "kotest" }
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

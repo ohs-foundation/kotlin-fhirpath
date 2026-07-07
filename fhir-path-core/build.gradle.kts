@@ -1,12 +1,14 @@
+import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import dev.ohs.fhir.fhirpath.codegen.ucum.UcumHelperGenerationTask
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
     id("com.google.devtools.ksp")
+    alias(libs.plugins.antlr.kotlin)
     id("org.jetbrains.kotlin.plugin.serialization")
-    alias(libs.plugins.kotest)
     id("com.vanniktech.maven.publish")
 }
 
@@ -14,13 +16,27 @@ val mavenGroupId: String by project
 val mavenVersion: String by project
 val androidNamespace: String by project
 
-tasks.withType<Test>().configureEach {
-    // Provide root directory reference for test code to access third_party
-    systemProperty("projectRootDir", project.rootDir.absolutePath)
-    // Show stdout/stderr from tests (useful for trace function debugging)
-    testLogging {
-        showStandardStreams = true
+// Run `./gradlew generateUcumHelpers` to generate helper functions for UCUM in `fhirpath/build/generated`
+val generateUcumHelpers = tasks.register<UcumHelperGenerationTask>("generateUcumHelpers") {
+    description = "Generate FHIR model extensions for R4"
+    this.ucumFile.set(
+        File(project.rootDir, "third_party/ucum/ucum-essence.xml")
+    )
+    this.packageName.set("dev.ohs.fhir.fhirpath.ucum")
+    outputDirectory.set(layout.buildDirectory.dir("generated/ucum/kotlin"))
+}
+
+// Run `./gradlew generateKotlinGrammarSource` to generate parser in `fhirpath/build/generatedAntlr`
+val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
+    dependsOn("cleanGenerateKotlinGrammarSource")
+    source = fileTree(rootProject.file("third_party/fhirpath-2.0.0")) {
+        include("**/*.g4")
     }
+    packageName = "dev.ohs.fhir.fhirpath.parsers"
+    arguments = listOf("-visitor")  // Generate visitors alongside listeners
+
+    val outDir = "generated/grammar/kotlin/${packageName!!.replace(".", "/")}"
+    outputDirectory = layout.buildDirectory.dir(outDir).get().asFile
 }
 
 kotlin {
@@ -66,45 +82,29 @@ kotlin {
         iosX64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "KotlinFhirPath"
+            baseName = "KotlinFhirPathCore"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain {
-            dependencies {
-                api(project(":fhir-path-r4"))
-                api(project(":fhir-path-r4b"))
-                api(project(":fhir-path-r5"))
+            kotlin {
+                srcDir(generateUcumHelpers)
+                srcDir(generateKotlinGrammarSource)
             }
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.fhir.r4)
-            implementation(libs.kotlin.fhir.r4b)
-            implementation(libs.kotlin.fhir.r5)
-            implementation(libs.kotest.assertions.core)
-            implementation(libs.kotest.framework.engine)
-            implementation(libs.kotlin.test)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.xmlutil.serialization)
-            implementation(libs.xmlutil.core)
-        }
-        val jvmTest by getting {
             dependencies {
-                implementation(libs.kotest.runner.junit5)
-            }
-        }
-        val androidUnitTest by getting {
-            dependencies {
-                implementation(libs.kotest.runner.junit5)
+                api(libs.bignum)
+                api(libs.kotlinx.datetime)
+                implementation(libs.antlr.kotlin.runtime)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
     }
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
-    namespace = androidNamespace
+    namespace = "$androidNamespace.core"
     compileSdk = 35
     defaultConfig {
         minSdk = 24
@@ -113,27 +113,21 @@ configure<com.android.build.gradle.LibraryExtension> {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    testOptions {
-        unitTests.all {
-            val test = it as @Suppress("UNRESOLVED_REFERENCE") org.gradle.api.tasks.testing.Test
-            test.systemProperty("projectRootDir", project.rootDir.absolutePath)
-            test.useJUnitPlatform()
-        }
-    }
 }
 
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    dependsOn(generateUcumHelpers)
+    dependsOn(generateKotlinGrammarSource)
 }
 
 mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
-    coordinates(mavenGroupId, "fhir-path", mavenVersion)
+    coordinates(mavenGroupId, "fhir-path-core", mavenVersion)
 
     pom {
-        name = "Kotlin FHIRPath"
-        description = "A Kotlin Multiplatform library for FHIRPath (Aggregate Bundle)"
+        name = "Kotlin FHIRPath Core"
+        description = "Core engine for Kotlin FHIRPath"
         inceptionYear = "2025"
         url = "https://github.com/ohs-foundation/kotlin-fhirpath"
         licenses {
@@ -156,8 +150,4 @@ mavenPublishing {
             developerConnection = "scm:git:ssh://git@github.com/ohs-foundation/kotlin-fhirpath.git"
         }
     }
-}
-
-tasks.named<org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest>("jsBrowserTest") {
-    environment("NODE_OPTIONS", "--max-old-space-size=8192")
 }

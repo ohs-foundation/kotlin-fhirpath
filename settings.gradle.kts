@@ -15,4 +15,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kotlin-fhirpath"
+include(":fhir-path-core")
+include(":fhir-path-r4")
+include(":fhir-path-r4b")
+include(":fhir-path-r5")
 include(":fhir-path")

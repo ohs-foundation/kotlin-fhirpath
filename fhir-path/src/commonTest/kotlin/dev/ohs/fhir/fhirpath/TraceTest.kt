@@ -16,13 +16,13 @@
 
 package dev.ohs.fhir.fhirpath
 
-import dev.ohs.fhir.model.r4.FhirR4Json
+import kotlinx.serialization.json.Json
 import dev.ohs.fhir.model.r4.Resource
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-private val jsonR4 = FhirR4Json { ignoreUnknownKeys = true }
+private val jsonR4 = Json { ignoreUnknownKeys = true }
 
 private val engine = FhirPathEngine.forR4()
 
