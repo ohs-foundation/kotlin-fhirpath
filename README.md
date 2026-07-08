@@ -1,21 +1,16 @@
 # Kotlin FHIRPath
 
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path)
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path-android%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path-android&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path-android)
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path-iosarm64%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path-iosarm64&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path-iosarm64)
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path-iossimulatorarm64%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path-iossimulatorarm64&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path-iossimulatorarm64)
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path-iosx64%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path-iosx64&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path-iosx64)
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path-js%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path-js&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path-js)
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path-jvm%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path-jvm&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path-jvm)
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path-wasm-js%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path-wasm-js&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path-wasm-js)
-[![Release](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fdl.google.com%2Fdl%2Fandroid%2Fmaven2%2Fcom%2Fgoogle%2Ffhir%2Ffhir-path-wasm-wasi%2Fmaven-metadata.xml&query=%2F%2Fmetadata%2Fversioning%2Flatest&label=fhir-path-wasm-wasi&color=yellow)](https://maven.google.com/web/index.html?#com.google.fhir:fhir-path-wasm-wasi)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![tests](https://github.com/ohs-foundation/kotlin-fhirpath/actions/workflows/run-tests.yml/badge.svg)](https://github.com/ohs-foundation/kotlin-fhirpath/actions/workflows/run-tests.yml)
+[![fhir-path (R4, R4B, R5)](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path?color=blue&label=fhir-path)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path)
+[![fhir-path-core](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core?color=yellow&label=fhir-path-core)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core)
+[![FHIR R4](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4?color=green&label=fhir-path-r4)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4)
+[![FHIR R4B](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b?color=orange&label=fhir-path-r4b)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b)
+[![FHIR R5](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5?color=purple&label=fhir-path-r5)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5)
+[![License](https://img.shields.io/badge/License-Apache_2.0-lightgrey.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Kotlin FHIRPath is an implementation of [HL7® FHIR®](https://www.hl7.org/fhir/overview.html)'s
 [FHIRPath](https://hl7.org/fhirpath/N1/) on
 [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html).
-
-**Warning:** The library is in alpha and subject to change. Use at your own risk.
 
 ## Key features
 
@@ -40,6 +35,49 @@ experimental nature of the sections marked as STU (Standard for Trial Use) in th
 
 The library supports FHIR R4, R4B and R5. Support will be added for future FHIR versions.
 
+## Supported platforms
+
+The library supports the following
+[target platforms](https://kotlinlang.org/docs/multiplatform-dsl-reference.html#targets):
+
+| Target platform                    | Gradle target | Artifact suffix | Support |
+|:-----------------------------------|:--------------|:----------------|:--------|
+| Kotlin/JVM                         | `jvm`         | `-jvm`          | ✅       |
+| Kotlin/Wasm                        | `wasmJs`      | `-wasm-js`      | ✅       |
+| Kotlin/Wasm                        | `wasmWasi`    | `-wasm-wasi`    | ✅       |
+| Kotlin/JS                          | `js`          | `-js`           | ✅       |
+| Android applications and libraries | `android`     | `-android`      | ✅       |
+
+The library also supports the following
+[Kotlin/Native targets](https://kotlinlang.org/docs/native-target-support.html):
+
+| Gradle target     | Artifact suffix      | Tier | Support |
+|:------------------|:---------------------|:-----|:--------|
+| iosSimulatorArm64 | `-iossimulatorarm64` | 1    | ✅       |
+| iosArm64          | `-iosarm64`          | 1    | ✅       |
+| iosX64            | `-iosx64`            | 3    | ✅       |
+
+<details>
+<summary><b>View Target Platform Artifact Matrix</b></summary>
+<br/>
+
+Each library artifact is published with platform-specific variants. The table below shows the Maven
+Central release status for every artifact–platform combination:
+
+| Platform          | `fhir-path-core`                                                                                                                                                                                                                                                                                  | `fhir-path-r4`                                                                                                                                                                                                                                                                        | `fhir-path-r4b`                                                                                                                                                                                                                                                                                | `fhir-path-r5`                                                                                                                                                                                                                                                                         | `fhir-path`<br/>(R4 + R4B + R5)                                                                                                                                                                                                                                          |
+|:------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Root (KMP)**    | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core?color=yellow&label=fhir-path-core" alt="fhir-path-core" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core)                                                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4?color=green&label=fhir-path-r4" alt="fhir-path-r4" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4)                                                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b?color=orange&label=fhir-path-r4b" alt="fhir-path-r4b" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b)                                                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5?color=purple&label=fhir-path-r5" alt="fhir-path-r5" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5)                                                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path?color=blue&label=fhir-path" alt="fhir-path" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path)                                                                         |
+| **JVM**           | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core-jvm?color=yellow&label=fhir-path-core-jvm" alt="fhir-path-core-jvm" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core-jvm)                                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4-jvm?color=green&label=fhir-path-r4-jvm" alt="fhir-path-r4-jvm" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4-jvm)                                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b-jvm?color=orange&label=fhir-path-r4b-jvm" alt="fhir-path-r4b-jvm" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b-jvm)                                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5-jvm?color=purple&label=fhir-path-r5-jvm" alt="fhir-path-r5-jvm" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5-jvm)                                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-jvm?color=blue&label=fhir-path-jvm" alt="fhir-path-jvm" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-jvm)                                                         |
+| **Wasm-JS**       | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core-wasm-js?color=yellow&label=fhir-path-core-wasm-js" alt="fhir-path-core-wasm-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core-wasm-js)                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4-wasm-js?color=green&label=fhir-path-r4-wasm-js" alt="fhir-path-r4-wasm-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4-wasm-js)                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b-wasm-js?color=orange&label=fhir-path-r4b-wasm-js" alt="fhir-path-r4b-wasm-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b-wasm-js)                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5-wasm-js?color=purple&label=fhir-path-r5-wasm-js" alt="fhir-path-r5-wasm-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5-wasm-js)                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-wasm-js?color=blue&label=fhir-path-wasm-js" alt="fhir-path-wasm-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-wasm-js)                                         |
+| **Wasm-Wasi**     | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core-wasm-wasi?color=yellow&label=fhir-path-core-wasm-wasi" alt="fhir-path-core-wasm-wasi" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core-wasm-wasi)                                 | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4-wasm-wasi?color=green&label=fhir-path-r4-wasm-wasi" alt="fhir-path-r4-wasm-wasi" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4-wasm-wasi)                                 | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b-wasm-wasi?color=orange&label=fhir-path-r4b-wasm-wasi" alt="fhir-path-r4b-wasm-wasi" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b-wasm-wasi)                                     | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5-wasm-wasi?color=purple&label=fhir-path-r5-wasm-wasi" alt="fhir-path-r5-wasm-wasi" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5-wasm-wasi)                                 | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-wasm-wasi?color=blue&label=fhir-path-wasm-wasi" alt="fhir-path-wasm-wasi" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-wasm-wasi)                                 |
+| **JS**            | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core-js?color=yellow&label=fhir-path-core-js" alt="fhir-path-core-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core-js)                                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4-js?color=green&label=fhir-path-r4-js" alt="fhir-path-r4-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4-js)                                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b-js?color=orange&label=fhir-path-r4b-js" alt="fhir-path-r4b-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b-js)                                                                 | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5-js?color=purple&label=fhir-path-r5-js" alt="fhir-path-r5-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5-js)                                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-js?color=blue&label=fhir-path-js" alt="fhir-path-js" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-js)                                                             |
+| **Android**       | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core-android?color=yellow&label=fhir-path-core-android" alt="fhir-path-core-android" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core-android)                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4-android?color=green&label=fhir-path-r4-android" alt="fhir-path-r4-android" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4-android)                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b-android?color=orange&label=fhir-path-r4b-android" alt="fhir-path-r4b-android" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b-android)                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5-android?color=purple&label=fhir-path-r5-android" alt="fhir-path-r5-android" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5-android)                                         | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-android?color=blue&label=fhir-path-android" alt="fhir-path-android" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-android)                                         |
+| **iOS Simulator** | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core-iossimulatorarm64?color=yellow&label=fhir-path-core-iossimulatorarm64" alt="fhir-path-core-iossimulatorarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core-iossimulatorarm64) | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4-iossimulatorarm64?color=green&label=fhir-path-r4-iossimulatorarm64" alt="fhir-path-r4-iossimulatorarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4-iossimulatorarm64) | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b-iossimulatorarm64?color=orange&label=fhir-path-r4b-iossimulatorarm64" alt="fhir-path-r4b-iossimulatorarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b-iossimulatorarm64)       | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5-iossimulatorarm64?color=purple&label=fhir-path-r5-iossimulatorarm64" alt="fhir-path-r5-iossimulatorarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5-iossimulatorarm64) | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iossimulatorarm64?color=blue&label=fhir-path-iossimulatorarm64" alt="fhir-path-iossimulatorarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iossimulatorarm64) |
+| **iOS Device**    | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core-iosarm64?color=yellow&label=fhir-path-core-iosarm64" alt="fhir-path-core-iosarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core-iosarm64)                                     | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4-iosarm64?color=green&label=fhir-path-r4-iosarm64" alt="fhir-path-r4-iosarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4-iosarm64)                                     | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b-iosarm64?color=orange&label=fhir-path-r4b-iosarm64" alt="fhir-path-r4b-iosarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b-iosarm64)                                           | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5-iosarm64?color=purple&label=fhir-path-r5-iosarm64" alt="fhir-path-r5-iosarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5-iosarm64)                                     | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iosarm64?color=blue&label=fhir-path-iosarm64" alt="fhir-path-iosarm64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iosarm64)                                     |
+| **iOS x64**       | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core-iosx64?color=yellow&label=fhir-path-core-iosx64" alt="fhir-path-core-iosx64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core-iosx64)                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4-iosx64?color=green&label=fhir-path-r4-iosx64" alt="fhir-path-r4-iosx64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4-iosx64)                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b-iosx64?color=orange&label=fhir-path-r4b-iosx64" alt="fhir-path-r4b-iosx64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b-iosx64)                                                   | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r5-iosx64?color=purple&label=fhir-path-r5-iosx64" alt="fhir-path-r5-iosx64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r5-iosx64)                                             | [<img src="https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-iosx64?color=blue&label=fhir-path-iosx64" alt="fhir-path-iosx64" height="20">](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-iosx64)                                             |
+
+</details>
+
 ## Implementation
 
 This project uses [ANTLR Kotlin](https://github.com/Strumenta/antlr-kotlin) to generate the
@@ -47,9 +85,9 @@ lexer, parser and visitor directly from the formal FHIRPath grammar. This automa
 correctness, improves maintainability, and significantly reduces development time.
 
 The
-[FHIRPath Evaluator](fhirpath/src/commonMain/kotlin/com/google/fhir/fhirpath/FhirPathEvaluator.kt)
+[FHIRPath Evaluator](fhirpath/src/commonMain/kotlin/dev.ohs.fhir/fhirpath/FhirPathEvaluator.kt)
 implements the visitor class generated by ANTLR, evaluating FHIRPath expressions by traversing the
-in-memory data model from the [Kotlin FHIR](https://github.com/google/kotlin-fhir) library.
+in-memory data model from the [Kotlin FHIR](https://github.com/ohs-foundation/kotlin-fhir) library.
 
 A key requirement for FHIRPath evaluation is the capability to access data elements by name. To
 achieve this with cross-platform compatibility (avoiding reflection), a codegen embedded in
@@ -57,19 +95,39 @@ achieve this with cross-platform compatibility (avoiding reflection), a codegen 
 
 ```mermaid
 graph LR
-    A[formal FHIRPath grammar] -- ANTLR Kotlin --> B(lexer, parser, visitor)
-    C(Kotlin FHIR data model<br>com.google.fhir:fhir-model)
-    subgraph buildSrc
-        direction LRTB
-        D[FHIR spec<br>in JSON] -- kotlinx.serialization --> E(instances of<br>StructureDefinition<br>Kotlin data class<br>)
-        E -- KotlinPoet --> F(generated data model helper functions)
-        G[ucum-essence.xml] --> H(generated UCUM helper functions)
-
+    subgraph fhir-path-core
+        GRAMMAR[formal FHIRPath grammar] -- ANTLR Kotlin --> VISITOR(lexer, parser, visitor)
+        UE[ucum-essence.xml] -- buildSrc codegen --> UH(generated UCUM<br>helper functions)
+        VISITOR --> EV(FHIRPath Evaluator)
+        UH --> EV
+        IMPL(implementation of FHIRPath functions) --> EV
     end
-    B --> I(FHIRPath Evaluator)
-    C --> I
-    F --> I
-    H --> I
+
+    subgraph fhir-path
+      subgraph fhir-path-r4
+          SPEC4[FHIR R4 spec in JSON] -- kotlinx.serialization --> SD4(StructureDefinition<br>data class instances)
+          SD4 -- KotlinPoet --> H4(generated R4 helper functions)
+          H4 --> FPE4(FhirPathEngine.forR4)
+          FM4(fhir-model-r4) --> FPE4
+          EV --> FPE4
+      end
+  
+      subgraph fhir-path-r4b
+          SPEC4B[FHIR R4B spec in JSON] -- kotlinx.serialization --> SD4B(StructureDefinition<br>data class instances)
+          SD4B -- KotlinPoet --> H4B(generated R4B helper functions)
+          H4B --> FPE4B(FhirPathEngine.forR4B)
+          FM4B(fhir-model-r4b) --> FPE4B
+          EV --> FPE4B
+      end
+  
+      subgraph fhir-path-r5
+          SPEC5[FHIR R5 spec in JSON] -- kotlinx.serialization --> SD5(StructureDefinition<br>data class instances)
+          SD5 -- KotlinPoet --> H5(generated R5 helper functions)
+          H5 --> FPE5(FhirPathEngine.forR5)
+          FM5(fhir-model-r5) --> FPE5
+          EV --> FPE5
+      end
+    end
 ```
 
 *Figure 1: Architecture diagram*
@@ -179,7 +237,6 @@ documented in the table below.
 | `testDecode*`                        | Implementation     | STU |                                                        | Function `decode` is not implemented.                                                                                                                                   |
 | `testEscape*`                        | Implementation     | STU |                                                        | Function `escape` is not implemented.                                                                                                                                   |
 | `testUnescape*`                      | Implementation     | STU |                                                        | Function `unescape` is not implemented.                                                                                                                                 |
-| `testTrace*`                         | Implementation     |     |                                                        | Function `trace` is not implemented.                                                                                                                                    |
 | `testNow1`                           | Specification/Test |     |                                                        | As `testDateTimeGreaterThanDate1`.                                                                                                                                      |
 | `testPlusDate13`                     | Specification/Test |     |                                                        | https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/Definite.20durations.20above.20seconds.20in.20date.20time.20arithmetic/with/564095766                       |
 | `testPlusDate15`                     | Specification/Test |     |                                                        | As above.                                                                                                                                                               |
@@ -219,18 +276,24 @@ and proposals should be linked in the table above.
 ### Adding the library dependency to your project
 
 To use Kotlin FHIRPath, add it to the dependencies in your project. To do that, first make sure to
-include the [Google Maven](https://maven.google.com/) repository in the `build.gradle.kts` file in
-your project root.
+include the `mavenCentral()`[^1] repository in the `build.gradle.kts` file in your project root.
 
 ```
 // build.gradle.kts
 repositories {
-    // Other repositories such as mavenCentral() and gradlePluginPortal()
-    google()
+    // Other repositories such as gradlePluginPortal() and google()
+    mavenCentral()
 }
 ```
 
-Next, follow the instructions for your specific project type.
+[^1]: Early versions of this library (up to `1.0.0-beta01`) were published under the group ID
+`com.google.fhir` on [Google Maven](https://maven.google.com/web/index.html?q=fhir-path).
+
+Then pick the right artifact along two axes:
+
+1. **FHIR version** — depend on only the version(s) you need: `fhir-path-r4`, `fhir-path-r4b`,
+   `fhir-path-r5`, or `fhir-path` for all supported versions.
+2. **Target platform** — choose the setup that matches your project type (see sections below).
 
 #### Kotlin Multiplatform Projects
 
@@ -238,12 +301,16 @@ For Kotlin Multiplatform projects, add the dependency to the shared `commonMain`
 the `kotlin` block of the module's `build.gradle.kts` file (e.g., `composeApp/build.gradle.kts` or
 `shared/build.gradle.kts`). This makes the library available across all platforms in your project.
 
-```
+```kotlin
 // e.g., composeApp/build.gradle.kts or shared/build.gradle.kts
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.google.fhir:fhir-path:1.0.0-alpha02")
+            // Use only the FHIR version(s) you need:
+            implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta03")
+
+            // Or include all versions at once:
+            // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta03")
         }
     }
 }
@@ -251,29 +318,40 @@ kotlin {
 
 #### Android projects
 
-For Android projects, add the dependency to the `dependency` block in the module's
+For Android projects, add the dependency to the `dependencies` block in the module's
 `build.gradle.kts` file (e.g., `app/build.gradle.kts`).
 
-```
+```kotlin
 // e.g., app/build.gradle.kts
 dependencies {
-    implementation("com.google.fhir:fhir-path:1.0.0-alpha02")
+    // Use only the FHIR version(s) you need:
+    implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta03")
+
+    // Or include all versions at once:
+    // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta03")
 }
 ```
 
 ### Evaluating FHIRPath expressions
 
-To evaluate a FHIRPath expression, create a `FhirPathEngine` for the correct FHIR version and use
-`evaluateExpression` function:
+To evaluate a FHIRPath expression, create a `FhirPathEngine` for the FHIR version you are working
+with and use the `evaluateExpression` function. Here is an example targeting FHIR R4:
 
-```
-import com.google.fhir.fhirpath.FhirPathEngine
-import com.google.fhir.model.r4.FhirR4Json
+```kotlin
+import dev.ohs.fhir.fhirpath.FhirPathEngine
+import dev.ohs.fhir.model.r4.Patient
+import kotlinx.serialization.json.Json
 
 val patientExampleJson = ... // Load "patient-example.json"
-val patient = FhirR4Json().decodeFromString(patientExampleJson)
+val json = Json { ignoreUnknownKeys = true }
+val patient = json.decodeFromString<Patient>(patientExampleJson)
+
+// Create the R4 evaluator engine
 val fhirPathEngine = FhirPathEngine.forR4()
-val results = fhirPathEngine.evaluateExpression("name.given", patient)  // ["Peter", "James", "Jim", "Peter", "James"]
+
+// Evaluate expressions
+val results = fhirPathEngine.evaluateExpression("name.given", patient)
+// ["Peter", "James", "Jim", "Peter", "James"]
 ```
 
 ## Developer Guide
@@ -283,77 +361,144 @@ val results = fhirPathEngine.evaluateExpression("name.given", patient)  // ["Pet
 To generate the lexer, parser, and visitor locally using ANTLR Kotlin:
 
 ```shell
-./gradlew generateKotlinGrammarSource
+./gradlew :fhir-path-core:generateKotlinGrammarSource
 ```
 
-The generated code will be placed in `fhir-path/build/generated` under package
-`com.google.fhir.fhirpath.parsers`.
-
-### Model extensions
-
-To run the model extension codegen in `buildSrc` locally:
-
-```shell
-./gradlew generateR4Helpers
-./gradlew generateR4BHelpers
-./gradlew generateR5Helpers
-```
-
-The generated code will be located in `fhir-path/build/generated` under packages
-`com.google.fhir.model.<FHIR_VERSION>.ext` and `com.google.fhir.fhirpath`.
+The generated code will be placed in `fhir-path-core/build/generated/grammar` under package
+`dev.ohs.fhir.fhirpath.parsers`.
 
 ### UCUM helpers
 
-To run the UCUM helper codegen in `buildSrc` locally:
+To generate UCUM helpers:
 
 ```shell
-./gradlew generateUcumHelpers
+./gradlew :fhir-path-core:generateUcumHelpers
 ```
 
-The generated code will be located in `fhir-path/build/generated` under package
-`com.google.fhir.fhirpath.ucum`.
+The generated code will be located in `fhir-path-core/build/generated/ucum` under package
+`dev.ohs.fhir.fhirpath.ucum`.
 
-### Dependencies
+### Model extensions
 
-Dependencies must be kept in sync between the
-[`buildSrc/build.gradle.kts`](buildSrc/build.gradle.kts) file and the
-[`gradle/libs.versions.toml`](gradle/libs.versions.toml) file. The former cannot use the latter
-since the `buildSrc` directory is precompiled separately in Gradle.
+To generate FHIR version specific model extensions:
+
+```shell
+./gradlew :fhir-path-r4:generateR4Helpers
+./gradlew :fhir-path-r4b:generateR4BHelpers
+./gradlew :fhir-path-r5:generateR5Helpers
+```
+
+The generated code will be located in `fhir-path-<version>/build/generated` under packages
+`dev.ohs.fhir.model.<FHIR_VERSION>.ext` and `dev.ohs.fhir.fhirpath`.
 
 ### Tests
 
-[XmlUtil](https://github.com/pdvrieze/xmlutil) is used to load the XML test cases from the
-`third_party` directory. To run the tests:
+This project distinguishes between two types of tests:
 
-```shell
-./gradlew :fhir-path:jvmTest
-```
+* **Spec-based tests**: Driven by
+  [FhirPathEngineTest.kt](fhir-path/src/commonTest/kotlin/dev/ohs/fhir/fhirpath/FhirPathEngineTest.kt),
+  these load the official [test cases](https://github.com/FHIR/fhir-test-cases) from
+  [third_party/fhir-test-cases/](third_party/fhir-test-cases/). As they require local file access,
+  they only run on **JVM** and **Android** targets. On other platform targets, file loading is
+  stubbed out.
+* **Unit tests**: Located in
+  [fhir-path/src/commonTest/kotlin/dev/ohs/fhir/fhirpath/](fhir-path/src/commonTest/kotlin/dev/ohs/fhir/fhirpath/),
+  these verify specific, platform-agnostic behaviors and run across all targets:
+  * [AggregateTest.kt](fhir-path/src/commonTest/kotlin/dev/ohs/fhir/fhirpath/AggregateTest.kt):
+    Tests nested aggregates.
+  * [EnvironmentVariablesTest.kt](fhir-path/src/commonTest/kotlin/dev/ohs/fhir/fhirpath/EnvironmentVariablesTest.kt):
+    Tests user-defined external variables.
+  * [TraceTest.kt](fhir-path/src/commonTest/kotlin/dev/ohs/fhir/fhirpath/TraceTest.kt): Verifies the
+    logging output of the `trace()` function.
 
-The number of passing test cases is displayed on a badge at the top of this page.
+#### Platform coverage and CI
+
+The [CI pipeline](.github/workflows/run-tests.yml) runs tests across six platform targets on every
+push and pull request. To run these tests locally, execute the corresponding Gradle task prefixed
+with `:fhir-path:` (e.g., `./gradlew :fhir-path:jvmTest`).
+
+| Platform              | Gradle task             | CI runner       | Spec-based tests  | Unit tests |
+|:----------------------|:------------------------|:----------------|:-----------------:|:----------:|
+| **JVM**               | `jvmTest`               | `ubuntu-latest` |         ✅         |     ✅      |
+| **Android**           | `testDebugUnitTest`     | `ubuntu-latest` |         ✅         |     ✅      |
+| **Wasm JS (Browser)** | `wasmJsBrowserTest`     | `ubuntu-latest` |         —         |     ✅      |
+| **Wasm WASI (Node)**  | `wasmWasiNodeTest`      | `ubuntu-latest` |         —         |     ✅      |
+| **JS (Browser)**      | `jsBrowserTest`         | `ubuntu-latest` |         —         |     ✅      |
+| **iOS (Simulator)**   | `iosSimulatorArm64Test` | `macos-latest`  |         —         |     ✅      |
+
+> [!NOTE]
+> Only the debug Android build variant is tested because debug and release produce identical Kotlin
+> library output.
 
 ### Publishing
 
-To create a maven repository from the generated FHIR model, run:
+Publishing is handled by the
+[`gradle-maven-publish-plugin`](https://github.com/vanniktech/gradle-maven-publish-plugin). The
+following sections outline the additional setup required for a developer to publish to Maven Local
+and Maven Central.
 
+#### Maven Local
+
+To publish artifacts to your local Maven repository (`~/.m2/repository`) for local development and
+testing, run:
+
+```bash
+./gradlew :fhir-path:publishToMavenLocal
 ```
-./gradlew :fhir-path:publish
+
+#### Maven Central
+
+Publishing to Maven Central requires two sets of credentials:
+
+1. Maven Central credentials: your Sonatype portal username and password tokens.
+2. GPG signing: a GPG key and its passphrase, used to sign all published artifacts.
+
+See the
+[Kotlin Multiplatform Publishing Guide](https://kotlinlang.org/docs/multiplatform/multiplatform-publish-libraries-to-maven.html)
+and the
+[Maven Central Publishing Guide](https://central.sonatype.org/publish/publish-portal-guide/) for
+more information on how to set up these credentials.
+
+##### Publishing to Maven Central manually
+
+For manual publishing, store the credentials in the global `~/.gradle/gradle.properties` (not the
+project's `gradle.properties`) so they are never committed to the repository:
+
+```properties
+# Maven Central Credentials
+mavenCentralUsername=YOUR_USERNAME_TOKEN
+mavenCentralPassword=YOUR_PASSWORD_TOKEN
+
+# GPG Signing (file-based)
+signing.keyId=YOUR_KEY_ID
+signing.password=YOUR_KEY_PASSWORD
+signing.secretKeyRingFile=/path/to/secring.gpg
 ```
 
-This will create a maven repository in the `fhir-path/build/repo` directory with artifacts for all
-supported platforms.
+Then run:
 
-To zip the repository, run:
-
-```
-./gradlew :fhir-path:zipRepo
+```bash
+./gradlew :fhir-path:publishToMavenCentral
 ```
 
-This will generate a `.zip` file in the `fhir-path/build/repoZip` directory.
+##### Publishing to Maven Central using GitHub Actions
+
+The project includes a GitHub Actions [workflow](.github/workflows/publish.yml) that publishes to
+Maven Central when a new GitHub release (or pre-release) is created.
+
+The workflow requires the following GitHub organization or repository secrets:
+
+| Secret                   | Description                                                                           |
+|:-------------------------|:--------------------------------------------------------------------------------------|
+| `MAVEN_CENTRAL_USERNAME` | Same as `mavenCentralUsername`                                                        |
+| `MAVEN_CENTRAL_PASSWORD` | Same as `mavenCentralPassword`                                                        |
+| `GPG_KEY_CONTENTS`       | Needs to be exported using the command `gpg --armor --export-secret-keys YOUR_KEY_ID` |
+| `SIGNING_PASSWORD`       | Same as `signing.password`                                                            |
 
 ### Third Party
 
-The [third_party](third_party/) directory includes resources from the FHIRPath specification and related
-repositories for code generation and testing purposes:
+The [third_party](third_party/) directory includes resources from the FHIRPath specification and
+related repositories for code generation and testing purposes:
 
 - [`fhir-test-cases`](third_party/fhir-test-cases/): content from the
   [fhir-test-cases](https://github.com/FHIR/fhir-test-cases) repo
@@ -362,7 +507,9 @@ repositories for code generation and testing purposes:
   - [`resources`](third_party/fhir-test-cases/r4/resources) JSON versions of the relevant test
     resources generated using [Anton V.](https://www.antvaset.com/)'s
     [FHIR Converter](https://www.antvaset.com/fhir-converter) alongside the XML versions
-    ([commit](https://github.com/FHIR/fhir-test-cases/tree/dc86fa6f5225ac27b42046bb3ba2254ff688d3df/r4)). The XML and JSON resource files in the fhir-test-cases repository are inconsistent; we use XML files converted to JSON.
+    ([commit](https://github.com/FHIR/fhir-test-cases/tree/dc86fa6f5225ac27b42046bb3ba2254ff688d3df/r4)).
+    The XML and JSON resource files in the fhir-test-cases repository are inconsistent; we use XML
+    files converted to JSON.
 - [`fhirpath-2.0.0`](third_party/fhirpath-2.0.0/): the formal
   [antlr grammar](https://hl7.org/fhirpath/N1/grammar.html) from the FHIRPath Normative Release
   [N1 (v2.0.0)](https://hl7.org/fhirpath/N1/) including
@@ -374,8 +521,3 @@ repositories for code generation and testing purposes:
   [FHIR R5](https://hl7.org/fhir/R5/) for code generation
 - [`ucum`](third_party/ucum/): content from the [UCUM](https://github.com/ucum-org/ucum) repo
 
-## Disclaimer
-
-This is not an officially supported Google product. This project is not
-eligible for the [Google Open Source Software Vulnerability Rewards
-Program](https://bughunters.google.com/open-source-security).

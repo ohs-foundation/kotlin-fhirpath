@@ -1,75 +1,33 @@
-import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import com.google.fhir.fhirpath.codegen.model.FhirModelHelperGenerationTask
-import com.google.fhir.fhirpath.codegen.ucum.UcumHelperGenerationTask
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.antlr.kotlin)
-    alias(libs.plugins.kotlinx.serialization)
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization")
     alias(libs.plugins.kotest)
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
 }
 
-group = "com.google.fhir"
-version = "1.0.0-beta01"
-
-val fhirVersions = mapOf(
-    "r4" to "third_party/hl7.fhir.r4.core/package",
-    "r4b" to "third_party/hl7.fhir.r4b.core/package",
-    "r5" to "third_party/hl7.fhir.r5.core/package"
-)
-
-// Run `./gradlew generate{R4,R4B,R5}Helpers` to generate helper functions in `fhirpath/build/generated`
-fhirVersions.forEach { (version, path) ->
-    val taskName = "generate${version.uppercase()}Helpers"
-    tasks.register<FhirModelHelperGenerationTask>(taskName) {
-        description = "Generate FHIR model extensions for ${version.uppercase()}"
-        this.corePackageFiles.from(
-            File(project.rootDir, path).listFiles()
-        )
-        this.fhirVersion.set(version)
-        outputDirectory.set(layout.buildDirectory.dir("generated/kotlin"))
-    }
-}
-
-// Run `./gradlew generateUcumHelpers` to generate helper functions for UCUM in `fhirpath/build/generated`
-val generateUcumHelpers = tasks.register<UcumHelperGenerationTask>("generateUcumHelpers") {
-    description = "Generate FHIR model extensions for R4"
-    this.ucumFile.set(
-        File(project.rootDir, "third_party/ucum/ucum-essence.xml")
-    )
-    this.packageName.set("com.google.fhir.fhirpath.ucum")
-    outputDirectory.set(layout.buildDirectory.dir("generated/kotlin"))
-}
-
-// Run `./gradlew generateKotlinGrammarSource` to generate parser in `fhirpath/build/generatedAntlr`
-val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
-    dependsOn("cleanGenerateKotlinGrammarSource")
-    source = fileTree(rootProject.file("third_party/fhirpath-2.0.0")) {
-        include("**/*.g4")
-    }
-    packageName = "com.google.fhir.fhirpath.parsers"
-    arguments = listOf("-visitor")  // Generate visitors alongside listeners
-
-    val outDir = "generated/kotlin/${packageName!!.replace(".", "/")}"
-    outputDirectory = layout.buildDirectory.dir(outDir).get().asFile
-}
-
+val mavenGroupId: String by project
+val mavenVersion: String by project
+val androidNamespace: String by project
 
 tasks.withType<Test>().configureEach {
     // Provide root directory reference for test code to access third_party
     systemProperty("projectRootDir", project.rootDir.absolutePath)
+    // Show stdout/stderr from tests (useful for trace function debugging)
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 kotlin {
     jvmToolchain(21)
 
     jvm()
-    @OptIn(ExperimentalWasmDsl::class) wasmJs {
+    wasmJs {
         browser {
             val rootDirPath = project.rootDir.path
             val projectDirPath = project.projectDir.path
@@ -84,7 +42,7 @@ kotlin {
             }
         }
     }
-    @OptIn(ExperimentalWasmDsl::class) wasmWasi {
+    wasmWasi {
         nodejs()
         binaries.library()
     }
@@ -103,9 +61,9 @@ kotlin {
         }
     }
     listOf(
-        iosX64(),
+        iosSimulatorArm64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosX64(),
     ).forEach {
         it.binaries.framework {
             baseName = "KotlinFhirPath"
@@ -115,21 +73,17 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin {
-                fhirVersions.keys.forEach { version ->
-                    srcDir(tasks.named("generate${version.uppercase()}Helpers"))
-                }
-                srcDir(generateUcumHelpers)
-                srcDir(generateKotlinGrammarSource)
-            }
             dependencies {
-                api(libs.kotlin.fhir)
-                implementation(libs.antlr.kotlin.runtime)
+                api(project(":fhir-path-r4"))
+                api(project(":fhir-path-r4b"))
+                api(project(":fhir-path-r5"))
             }
         }
         commonTest.dependencies {
+            implementation(libs.kotlin.fhir.r4)
+            implementation(libs.kotlin.fhir.r4b)
+            implementation(libs.kotlin.fhir.r5)
             implementation(libs.kotest.assertions.core)
-            implementation(libs.kotest.framework.datatest)
             implementation(libs.kotest.framework.engine)
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.serialization.json)
@@ -141,11 +95,16 @@ kotlin {
                 implementation(libs.kotest.runner.junit5)
             }
         }
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.kotest.runner.junit5)
+            }
+        }
     }
 }
 
-android {
-    namespace = "com.google.fhir.fhirpath"
+configure<com.android.build.gradle.LibraryExtension> {
+    namespace = androidNamespace
     compileSdk = 35
     defaultConfig {
         minSdk = 24
@@ -154,56 +113,51 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    testOptions {
+        unitTests.all {
+            val test = it as @Suppress("UNRESOLVED_REFERENCE") org.gradle.api.tasks.testing.Test
+            test.systemProperty("projectRootDir", project.rootDir.absolutePath)
+            test.useJUnitPlatform()
+        }
+    }
 }
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    dependsOn(tasks.withType<FhirModelHelperGenerationTask>())
-    dependsOn(generateUcumHelpers)
-    dependsOn(generateKotlinGrammarSource)
-}
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+    coordinates(mavenGroupId, "fhir-path", mavenVersion)
 
-// publishing prep
-val localRepo: Directory = project.layout.buildDirectory.get().dir("repo")
-
-publishing {
-    repositories {
-        maven {
-            url = localRepo.asFile.toURI()
-        }
-    }
-    publications {
-        withType<MavenPublication> {
-            pom {
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
+    pom {
+        name = "Kotlin FHIRPath"
+        description = "A Kotlin Multiplatform library for FHIRPath (Aggregate Bundle)"
+        inceptionYear = "2025"
+        url = "https://github.com/ohs-foundation/kotlin-fhirpath"
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "https://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         }
+        developers {
+            developer {
+                id = "ohs-foundation"
+                name = "Open Heath Stack Foundation"
+                url = "https://ohs.dev/"
+            }
+        }
+        scm {
+            url = "https://github.com/ohs-foundation/kotlin-fhirpath/"
+            connection = "scm:git:git://github.com/ohs-foundation/kotlin-fhirpath.git"
+            developerConnection = "scm:git:ssh://git@github.com/ohs-foundation/kotlin-fhirpath.git"
+        }
     }
 }
-val deleteRepoTask = tasks.register<Delete>("deleteLocalRepo") {
-    description =
-        "Deletes the local repository to get rid of stale artifacts before local publishing"
-    this.delete(localRepo)
-}
-tasks.named("publishAllPublicationsToMavenRepository").configure {
-    dependsOn(deleteRepoTask)
-}
-tasks.register("zipRepo", Zip::class) {
-    description = "Create a zip of the maven repository"
-    this.destinationDirectory.set(project.layout.buildDirectory.dir("repoZip"))
-    archiveBaseName.set("kotlin-fhirpath")
 
-    // Hint to gradle that the repo files are produced by the publish task. This establishes a
-    // dependency from the zipRepo task to the publish task.
-    this.from(tasks.named("publish").map { _ ->
-        localRepo
-    })
+tasks.named<org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest>("jsBrowserTest") {
+    environment("NODE_OPTIONS", "--max-old-space-size=8192")
 }
