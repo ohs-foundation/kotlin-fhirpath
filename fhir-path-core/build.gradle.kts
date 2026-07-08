@@ -1,12 +1,11 @@
+import com.android.build.api.dsl.androidLibrary
 import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import dev.ohs.fhir.fhirpath.codegen.ucum.UcumHelperGenerationTask
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-    id("com.android.library")
-    id("com.google.devtools.ksp")
+    id("com.android.kotlin.multiplatform.library")
     alias(libs.plugins.antlr.kotlin)
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.vanniktech.maven.publish")
@@ -39,7 +38,7 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
     outputDirectory = layout.buildDirectory.dir(outDir).get().asFile
 }
 
-kotlin {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     jvmToolchain(21)
 
     jvm()
@@ -66,15 +65,10 @@ kotlin {
         browser()
         binaries.library()
     }
-    androidTarget {
-        publishLibraryVariants("release")
-        compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
-                }
-            }
-        }
+    androidLibrary {
+        namespace = "$androidNamespace.core"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
     listOf(
         iosSimulatorArm64(),
@@ -102,17 +96,6 @@ kotlin {
     }
 }
 
-configure<com.android.build.gradle.LibraryExtension> {
-    namespace = "$androidNamespace.core"
-    compileSdk = 35
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     dependsOn(generateUcumHelpers)

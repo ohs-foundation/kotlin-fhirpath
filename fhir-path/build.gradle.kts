@@ -1,9 +1,10 @@
+import com.android.build.api.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
     alias(libs.plugins.kotest)
@@ -23,7 +24,7 @@ tasks.withType<Test>().configureEach {
     }
 }
 
-kotlin {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     jvmToolchain(21)
 
     jvm()
@@ -50,16 +51,12 @@ kotlin {
         browser()
         binaries.library()
     }
-    androidTarget {
-        publishLibraryVariants("release")
-        compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
-                }
-            }
-        }
-    }
+    androidLibrary {
+        namespace = androidNamespace
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        withHostTest { }
+     }
     listOf(
         iosSimulatorArm64(),
         iosArm64(),
@@ -94,7 +91,7 @@ kotlin {
                 implementation(libs.kotest.runner.junit5)
             }
         }
-        val androidUnitTest by getting {
+        sourceSets.matching { it.name == "androidHostTest" }.configureEach {
             dependencies {
                 implementation(libs.kotest.runner.junit5)
             }
@@ -102,24 +99,6 @@ kotlin {
     }
 }
 
-configure<com.android.build.gradle.LibraryExtension> {
-    namespace = androidNamespace
-    compileSdk = 35
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    testOptions {
-        unitTests.all {
-            val test = it as @Suppress("UNRESOLVED_REFERENCE") org.gradle.api.tasks.testing.Test
-            test.systemProperty("projectRootDir", project.rootDir.absolutePath)
-            test.useJUnitPlatform()
-        }
-    }
-}
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()

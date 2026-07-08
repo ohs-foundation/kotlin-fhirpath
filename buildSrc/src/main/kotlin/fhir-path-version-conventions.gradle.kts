@@ -1,11 +1,11 @@
+import com.android.build.api.dsl.androidLibrary
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
-import com.android.build.gradle.LibraryExtension
-import com.vanniktech.maven.publish.MavenPublishBaseExtension
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.vanniktech.maven.publish")
@@ -23,7 +23,7 @@ val androidNamespace: String by project
 // Access version catalog
 val libs = extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
 
-kotlin {
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     jvmToolchain(21)
 
     jvm()
@@ -50,15 +50,10 @@ kotlin {
         browser()
         binaries.library()
     }
-    androidTarget {
-        publishLibraryVariants("release")
-        compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
-                }
-            }
-        }
+    androidLibrary {
+        namespace = "$androidNamespace.$fhirVersionSuffix"
+        compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
+        minSdk = libs.findVersion("android-minSdk").get().requiredVersion.toInt()
     }
 
     listOf(
@@ -79,18 +74,6 @@ kotlin {
                 api(libs.findLibrary("kotlin-fhir-$fhirVersionSuffix").get())
             }
         }
-    }
-}
-
-configure<LibraryExtension> {
-    namespace = "$androidNamespace.$fhirVersionSuffix"
-    compileSdk = 35
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 

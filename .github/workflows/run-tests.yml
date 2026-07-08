@@ -33,7 +33,7 @@ jobs:
           - target: jsBrowserTest
             name: JS
             os: ubuntu-latest
-          - target: testDebugUnitTest
+          - target: testAndroidHostTest
             name: Android
             os: ubuntu-latest
           - target: iosSimulatorArm64Test
