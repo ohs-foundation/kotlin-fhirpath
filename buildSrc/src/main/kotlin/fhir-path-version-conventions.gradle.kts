@@ -64,7 +64,6 @@ kotlin {
     listOf(
         iosSimulatorArm64(),
         iosArm64(),
-        iosX64(),
     ).forEach {
         it.binaries.framework {
             baseName = "KotlinFhirPath" + fhirVersionLabel
