@@ -577,8 +577,20 @@ internal class FhirPathEvaluator(
             ) ?: 0
           }
         } else {
-          // sort(key1, -key2, ...) with one or more key selectors
-          context.sortedWith { a, b -> compareByKeySelectors(a, b, keySelectors) }
+          // sort(key1, -key2, ...) with one or more key selectors, comparing by each key in turn
+          context.sortedWith { a, b ->
+            keySelectors.firstNotNullOfOrNull { selector ->
+              val aKey =
+                evaluateWithThis(a) {
+                  visit(selector).singleOrNull()?.toFhirPathType(fhirPathTypeResolver)
+                }
+              val bKey =
+                evaluateWithThis(b) {
+                  visit(selector).singleOrNull()?.toFhirPathType(fhirPathTypeResolver)
+                }
+              compareKeys(aKey, bKey).takeIf { it != 0 }
+            } ?: 0
+          }
         }
       }
       "is" -> {
@@ -629,28 +641,6 @@ internal class FhirPathEvaluator(
   override fun visitIdentifier(ctx: fhirpathParser.IdentifierContext): Collection<Any> {
     val identifierText = ctx.text
     return listOf(identifierText.removeSurrounding("`"))
-  }
-
-  /**
-   * Compares two items using multiple key selectors for sorting.
-   *
-   * Per FHIRPath spec, empty values are always sorted first.
-   */
-  private fun compareByKeySelectors(
-    a: Any,
-    b: Any,
-    keySelectors: List<fhirpathParser.ExpressionContext>,
-  ): Int {
-    for (selector in keySelectors) {
-      val aKey =
-        evaluateWithThis(a) { visit(selector).singleOrNull()?.toFhirPathType(fhirPathTypeResolver) }
-      val bKey =
-        evaluateWithThis(b) { visit(selector).singleOrNull()?.toFhirPathType(fhirPathTypeResolver) }
-
-      val result = compareKeys(aKey, bKey)
-      if (result != 0) return result
-    }
-    return 0
   }
 
   /** Evaluates a block with the given item pushed onto thisStack. */
