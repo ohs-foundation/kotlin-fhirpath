@@ -1,5 +1,7 @@
 [versions]
 agp = "8.13.0"
+android-compileSdk = "35"
+android-minSdk = "24"
 antlr-kotlin = "1.0.10"
 bignum = "0.3.10"
 kotest = "6.1.11"
@@ -37,6 +39,8 @@ xmlutil-core = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "xmlu
 xmlutil-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlutil" }
 
 [plugins]
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 antlr-kotlin = { id = "com.strumenta.antlr-kotlin", version.ref = "antlr-kotlin" }
 kotest = { id = "io.kotest", version.ref = "kotest" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

@@ -33,7 +33,7 @@ jobs:
           - target: jsBrowserTest
             name: JS
             os: ubuntu-latest
-          - target: testDebugUnitTest
+          - target: testAndroidHostTest
             name: Android
             os: ubuntu-latest
           - target: iosSimulatorArm64Test
@@ -91,6 +91,7 @@ jobs:
       - name: Run tests
         env:
           GRADLE_OPTS: -Xmx6g -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8
+          NODE_OPTIONS: --max-old-space-size=8192 --no-warnings
         run: >-
           ./gradlew ${{ matrix.target }}
           --stacktrace
