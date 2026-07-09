@@ -72,6 +72,7 @@ internal class FhirPathEvaluator(
   private val variables = mutableMapOf<String, Any?>()
   var traces: Map<String, List<TraceEntry>> = emptyMap()
     private set
+
   @OptIn(ExperimentalTime::class) private var now: Instant = Clock.System.now()
 
   @OptIn(ExperimentalTime::class)
@@ -552,9 +553,10 @@ internal class FhirPathEvaluator(
           (ctx.getParent() as? fhirpathParser.InvocationExpressionContext)?.expression()?.text
         val resourceType = contextStack.first().singleOrNull()?.let { it::class.simpleName } ?: ""
         val basePath = if (parentExpr != null) "$resourceType.$parentExpr" else resourceType
-        val entries = readableValues.mapIndexed { i, value ->
-          TraceEntry(value = value, path = "$basePath[$i]")
-        }
+        val entries =
+          readableValues.mapIndexed { i, value ->
+            TraceEntry(value = value, path = "$basePath[$i]")
+          }
         traces = traces + (name to (traces[name].orEmpty() + entries))
 
         println("trace[$name]: ${entries.map { "${it.path}: ${it.value}" }}")
@@ -655,7 +657,6 @@ internal class FhirPathEvaluator(
     thisStack.addLast(item)
     return block().also { thisStack.removeLast() }
   }
-
 }
 
 /** Returns a new [FhirPathQuantity] object with the numeric value negated. */
