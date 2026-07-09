@@ -610,6 +610,27 @@ internal class FhirPathEvaluator(
     }
   }
 
+  override fun visitThisInvocation(ctx: fhirpathParser.ThisInvocationContext): Collection<Any> {
+    return listOf(thisStack.last())
+  }
+
+  override fun visitTotalInvocation(ctx: fhirpathParser.TotalInvocationContext): Collection<Any> {
+    return totalStack.last()
+  }
+
+  // typeSpecifier
+
+  override fun visitTypeSpecifier(ctx: fhirpathParser.TypeSpecifierContext): Collection<Any> {
+    return listOf(fhirPathTypeResolver.resolveFromString(ctx.text))
+  }
+
+  // identifier
+
+  override fun visitIdentifier(ctx: fhirpathParser.IdentifierContext): Collection<Any> {
+    val identifierText = ctx.text
+    return listOf(identifierText.removeSurrounding("`"))
+  }
+
   /**
    * Compares two items using multiple key selectors for sorting.
    *
@@ -646,27 +667,6 @@ internal class FhirPathEvaluator(
       bKey == null -> 1 // Empty always first
       else -> compare(aKey, bKey, fhirPathTypeResolver) ?: 0
     }
-
-  override fun visitThisInvocation(ctx: fhirpathParser.ThisInvocationContext): Collection<Any> {
-    return listOf(thisStack.last())
-  }
-
-  override fun visitTotalInvocation(ctx: fhirpathParser.TotalInvocationContext): Collection<Any> {
-    return totalStack.last()
-  }
-
-  // typeSpecifier
-
-  override fun visitTypeSpecifier(ctx: fhirpathParser.TypeSpecifierContext): Collection<Any> {
-    return listOf(fhirPathTypeResolver.resolveFromString(ctx.text))
-  }
-
-  // identifier
-
-  override fun visitIdentifier(ctx: fhirpathParser.IdentifierContext): Collection<Any> {
-    val identifierText = ctx.text
-    return listOf(identifierText.removeSurrounding("`"))
-  }
 }
 
 /** Returns a new [FhirPathQuantity] object with the numeric value negated. */
