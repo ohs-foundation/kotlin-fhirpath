@@ -588,7 +588,14 @@ internal class FhirPathEvaluator(
                 evaluateWithThis(b) {
                   visit(selector).singleOrNull()?.toFhirPathType(fhirPathTypeResolver)
                 }
-              compareKeys(aKey, bKey).takeIf { it != 0 }
+              val result =
+                when {
+                  aKey == null && bKey == null -> 0
+                  aKey == null -> -1 // Empty always first per FHIRPath spec
+                  bKey == null -> 1 // Empty always first per FHIRPath spec
+                  else -> compare(aKey, bKey, fhirPathTypeResolver) ?: 0
+                }
+              result.takeIf { it != 0 }
             } ?: 0
           }
         }
@@ -649,14 +656,6 @@ internal class FhirPathEvaluator(
     return block().also { thisStack.removeLast() }
   }
 
-  /** Compares two keys for sorting. Empty values always come first per FHIRPath spec. */
-  private fun compareKeys(aKey: Any?, bKey: Any?): Int =
-    when {
-      aKey == null && bKey == null -> 0
-      aKey == null -> -1 // Empty always first
-      bKey == null -> 1 // Empty always first
-      else -> compare(aKey, bKey, fhirPathTypeResolver) ?: 0
-    }
 }
 
 /** Returns a new [FhirPathQuantity] object with the numeric value negated. */
