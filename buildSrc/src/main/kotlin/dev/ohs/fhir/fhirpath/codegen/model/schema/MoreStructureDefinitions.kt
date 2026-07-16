@@ -32,3 +32,37 @@ val StructureDefinition.backboneElements
           }
         }
     } ?: emptyMap()
+
+/**
+ * Sorts so that subtypes always appear before their ancestors (e.g. `HumanName` before `Element`
+ * before `Base`).
+ *
+ * Generators that emit a single `when(this) { is X -> ...; is Y -> ... }` dispatcher over a flat
+ * list of [StructureDefinition]s rely on the FIRST matching `is` branch. If an ancestor type (e.g.
+ * `Base`, which every FHIR type derives from) is listed before one of its subtypes, the ancestor's
+ * branch silently shadows the subtype's branch for every instance of that subtype, since the
+ * subtype also satisfies `is <ancestor>`. Sorting by descending inheritance depth (most-derived
+ * first) guarantees a type's own branch is always checked before any of its ancestors' branches,
+ * regardless of the arbitrary order structure definition files were read from disk.
+ */
+fun List<StructureDefinition>.sortedByInheritanceDepthDescending(): List<StructureDefinition> {
+  val baseNameByName = associate { it.name to it.baseDefinition?.substringAfterLast('/') }
+  val depthByName = mutableMapOf<String, Int>()
+  val inProgress = mutableSetOf<String>()
+
+  fun depthOf(name: String): Int {
+    depthByName[name]?.let {
+      return it
+    }
+    check(inProgress.add(name)) {
+      "Cycle detected while computing inheritance depth for structure definition '$name'"
+    }
+    val baseName = baseNameByName[name]
+    val depth = if (baseName == null || baseName == name) 0 else 1 + depthOf(baseName)
+    inProgress.remove(name)
+    depthByName[name] = depth
+    return depth
+  }
+
+  return sortedByDescending { depthOf(it.name) }
+}
