@@ -195,4 +195,18 @@ class R5ComplexTypeDispatchRegressionTest {
 
     assertTrue(descendants.size > 50, "expected a deep tree, got ${descendants.size} nodes")
   }
+
+  @Test
+  fun `backbone element properties named 'name' are not shadowed by the lookup parameter`() {
+    // Regression test for a parameter-shadowing bug in `ModelExtensionFileSpecGenerator`: nested
+    // backbone-element `getProperty()` functions referenced element properties as a bare
+    // identifier (e.g. `"name" -> name`) instead of `this.name`. Since the lookup function's own
+    // parameter is also named `name`, any backbone element with a property literally called
+    // `name` (e.g. Patient.contact.name) resolved to the parameter itself, silently returning the
+    // string "name" instead of the actual field value.
+    val patient = loadPatient()
+
+    assertEquals(listOf("Bénédicte"), engine.evaluateExpression("contact.name.given", patient))
+    assertEquals(listOf("du Marché"), engine.evaluateExpression("contact.name.family", patient))
+  }
 }
