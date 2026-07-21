@@ -27,11 +27,8 @@ private val jsonR5 = Json { ignoreUnknownKeys = true }
 
 private val engine = FhirPathEngine.forR5()
 
-// Deliberately touches many distinct FHIR complex types (HumanName, ContactPoint, Address,
-// Period, CodeableConcept, Coding, Attachment, Identifier, Reference, Meta) nested at varying
-// depths (including inside repeated BackboneElements), so evaluating expressions against it
-// exercises the generated `Element`/`BackboneElement`.getProperty()/hasProperty()/getAllChildren()
-// dispatchers for a broad cross section of types, not just one.
+// Touches many complex types, including some nested inside repeated BackboneElements, so the
+// tests below exercise generated property dispatch broadly rather than for a single type.
 private const val PATIENT_JSON =
   """{
   "resourceType": "Patient",
@@ -119,17 +116,16 @@ private const val PATIENT_JSON =
 private fun loadPatient(): Resource = jsonR5.decodeFromString(PATIENT_JSON)
 
 /**
- * Regression tests for the StackOverflowError previously thrown when the generated
- * `Element`/`BackboneElement`/`Resource` `getProperty()`/`hasProperty()`/`getAllChildren()`
- * dispatchers checked an ancestor type (e.g. `Base`) before one of its own subtypes, causing
- * every instance of that subtype (e.g. `HumanName`) to match the ancestor's `when` branch and
- * recurse into itself forever. See commit that added
- * `sortedByInheritanceDepthDescending()` in `MoreStructureDefinitions.kt`.
+ * Regression tests for two bugs that made evaluating ordinary FHIRPath expressions against an R5
+ * `Patient` unreliable: one crashed the app outright, the other silently handed back the wrong
+ * data. Both traced back to bugs in generated property-lookup code.
  */
 class R5ComplexTypeDispatchRegressionTest {
 
   @Test
   fun `evaluating property paths across many complex types does not stack overflow`() {
+    // Before the fix, an app calling evaluateExpression("name.given", ...) would crash with a
+    // StackOverflowError instead of getting the given names back.
     val patient = loadPatient()
 
     assertEquals(listOf("Peter", "James"), engine.evaluateExpression("name.given", patient))
@@ -186,11 +182,9 @@ class R5ComplexTypeDispatchRegressionTest {
   fun `walking the entire resource tree does not stack overflow`() {
     val patient = loadPatient()
 
-    // descendants() recursively calls getAllChildren() on every element in the tree, so it
-    // exercises the generated dispatchers for every complex type actually present in this
-    // resource (HumanName, ContactPoint, Address, Period, CodeableConcept, Coding, Attachment,
-    // Identifier, Reference, Meta, and the BackboneElements nested inside `contact`,
-    // `communication` and `link`), regardless of which specific type the bug happens to hit.
+    // Which property type actually crashed depended on arbitrary codegen ordering, so it wasn't
+    // just HumanName at risk. descendants() touches every element in the resource, so this one
+    // call would have crashed no matter which type the bug happened to land on.
     val descendants = engine.evaluateExpression("descendants()", patient)
 
     assertTrue(descendants.size > 50, "expected a deep tree, got ${descendants.size} nodes")
@@ -198,12 +192,9 @@ class R5ComplexTypeDispatchRegressionTest {
 
   @Test
   fun `backbone element properties named 'name' are not shadowed by the lookup parameter`() {
-    // Regression test for a parameter-shadowing bug in `ModelExtensionFileSpecGenerator`: nested
-    // backbone-element `getProperty()` functions referenced element properties as a bare
-    // identifier (e.g. `"name" -> name`) instead of `this.name`. Since the lookup function's own
-    // parameter is also named `name`, any backbone element with a property literally called
-    // `name` (e.g. Patient.contact.name) resolved to the parameter itself, silently returning the
-    // string "name" instead of the actual field value.
+    // A different, quieter bug: an app reading contact.name.given got back an empty list, no
+    // error at all, because generated code confused the "name" property with the "name" of the
+    // property it was looking up.
     val patient = loadPatient()
 
     assertEquals(listOf("Bénédicte"), engine.evaluateExpression("contact.name.given", patient))

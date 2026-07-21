@@ -34,16 +34,20 @@ val StructureDefinition.backboneElements
     } ?: emptyMap()
 
 /**
- * Sorts so that subtypes always appear before their ancestors (e.g. `HumanName` before `Element`
- * before `Base`).
+ * Sorts subtypes before their ancestors (e.g. `HumanName` before `Element` before `Base`). Apply
+ * this to the type list before generating type dispatchers, so every instance matches its own
+ * type's branch instead of an ancestor's.
  *
- * Generators that emit a single `when(this) { is X -> ...; is Y -> ... }` dispatcher over a flat
- * list of [StructureDefinition]s rely on the FIRST matching `is` branch. If an ancestor type (e.g.
- * `Base`, which every FHIR type derives from) is listed before one of its subtypes, the ancestor's
- * branch silently shadows the subtype's branch for every instance of that subtype, since the
- * subtype also satisfies `is <ancestor>`. Sorting by descending inheritance depth (most-derived
- * first) guarantees a type's own branch is always checked before any of its ancestors' branches,
- * regardless of the arbitrary order structure definition files were read from disk.
+ * The generated `Element.getProperty()` / `hasProperty()` / `getAllChildren()` helpers check types
+ * in this list's order, like `when(this) { is HumanName -> ...; is Element -> ... }`, and `when`
+ * picks the first matching branch.
+ *
+ * Without this sort, the list keeps the arbitrary order the files were read from disk, so an
+ * ancestor like `Base` can end up listed first. A `HumanName` is also a `Base`, so it matches the
+ * ancestor's branch, which calls the same helper again, recursing until a StackOverflowError.
+ *
+ * With this sort, each type's own branch always comes before its ancestors' branches, so every
+ * instance is dispatched to its own type.
  */
 fun List<StructureDefinition>.sortedByInheritanceDepthDescending(): List<StructureDefinition> {
   val baseNameByName = associate { it.name to it.baseDefinition?.substringAfterLast('/') }
