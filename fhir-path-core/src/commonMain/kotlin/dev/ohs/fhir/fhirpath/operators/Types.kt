@@ -32,6 +32,15 @@ internal fun Collection<Any>.`is`(
   return listOf(type == targetType)
 }
 
+/** See [specification](https://hl7.org/fhirpath/N1/#oftypetype-type-specifier-collection). */
+internal fun Collection<Any>.ofType(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Any> {
+  val targetType = params.single()
+  return filter { fhirPathTypeResolver.resolveFromObject(it) == targetType }
+}
+
 /** See [specification](https://hl7.org/fhirpath/N1/#astype-type-specifier). */
 internal fun Collection<Any>.`as`(
   params: List<Any>,

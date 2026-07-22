@@ -18,11 +18,12 @@ package dev.ohs.fhir.fhirpath.types
 
 abstract class FhirPathTypeResolver {
   fun resolveFromString(string: String): FhirPathType {
-    val parts = string.split('.')
+    // Type names may be escaped with backticks, e.g. `FHIR.`Patient``.
+    val parts = string.split('.').map { it.removeSurrounding("`") }
     val name = parts.last()
 
-    if (string.contains('.')) {
-      val (namespace, name) = string.split('.')
+    if (parts.size > 1) {
+      val (namespace, name) = parts
       return when (namespace) {
         "FHIR" -> {
           resolveFhirTypeFromString(name)

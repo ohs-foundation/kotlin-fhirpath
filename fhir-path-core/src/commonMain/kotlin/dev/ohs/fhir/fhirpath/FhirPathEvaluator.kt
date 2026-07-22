@@ -34,6 +34,7 @@ import dev.ohs.fhir.fhirpath.operators.implies
 import dev.ohs.fhir.fhirpath.operators.`is`
 import dev.ohs.fhir.fhirpath.operators.mod
 import dev.ohs.fhir.fhirpath.operators.multiplication
+import dev.ohs.fhir.fhirpath.operators.ofType
 import dev.ohs.fhir.fhirpath.operators.or
 import dev.ohs.fhir.fhirpath.operators.subtraction
 import dev.ohs.fhir.fhirpath.operators.xor
@@ -615,6 +616,14 @@ internal class FhirPathEvaluator(
             functionNode.paramList()!!.expression().single().text
           )
         return context.`as`(listOf(type), fhirPathTypeResolver)
+      }
+      "ofType" -> {
+        // See [specification](https://hl7.org/fhirpath/N1/#oftypetype-type-specifier-collection).
+        val type =
+          fhirPathTypeResolver.resolveFromString(
+            functionNode.paramList()!!.expression().single().text
+          )
+        return context.ofType(listOf(type), fhirPathTypeResolver)
       }
       else -> {
         // First-order functions that do not require in-context expression valuation or
