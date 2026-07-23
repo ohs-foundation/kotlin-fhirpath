@@ -20,6 +20,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import dev.ohs.fhir.fhirpath.createSecondBigDecimal
 import dev.ohs.fhir.fhirpath.div
 import dev.ohs.fhir.fhirpath.formatUcumUnit
 import dev.ohs.fhir.fhirpath.parseUcumUnit
@@ -361,15 +362,20 @@ private operator fun FhirPathDateTime.plus(duration: FhirPathQuantity): FhirPath
             utcOffset = utcOffset,
           )
         }
-    FhirPathDateTime.Precision.SECOND ->
+    FhirPathDateTime.Precision.SECOND -> {
+      val wholeSecond = second!!.toBigInteger()
+      val nanoSecond =
+        ((second - BigDecimal.fromBigInteger(wholeSecond)) * 1_000_000_000.toBigDecimal())
+          .toBigInteger()
+          .intValue()
       LocalDateTime(
           year = year,
           month = month!!,
           day = day!!,
           hour = hour!!,
           minute = minute!!,
-          second = second!!.toInt(),
-          nanosecond = ((second % 1) * 1_000_000_000).toInt(),
+          second = wholeSecond.intValue(),
+          nanosecond = nanoSecond,
         )
         .toInstant(TimeZone.UTC)
         .plus(convertToSecond(duration), TimeZone.UTC)
@@ -381,10 +387,11 @@ private operator fun FhirPathDateTime.plus(duration: FhirPathQuantity): FhirPath
             day = it.day,
             hour = it.hour,
             minute = it.minute,
-            second = it.second.toDouble() + it.nanosecond.toDouble() / 1_000_000_000,
+            second = createSecondBigDecimal(it.second, it.nanosecond),
             utcOffset = utcOffset,
           )
         }
+    }
   }
 }
 
@@ -410,15 +417,20 @@ private operator fun FhirPathTime.plus(duration: FhirPathQuantity): FhirPathTime
         .plus(convertToMinute(duration), TimeZone.UTC)
         .toLocalDateTime(TimeZone.UTC)
         .let { FhirPathTime(hour = it.hour, minute = it.minute) }
-    FhirPathTime.Precision.SECOND ->
+    FhirPathTime.Precision.SECOND -> {
+      val wholeSecond = second!!.toBigInteger()
+      val nanoSecond =
+        ((second - BigDecimal.fromBigInteger(wholeSecond)) * 1_000_000_000.toBigDecimal())
+          .toBigInteger()
+          .intValue()
       LocalDateTime(
           year = 1900,
           month = 1,
           day = 1,
           hour = hour,
           minute = minute!!,
-          second = second!!.toInt(),
-          nanosecond = ((second % 1) * 1_000_000_000).toInt(),
+          second = wholeSecond.intValue(),
+          nanosecond = nanoSecond,
         )
         .toInstant(TimeZone.UTC)
         .plus(convertToSecond(duration), TimeZone.UTC)
@@ -427,9 +439,10 @@ private operator fun FhirPathTime.plus(duration: FhirPathQuantity): FhirPathTime
           FhirPathTime(
             hour = it.hour,
             minute = it.minute,
-            second = it.second.toDouble() + it.nanosecond.toDouble() / 1_000_000_000,
+            second = createSecondBigDecimal(it.second, it.nanosecond),
           )
         }
+    }
   }
 }
 

@@ -16,6 +16,10 @@
 
 package dev.ohs.fhir.fhirpath.types
 
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import dev.ohs.fhir.fhirpath.decimalPlaces
+import dev.ohs.fhir.fhirpath.toBigDecimalPreservingScale
 import kotlin.text.get
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -31,7 +35,7 @@ data class FhirPathDateTime(
   val day: Int? = null,
   val hour: Int? = null,
   val minute: Int? = null,
-  val second: Double? = null,
+  val second: BigDecimal? = null,
   val utcOffset: UtcOffset? = null,
 ) {
   enum class Precision {
@@ -40,7 +44,19 @@ data class FhirPathDateTime(
     DAY,
     HOUR,
     MINUTE,
-    SECOND,
+    SECOND;
+
+    companion object {
+      fun fromIntegerPrecision(precision: Int): Precision =
+        when (precision) {
+          4 -> YEAR
+          6 -> MONTH
+          8 -> DAY
+          10 -> HOUR
+          12 -> MINUTE
+          else -> if (precision >= 14) SECOND else error("Invalid precision value: $precision")
+        }
+    }
   }
 
   val precision =
@@ -52,6 +68,30 @@ data class FhirPathDateTime(
       month != null -> Precision.MONTH
       else -> Precision.YEAR
     }
+
+  /** Returns the character count precision for this DateTime value. */
+  val integerPrecision: Int
+    get() {
+      var p = 4
+      if (month != null) p += 2
+      if (day != null) p += 2
+      if (hour != null) p += 2
+      if (minute != null) p += 2
+      if (second != null) {
+        p += 2
+        p += second.decimalPlaces.toInt()
+      }
+      return p
+    }
+
+  /**
+   * Resolves and validates a target precision parameter for DateTime operations. Returns null if
+   * [requestedPrecision] is invalid for a DateTime (must be 4, 6, 8, 10, 12, 14, or > 14).
+   */
+  fun resolvePrecision(requestedPrecision: Int? = null): Int? {
+    val resolved = requestedPrecision ?: integerPrecision
+    return if (resolved in setOf(4, 6, 8, 10, 12, 14) || resolved > 14) resolved else null
+  }
 
   @OptIn(ExperimentalTime::class)
   fun compareTo(other: FhirPathDateTime): Int? {
@@ -97,15 +137,12 @@ data class FhirPathDateTime(
    */
   @OptIn(ExperimentalTime::class)
   private fun toInstant(): Instant {
-    return LocalDateTime(
-        year,
-        month!!,
-        day!!,
-        hour!!,
-        minute!!,
-        second!!.toInt(),
-        second.rem(1).times(1_000_000_000.0).toInt(),
-      )
+    val wholeSecond = second!!.toBigInteger()
+    val nanoSecond =
+      ((second - BigDecimal.fromBigInteger(wholeSecond)) * 1_000_000_000.toBigDecimal())
+        .toBigInteger()
+        .intValue()
+    return LocalDateTime(year, month!!, day!!, hour!!, minute!!, wholeSecond.intValue(), nanoSecond)
       .toInstant(utcOffset ?: UtcOffset.ZERO)
   }
 
@@ -134,13 +171,20 @@ data class FhirPathDateTime(
       val day = groups["day"]?.value?.toInt()
       val hour = groups["hour"]?.value?.toInt()
       val minute = groups["minute"]?.value?.toInt()
-      val second = groups["second"]?.value?.toDouble()
+      val second = groups["second"]?.value?.toBigDecimalPreservingScale()
       val offset = groups["offset"]?.value?.let { UtcOffset.Companion.parse(it) }
 
       // Use kotlinx.datetime for robust validation of date and time components
       try {
         if (hour != null) {
-          LocalDateTime(year, month!!, day!!, hour, minute ?: 0, second?.toInt() ?: 0)
+          LocalDateTime(
+            year,
+            month!!,
+            day!!,
+            hour,
+            minute ?: 0,
+            second?.toBigInteger()?.intValue() ?: 0,
+          )
         } else if (day != null) {
           LocalDate(year, month!!, day)
         } else if (month != null) {
@@ -152,6 +196,5 @@ data class FhirPathDateTime(
 
       return FhirPathDateTime(year, month, day, hour, minute, second, offset)
     }
-
   }
 }

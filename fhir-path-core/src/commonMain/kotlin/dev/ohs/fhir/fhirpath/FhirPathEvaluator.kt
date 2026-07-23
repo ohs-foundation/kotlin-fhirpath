@@ -309,7 +309,7 @@ internal class FhirPathEvaluator(
   override fun visitNumberLiteral(ctx: fhirpathParser.NumberLiteralContext): Collection<Any> {
     val numberText = ctx.text
     return if (numberText.contains('.')) {
-      listOf(numberText.toBigDecimal())
+      listOf(numberText.toBigDecimalPreservingScale())
     } else {
       listOf(numberText.toInt())
     }

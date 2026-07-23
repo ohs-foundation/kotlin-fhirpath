@@ -23,7 +23,6 @@ import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
 import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import dev.ohs.fhir.fhirpath.types.FhirPathSystemType
-import dev.ohs.fhir.fhirpath.types.FhirPathTime
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 
 /**
@@ -108,4 +107,15 @@ internal fun Pair<Any, Any>.asComparableOperands(
 ): Pair<Any, Any> {
   return (first.toFhirPathType(fhirPathTypeResolver) to second.toFhirPathType(fhirPathTypeResolver))
     .toCommonFhirPathType()
+}
+
+/**
+ * Coerces the object to the target FHIRPath system type if an implicit conversion exists.
+ *
+ * Possible implicit conversions are defined [here](https://hl7.org/fhirpath/#conversion).
+ */
+internal fun Any.coerceToType(targetType: FhirPathSystemType): Any {
+  val currentType = FhirPathSystemType.fromObject(this) ?: return this
+  if (currentType == targetType) return this
+  return fhirPathTypeToFhirPathType[currentType to targetType]?.invoke(this) ?: this
 }

@@ -19,6 +19,7 @@ package dev.ohs.fhir.fhirpath.functions
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import dev.ohs.fhir.fhirpath.toFhirPathType
+import dev.ohs.fhir.fhirpath.toPlainStringPreservingDecimalPlaces
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
 import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
@@ -323,12 +324,14 @@ internal fun Collection<Any>.toStringFun(
     is String -> listOf(item)
     is Int -> listOf(item.toString())
     is Long -> listOf(item.toString())
-    is BigDecimal -> listOf(item.toString())
+    is BigDecimal -> listOf(item.toPlainStringPreservingDecimalPlaces())
     is FhirPathDate -> listOf(item.toString())
     is FhirPathDateTime -> listOf(item.toString())
     is FhirPathTime -> listOf(item.toString())
     is Boolean -> listOf(item.toString())
-    is FhirPathQuantity -> listOf("${item.value} ${item.unit}")
+    is FhirPathQuantity -> {
+      listOf("${item.value?.toPlainStringPreservingDecimalPlaces()} ${item.unit}")
+    }
     else -> emptyList()
   }
 }

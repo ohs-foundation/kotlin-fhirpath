@@ -25,7 +25,17 @@ data class FhirPathDate(val year: Int, val month: Int? = null, val day: Int? = n
   enum class Precision {
     YEAR,
     MONTH,
-    DAY,
+    DAY;
+
+    companion object {
+      fun fromIntegerPrecision(precision: Int): Precision =
+        when (precision) {
+          4 -> YEAR
+          6 -> MONTH
+          8 -> DAY
+          else -> error("Invalid precision value: $precision")
+        }
+    }
   }
 
   val precision =
@@ -34,6 +44,24 @@ data class FhirPathDate(val year: Int, val month: Int? = null, val day: Int? = n
       month != null -> Precision.MONTH
       else -> Precision.YEAR
     }
+
+  /** Returns the character count precision (4 for Year, 6 for Month, 8 for Day). */
+  val integerPrecision: Int
+    get() =
+      when {
+        day != null -> 8
+        month != null -> 6
+        else -> 4
+      }
+
+  /**
+   * Resolves and validates a target precision parameter for Date operations. Returns null if
+   * [targetPrecision] is invalid for a Date (must be 4, 6, or 8).
+   */
+  fun resolvePrecision(targetPrecision: Int? = null): Int? {
+    val resolved = targetPrecision ?: integerPrecision
+    return if (resolved == 4 || resolved == 6 || resolved == 8) resolved else null
+  }
 
   @OptIn(ExperimentalTime::class)
   fun compareTo(other: FhirPathDate): Int? {
@@ -84,6 +112,5 @@ data class FhirPathDate(val year: Int, val month: Int? = null, val day: Int? = n
 
       return FhirPathDate(year, month, day)
     }
-
   }
 }

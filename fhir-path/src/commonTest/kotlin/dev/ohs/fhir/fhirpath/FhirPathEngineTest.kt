@@ -17,9 +17,10 @@
 package dev.ohs.fhir.fhirpath
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
+import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
+import dev.ohs.fhir.fhirpath.types.FhirPathTime
 import dev.ohs.fhir.model.r4.Resource
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
@@ -48,8 +49,6 @@ val skippedTestGroupToReasonMap =
     "testVariables" to "Unimplemented",
     "testExtension" to "Unimplemented",
     "testConformsTo" to "Unimplemented",
-    "LowBoundary" to "Unimplemented",
-    "HighBoundary" to "Unimplemented",
     "Comparable" to "Unimplemented",
     "Precision" to "Unimplemented",
   )
@@ -101,7 +100,8 @@ val skippedTestCaseToReasonMap =
     "testPolymorphicsB" to "Allow invalid test where it's not strict mode but expects output",
     "testIndex" to "TBD",
     "testPeriodInvariantOld" to "hasValue() is not implemented.",
-    "testPeriodInvariantNew" to "lowBoundary() and lowBoundary() are not implemented.",
+    "testPeriodInvariantNew" to
+      "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "testCombine2" to "FHIR String and Kotlin String comparison issue in exclude()",
     "testCombine3" to "As above",
     "testContainedId" to "TBD",
@@ -130,6 +130,12 @@ val skippedTestCaseToReasonMap =
     "testTypeA2" to "As `testTypeA`.",
     "testTypeA3" to "As `testTypeA`.",
     "testTypeA4" to "As `testTypeA`.",
+    "HighBoundaryDateTimeMillisecond1" to
+      "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
+    "HighBoundaryDateTimeMillisecond3" to
+      "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
+    "LowBoundaryDateTimeMillisecond1" to
+      "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "testFHIRPathIsFunction2" to
       "`code` specializes `string` in FHIR, but type checks use exact equality with no subtype semantics.",
     "testFHIRPathIsFunction8" to "Function `extension` is not implemented.",
@@ -187,40 +193,53 @@ private fun assertEquals(expected: List<Output>, actual: Collection<Any>) {
 }
 
 private fun assertEquals(expected: Output, actual: Any) {
-  when (expected.type) {
+  val type = expected.type ?: inferType(actual)
+  when (type) {
     "date" -> assertEquals(FhirPathDate.fromString(expected.value.trimStart('@')), actual)
     "dateTime" -> assertEquals(FhirPathDateTime.fromString(expected.value.trimStart('@')), actual)
-    "code" -> assertEquals(expected.value, actual)
-    "string" -> {
-      when (actual) {
-        is String -> {
-          assertEquals(expected.value, actual)
-        }
-        is dev.ohs.fhir.model.r4.String -> {
-          assertEquals(expected.value, actual.value)
-        }
-      }
-    }
-    "boolean" -> {
-      when (actual) {
-        is Boolean -> {
-          assertEquals(expected.value, actual.toString())
-        }
-        else -> {
-          assertEquals(expected.value, "true") // Single items are considered true
-        }
-      }
-    }
+    "time" -> assertEquals(FhirPathTime.fromString(expected.value.trimStart('@', 'T')), actual)
+    "code",
+    "string" -> assertEquals(expected.value, actual.toStringValue())
+    "boolean" -> assertEquals(expected.value, if (actual is Boolean) actual.toString() else "true")
     "integer" -> assertEquals(expected.value, (actual as Int).toString())
-    "decimal" -> assertEquals(expected.value.toBigDecimal(), actual as BigDecimal)
-    "Quantity" ->
-      assertEquals(
-        expected.value,
-        (actual as dev.ohs.fhir.model.r4.Quantity).let { "${it.value!!.value} ${it.code!!.value}" },
-      )
-    else -> throw AssertionError("Unknown output type: ${expected.type}")
+    "decimal" -> assertEquals(expected.value.toBigDecimalPreservingScale(), actual as BigDecimal)
+    "Quantity" -> assertEquals(expected.value, actual.toQuantityString())
+    else -> throw AssertionError("Unknown type: $type")
   }
 }
+
+private fun inferType(actual: Any): String =
+  when (actual) {
+    is Boolean -> "boolean"
+    is Int -> "integer"
+    is BigDecimal -> "decimal"
+    is FhirPathDate -> "date"
+    is FhirPathDateTime -> "dateTime"
+    is FhirPathTime -> "time"
+    is dev.ohs.fhir.model.r4.Quantity,
+    is FhirPathQuantity -> "Quantity"
+    is String,
+    is dev.ohs.fhir.model.r4.String -> "string"
+    else -> throw AssertionError("Unknown actual type: ${actual::class}")
+  }
+
+private fun Any.toStringValue(): String =
+  when (this) {
+    is String -> this
+    is dev.ohs.fhir.model.r4.String -> value!!
+    else -> throw AssertionError("Cannot extract string value from: $this")
+  }
+
+private fun Any.toQuantityString(): String =
+  when (this) {
+    is dev.ohs.fhir.model.r4.Quantity -> "${value!!.value} ${code!!.value}"
+    is FhirPathQuantity -> {
+      val cleanUnit = unit?.trim('\'')
+      val formattedVal = value?.toPlainStringPreservingDecimalPlaces()
+      "$formattedVal '$cleanUnit'"
+    }
+    else -> throw AssertionError("Cannot extract Quantity value from: $this")
+  }
 
 expect fun loadFile(file: String): String
 

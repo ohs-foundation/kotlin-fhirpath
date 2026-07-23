@@ -16,9 +16,21 @@
 
 package dev.ohs.fhir.fhirpath.functions
 
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.ionspin.kotlin.bignum.decimal.RoundingMode
+import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import dev.ohs.fhir.fhirpath.coerceToType
+import dev.ohs.fhir.fhirpath.createSecondBigDecimal
+import dev.ohs.fhir.fhirpath.decimalPlaces
+import dev.ohs.fhir.fhirpath.toBigDecimalPreservingScale
+import dev.ohs.fhir.fhirpath.toFhirPathType
+import dev.ohs.fhir.fhirpath.toPlainStringWithMinDecimalPlaces
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
+import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
+import dev.ohs.fhir.fhirpath.types.FhirPathSystemType
 import dev.ohs.fhir.fhirpath.types.FhirPathTime
+import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlinx.datetime.DatePeriod
@@ -42,7 +54,7 @@ internal fun now(now: Instant): Collection<FhirPathDateTime> {
       day = localDateTime.dayOfMonth,
       hour = localDateTime.hour,
       minute = localDateTime.minute,
-      second = localDateTime.second + localDateTime.nanosecond / 1_000_000_000.0,
+      second = createSecondBigDecimal(localDateTime.second, localDateTime.nanosecond),
       utcOffset = utcOffset,
     )
   )
@@ -57,7 +69,7 @@ internal fun timeOfDay(now: Instant): Collection<Any> {
     FhirPathTime(
       hour = localDateTime.hour,
       minute = localDateTime.minute,
-      second = localDateTime.second + localDateTime.nanosecond / 1_000_000_000.0,
+      second = createSecondBigDecimal(localDateTime.second, localDateTime.nanosecond),
     )
   )
 }
@@ -71,188 +83,379 @@ internal fun today(now: Instant): Collection<FhirPathDate> {
 }
 
 /**
+ * Evaluates `lowBoundary([precision: Integer])`.
+ *
+ * Computes the least possible value of the input based on its implicit uncertainty interval. If an
+ * optional `precision` parameter N is provided, the calculated lowest boundary is rounded and
+ * formatted to N decimal places (for Decimal) or to the target date/time precision N (for
+ * Date/DateTime/Time).
+ *
  * See
  * [specification](https://build.fhir.org/ig/HL7/FHIRPath/#lowboundaryprecision-integer-decimal-date-datetime-time).
- * The least possible value of the input to the specified precision.
  */
-internal fun Collection<Any>.lowBoundary(params: List<Any>): Collection<Any> {
+internal fun Collection<Any>.lowBoundary(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Any> {
   check(size <= 1) { "lowBoundary() cannot be called on a collection with more than 1 item" }
-  val value = singleOrNull() ?: return emptyList()
+  val value =
+    singleOrNull()?.toFhirPathType(fhirPathTypeResolver)?.coerceToType(FhirPathSystemType.DECIMAL)
+      ?: return emptyList()
   val precision = params.singleOrNull() as? Int
 
   return when (value) {
-    is Double -> {
-      // TODO: Implement lowBoundary for Decimal
-      listOf(value)
-    }
+    is BigDecimal -> computeDecimalLowBoundary(value, precision)
     is FhirPathDate -> {
-      when (precision) {
+      val targetPrecision = value.resolvePrecision(precision) ?: return emptyList()
+      when (targetPrecision) {
         4 -> listOf(FhirPathDate(year = value.year))
         6 -> listOf(FhirPathDate(year = value.year, month = value.month ?: 1))
         8 -> listOf(FhirPathDate(year = value.year, month = value.month ?: 1, day = value.day ?: 1))
-        else -> error("Invalid precision value: $precision")
+        else -> emptyList()
       }
     }
     is FhirPathDateTime -> {
-      val targetPrecision = getDateTimePrecision(precision)
-      listOf(
-        FhirPathDateTime(
-          year = value.year,
-          month =
-            if (targetPrecision >= FhirPathDateTime.Precision.MONTH) value.month ?: 1 else null,
-          day = if (targetPrecision >= FhirPathDateTime.Precision.DAY) value.day ?: 1 else null,
-          hour = if (targetPrecision >= FhirPathDateTime.Precision.HOUR) value.hour ?: 0 else null,
-          minute =
-            if (targetPrecision >= FhirPathDateTime.Precision.MINUTE) value.minute ?: 0 else null,
-          second =
-            if (targetPrecision >= FhirPathDateTime.Precision.SECOND) value.second ?: 0.0 else null,
-          utcOffset = value.utcOffset,
+      val targetPrecisionInt = value.resolvePrecision(precision) ?: return emptyList()
+      val targetPrecision = FhirPathDateTime.Precision.fromIntegerPrecision(targetPrecisionInt)
+      val targetScale = if (targetPrecisionInt >= 14) targetPrecisionInt - 14 else 0
+      val year = value.year
+      val month =
+        if (targetPrecision >= FhirPathDateTime.Precision.MONTH) value.month ?: 1 else null
+      val day = if (targetPrecision >= FhirPathDateTime.Precision.DAY) value.day ?: 1 else null
+      if (targetPrecision <= FhirPathDateTime.Precision.DAY) {
+        listOf(FhirPathDate(year = year, month = month ?: 1, day = day ?: 1))
+      } else {
+        listOf(
+          FhirPathDateTime(
+            year = year,
+            month = month,
+            day = day,
+            hour =
+              if (targetPrecision >= FhirPathDateTime.Precision.HOUR) value.hour ?: 0 else null,
+            minute =
+              if (targetPrecision >= FhirPathDateTime.Precision.MINUTE) value.minute ?: 0 else null,
+            second =
+              if (targetPrecision >= FhirPathDateTime.Precision.SECOND) {
+                val sec = value.second ?: 0.toBigDecimal()
+                val truncated =
+                  sec.roundToDigitPositionAfterDecimalPoint(
+                    targetScale.toLong(),
+                    RoundingMode.TOWARDS_ZERO,
+                  )
+                truncated
+                  .toPlainStringWithMinDecimalPlaces(targetScale.toLong())
+                  .toBigDecimalPreservingScale()
+              } else null,
+            utcOffset = value.utcOffset,
+          )
         )
-      )
+      }
     }
     is FhirPathTime -> {
-      val targetPrecision = getTimePrecision(precision)
+      val targetPrecisionInt = value.resolvePrecision(precision) ?: return emptyList()
+      val targetPrecision = FhirPathTime.Precision.fromIntegerPrecision(targetPrecisionInt)
+      val targetScale = if (targetPrecisionInt >= 6) targetPrecisionInt - 6 else 0
       listOf(
         FhirPathTime(
           hour = value.hour,
           minute =
             if (targetPrecision >= FhirPathTime.Precision.MINUTE) value.minute ?: 0 else null,
           second =
-            if (targetPrecision >= FhirPathTime.Precision.SECOND) value.second ?: 0.0 else null,
+            if (targetPrecision >= FhirPathTime.Precision.SECOND) {
+              val sec = value.second ?: 0.toBigDecimal()
+              val truncated =
+                sec.roundToDigitPositionAfterDecimalPoint(
+                  targetScale.toLong(),
+                  RoundingMode.TOWARDS_ZERO,
+                )
+              truncated
+                .toPlainStringWithMinDecimalPlaces(targetScale.toLong())
+                .toBigDecimalPreservingScale()
+            } else null,
         )
       )
     }
-    else -> error("lowBoundary() can only be applied to Decimal, Date, DateTime, and Time values")
+    is FhirPathQuantity ->
+      value.applyBoundary(params, fhirPathTypeResolver, Collection<Any>::lowBoundary)
+    else ->
+      error(
+        "lowBoundary() can only be applied to Decimal, Date, DateTime, Time, and Quantity values"
+      )
   }
 }
 
 /**
+ * Evaluates `highBoundary([precision: Integer])`.
+ *
+ * Computes the greatest possible value of the input based on its implicit uncertainty interval. If
+ * an optional `precision` parameter N is provided, the calculated highest boundary is rounded and
+ * formatted to N decimal places (for Decimal) or to the target date/time precision N (for
+ * Date/DateTime/Time).
+ *
  * See
  * [specification](https://build.fhir.org/ig/HL7/FHIRPath/#highboundaryprecision-integer-decimal-date-datetime-time).
- * The greatest possible value of the input to the specified precision.
  */
-internal fun Collection<Any>.highBoundary(params: List<Any>): Collection<Any> {
+internal fun Collection<Any>.highBoundary(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Any> {
   check(size <= 1) { "highBoundary() cannot be called on a collection with more than 1 item" }
-  val value = singleOrNull() ?: return emptyList()
+  val value =
+    singleOrNull()?.toFhirPathType(fhirPathTypeResolver)?.coerceToType(FhirPathSystemType.DECIMAL)
+      ?: return emptyList()
   val precision = params.singleOrNull() as? Int
 
   return when (value) {
-    is Double -> {
-      // TODO: Implement highBoundary for Decimal
-      listOf(value)
-    }
+    is BigDecimal -> computeDecimalHighBoundary(value, precision)
     is FhirPathDate -> {
-      TODO("Implement highBoundary for Date")
+      val targetPrecision = value.resolvePrecision(precision) ?: return emptyList()
+      when (targetPrecision) {
+        4 -> listOf(FhirPathDate(year = value.year))
+        6 -> listOf(FhirPathDate(year = value.year, month = value.month ?: 12))
+        8 -> {
+          val month = value.month ?: 12
+          listOf(
+            FhirPathDate(
+              year = value.year,
+              month = month,
+              day = value.day ?: lastDayOfMonth(value.year, month),
+            )
+          )
+        }
+        else -> emptyList()
+      }
     }
     is FhirPathDateTime -> {
-      val targetPrecision = getDateTimePrecision(precision)
+      val targetPrecisionInt = value.resolvePrecision(precision) ?: return emptyList()
+      val targetPrecision = FhirPathDateTime.Precision.fromIntegerPrecision(targetPrecisionInt)
+      val targetScale = if (targetPrecisionInt >= 14) targetPrecisionInt - 14 else 0
       val year = value.year
       val month =
         if (targetPrecision >= FhirPathDateTime.Precision.MONTH) value.month ?: 12 else null
       val day =
         if (targetPrecision >= FhirPathDateTime.Precision.DAY) {
-          // Find the last valid day of the month
-          val lastDayOfMonth =
-            LocalDate(year, month!!, 1)
-              .plus(DatePeriod(months = 1))
-              .minus(DatePeriod(days = 1))
-              .dayOfMonth
-          value.day ?: lastDayOfMonth
+          val m = month ?: 12
+          value.day ?: lastDayOfMonth(year, m)
         } else null
-      listOf(
-        FhirPathDateTime(
-          year = year,
-          month = month,
-          day = day,
-          hour = if (targetPrecision >= FhirPathDateTime.Precision.HOUR) value.hour ?: 23 else null,
-          minute =
-            if (targetPrecision >= FhirPathDateTime.Precision.MINUTE) value.minute ?: 59 else null,
-          second =
-            if (targetPrecision >= FhirPathDateTime.Precision.SECOND) value.second ?: 59.999999999
-            else null,
-          utcOffset = value.utcOffset,
+      if (targetPrecision <= FhirPathDateTime.Precision.DAY) {
+        listOf(FhirPathDate(year = year, month = month ?: 12, day = day ?: 31))
+      } else {
+        listOf(
+          FhirPathDateTime(
+            year = year,
+            month = month,
+            day = day,
+            hour =
+              if (targetPrecision >= FhirPathDateTime.Precision.HOUR) value.hour ?: 23 else null,
+            minute =
+              if (targetPrecision >= FhirPathDateTime.Precision.MINUTE) value.minute ?: 59
+              else null,
+            second =
+              if (targetPrecision >= FhirPathDateTime.Precision.SECOND) {
+                if (value.second != null) {
+                  val truncated =
+                    value.second.roundToDigitPositionAfterDecimalPoint(
+                      targetScale.toLong(),
+                      RoundingMode.TOWARDS_ZERO,
+                    )
+                  truncated
+                    .toPlainStringWithMinDecimalPlaces(targetScale.toLong())
+                    .toBigDecimalPreservingScale()
+                } else {
+                  val defaultSecStr =
+                    if (targetScale == 0) "59" else "59." + "9".repeat(targetScale)
+                  defaultSecStr.toBigDecimalPreservingScale()
+                }
+              } else null,
+            utcOffset = value.utcOffset,
+          )
         )
-      )
+      }
     }
     is FhirPathTime -> {
-      val targetPrecision = getTimePrecision(precision)
+      val targetPrecisionInt = value.resolvePrecision(precision) ?: return emptyList()
+      val targetPrecision = FhirPathTime.Precision.fromIntegerPrecision(targetPrecisionInt)
+      val targetScale = if (targetPrecisionInt >= 6) targetPrecisionInt - 6 else 0
       listOf(
         FhirPathTime(
           hour = value.hour,
           minute =
             if (targetPrecision >= FhirPathTime.Precision.MINUTE) value.minute ?: 59 else null,
           second =
-            if (targetPrecision >= FhirPathTime.Precision.SECOND) value.second ?: 59.999999999
-            else null,
+            if (targetPrecision >= FhirPathTime.Precision.SECOND) {
+              if (value.second != null) {
+                val truncated =
+                  value.second.roundToDigitPositionAfterDecimalPoint(
+                    targetScale.toLong(),
+                    RoundingMode.TOWARDS_ZERO,
+                  )
+                truncated
+                  .toPlainStringWithMinDecimalPlaces(targetScale.toLong())
+                  .toBigDecimalPreservingScale()
+              } else {
+                val defaultSecStr = if (targetScale == 0) "59" else "59." + "9".repeat(targetScale)
+                defaultSecStr.toBigDecimalPreservingScale()
+              }
+            } else null,
         )
       )
     }
-    else -> error("highBoundary() can only be applied to Decimal, Date, DateTime, and Time values")
+    is FhirPathQuantity ->
+      value.applyBoundary(params, fhirPathTypeResolver, Collection<Any>::highBoundary)
+    else ->
+      error(
+        "highBoundary() can only be applied to Decimal, Date, DateTime, Time, and Quantity values"
+      )
   }
 }
 
 /** See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#precision--integer). */
-internal fun Collection<Any>.precision(): Collection<Any> {
+internal fun Collection<Any>.precision(
+  fhirPathTypeResolver: FhirPathTypeResolver
+): Collection<Any> {
   check(size <= 1) { "precision() cannot be called on a collection with more than 1 item" }
-  val value = singleOrNull() ?: return emptyList()
+  val value =
+    singleOrNull()?.toFhirPathType(fhirPathTypeResolver)?.coerceToType(FhirPathSystemType.DECIMAL)
+      ?: return emptyList()
 
   val precisionValue =
     when (value) {
-      is Double -> TODO("Implement precision for Decimal")
-      is FhirPathDateTime -> {
-        var precision = 4 // Year
-        if (value.month != null) precision += 2
-        if (value.day != null) precision += 2
-        if (value.hour != null) precision += 2
-        if (value.minute != null) precision += 2
-        if (value.second != null) {
-          precision += 2 // For 'ss' part
-          // Add precision for fractional seconds, if they exist
-          val fracPart = value.second.toString().substringAfter('.', "")
-          precision += fracPart.length
-        }
-        precision
-      }
-      is FhirPathTime -> {
-        var precision = 2 // Hour
-        if (value.minute != null) precision += 2
-        if (value.second != null) {
-          precision += 2 // For 'ss' part
-          val fracPart = value.second.toString().substringAfter('.', "")
-          precision += fracPart.length
-        }
-        precision
-      }
+      is BigDecimal -> value.decimalPlaces.toInt()
+      is FhirPathDate -> value.integerPrecision
+      is FhirPathDateTime -> value.integerPrecision
+      is FhirPathTime -> value.integerPrecision
       else -> error("precision() can only be applied to Decimal, Date, DateTime, and Time values")
     }
   return listOf(precisionValue)
 }
 
-private fun getDateTimePrecision(precision: Int?): FhirPathDateTime.Precision {
-  return when (precision) {
-    4 -> FhirPathDateTime.Precision.YEAR
-    6 -> FhirPathDateTime.Precision.MONTH
-    8 -> FhirPathDateTime.Precision.DAY
-    10 -> FhirPathDateTime.Precision.HOUR
-    12 -> FhirPathDateTime.Precision.MINUTE
-    14,
-    15,
-    16,
-    17,
-    null -> FhirPathDateTime.Precision.SECOND
-    else -> error("Invalid precision value: $precision")
-  }
+/** Get the last day of the given month in the given year. */
+private fun lastDayOfMonth(year: Int, month: Int): Int =
+  LocalDate(year, month, 1).plus(DatePeriod(months = 1)).minus(DatePeriod(days = 1)).dayOfMonth
+
+/** Delegate boundary computation to the numeric value of a Quantity. */
+private fun FhirPathQuantity.applyBoundary(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+  boundaryFn: Collection<Any>.(List<Any>, FhirPathTypeResolver) -> Collection<Any>,
+): Collection<Any> {
+  val v = value ?: return emptyList()
+  val boundedVal =
+    listOf(v).boundaryFn(params, fhirPathTypeResolver).singleOrNull() as? BigDecimal
+      ?: return emptyList()
+  return listOf(FhirPathQuantity(value = boundedVal, unit = unit))
 }
 
-private fun getTimePrecision(precision: Int?): FhirPathTime.Precision {
-  return when (precision) {
-    2 -> FhirPathTime.Precision.HOUR
-    4 -> FhirPathTime.Precision.MINUTE
-    6,
-    7,
-    8,
-    9,
-    null -> FhirPathTime.Precision.SECOND
-    else -> error("Invalid precision value: $precision")
-  }
+/**
+ * Computes the lower boundary (`lowBoundary(precision)`) for a [BigDecimal] value.
+ *
+ * In short: Finds the lowest boundary of the input's uncertainty interval, then rounds and formats
+ * the answer to `targetPrecision` decimal places.
+ *
+ * ### FHIRPath Decimal Boundary Specification:
+ * In FHIRPath, a Decimal value `v` with input scale `S_in` (number of decimal places) represents an
+ * implicit uncertainty interval `[v - halfStep, v + halfStep)`.
+ * - `halfStep` = `0.5 * 10^-S_in` = `5 * 10^-(S_in + 1)`.
+ * - `exactLower` = `v - halfStep`.
+ *
+ * For example:
+ * - `1.5` (scale 1) -> `halfStep = 0.05` -> `exactLower = 1.45`
+ * - `1.50` (scale 2) -> `halfStep = 0.005` -> `exactLower = 1.495`
+ *
+ * ### Target Precision (`precision` parameter `S_target`):
+ * The `precision` parameter `S_target` specifies the requested number of decimal places for the
+ * result:
+ * 1. **`S_target >= S_in` (Expanding or Preserving Precision)**: `exactLower` is rounded to
+ *    `S_target` decimal places using `ROUND_HALF_FLOOR`.
+ * 2. **`S_target < S_in` (Reducing Precision)**: `exactLower` is floored using `FLOOR` to
+ *    `S_target` decimal places. If the result is zero, ensure it is returned as positive zero
+ *    (`0.0`) rather than negative zero (`-0.0`).
+ */
+private fun computeDecimalLowBoundary(value: BigDecimal, precision: Int?): Collection<Any> {
+  // Validate target precision parameter: must be in 0..8 if specified (defaults to 8)
+  if (precision != null && precision !in 0..8) return emptyList()
+  val targetPrecision = precision ?: 8
+  val inputScale = value.decimalPlaces
+
+  // Calculate half-step offset (0.5 * 10^-inputScale = 5 * 10^-(inputScale + 1))
+  val halfStep = BigDecimal.fromIntWithExponent(5, -(inputScale + 1))
+
+  // Calculate exact lower bound: value - halfStep
+  val exactLower = value - halfStep
+
+  // Round exactLower to targetPrecision depending on expanding vs reducing precision
+  val rounded =
+    if (targetPrecision >= inputScale) {
+      exactLower.roundToDigitPositionAfterDecimalPoint(
+        targetPrecision.toLong(),
+        RoundingMode.ROUND_HALF_FLOOR,
+      )
+    } else {
+      // If reducing precision would result in zero, return positive zero instead of negative zero
+      // (-0.0)
+      val targetHalfStep = BigDecimal.fromIntWithExponent(5, -(targetPrecision + 1).toLong())
+      if (value < 0 && exactLower >= -targetHalfStep) {
+        BigDecimal.fromBigIntegerWithExponent(
+          com.ionspin.kotlin.bignum.integer.BigInteger.ZERO,
+          -targetPrecision.toLong(),
+        )
+      } else {
+        exactLower.roundToDigitPositionAfterDecimalPoint(
+          targetPrecision.toLong(),
+          RoundingMode.FLOOR,
+        )
+      }
+    }
+
+  // Format BigDecimal preserving target scale
+  return listOf(
+    rounded
+      .toPlainStringWithMinDecimalPlaces(targetPrecision.toLong())
+      .toBigDecimalPreservingScale()
+  )
+}
+
+/**
+ * Computes the upper boundary (`highBoundary(precision)`) for a [BigDecimal] value.
+ *
+ * In short: Finds the highest boundary of the input's uncertainty interval, then rounds and formats
+ * the answer to `targetPrecision` decimal places.
+ *
+ * ### FHIRPath Decimal Boundary Specification:
+ * In FHIRPath, a Decimal value `v` with input scale `S_in` (number of decimal places) represents an
+ * implicit uncertainty interval `[v - halfStep, v + halfStep)`.
+ * - `halfStep` = `0.5 * 10^-S_in` = `5 * 10^-(S_in + 1)`.
+ * - `exactUpper` = `v + halfStep`.
+ *
+ * For example:
+ * - `1.5` (scale 1) -> `halfStep = 0.05` -> `exactUpper = 1.55`
+ * - `1.50` (scale 2) -> `halfStep = 0.005` -> `exactUpper = 1.505`
+ *
+ * ### Target Precision (`precision` parameter `S_target`):
+ * `exactUpper` is rounded to `S_target` decimal places using `ROUND_HALF_CEILING` for positive
+ * numbers and `CEILING` for negative numbers.
+ */
+private fun computeDecimalHighBoundary(value: BigDecimal, precision: Int?): Collection<Any> {
+  // Validate target precision parameter: must be in 0..8 if specified (defaults to 8)
+  if (precision != null && precision !in 0..8) return emptyList()
+  val targetPrecision = precision ?: 8
+  val inputScale = value.decimalPlaces
+
+  // Calculate half-step offset (0.5 * 10^-inputScale = 5 * 10^-(inputScale + 1))
+  val halfStep = BigDecimal.fromIntWithExponent(5, -(inputScale + 1))
+
+  // Calculate exact upper bound: value + halfStep
+  val exactUpper = value + halfStep
+
+  // Round exactUpper to targetPrecision using ceiling rounding
+  val roundingMode = if (value < 0) RoundingMode.CEILING else RoundingMode.ROUND_HALF_CEILING
+  val rounded =
+    exactUpper.roundToDigitPositionAfterDecimalPoint(targetPrecision.toLong(), roundingMode)
+
+  // Format BigDecimal preserving target scale
+  return listOf(
+    rounded
+      .toPlainStringWithMinDecimalPlaces(targetPrecision.toLong())
+      .toBigDecimalPreservingScale()
+  )
 }

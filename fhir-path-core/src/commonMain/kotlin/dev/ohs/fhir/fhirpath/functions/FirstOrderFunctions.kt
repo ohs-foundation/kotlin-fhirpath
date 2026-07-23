@@ -133,9 +133,9 @@ internal fun Collection<Any>.invoke(
     "now" -> now(now)
     "timeOfDay" -> timeOfDay(now)
     "today" -> today(now)
-    "lowBoundary" -> this.lowBoundary(params)
-    "highBoundary" -> this.highBoundary(params)
-    "precision" -> this.precision()
+    "lowBoundary" -> this.lowBoundary(params, fhirPathTypeResolver)
+    "highBoundary" -> this.highBoundary(params, fhirPathTypeResolver)
+    "precision" -> this.precision(fhirPathTypeResolver)
 
     // Defined as a boolean logic operator in the specification, but the grammar handles this as a
     // function invocation.

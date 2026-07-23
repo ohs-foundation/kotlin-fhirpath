@@ -16,14 +16,26 @@
 
 package dev.ohs.fhir.fhirpath.types
 
-import kotlin.text.get
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import dev.ohs.fhir.fhirpath.createSecondBigDecimal
+import dev.ohs.fhir.fhirpath.decimalPlaces
+import dev.ohs.fhir.fhirpath.toBigDecimalPreservingScale
 import kotlinx.datetime.LocalTime
 
-data class FhirPathTime(val hour: Int, val minute: Int? = null, val second: Double? = null) {
+data class FhirPathTime(val hour: Int, val minute: Int? = null, val second: BigDecimal? = null) {
   enum class Precision {
     HOUR,
     MINUTE,
-    SECOND,
+    SECOND;
+
+    companion object {
+      fun fromIntegerPrecision(precision: Int): Precision =
+        when (precision) {
+          2 -> HOUR
+          4 -> MINUTE
+          else -> if (precision >= 6) SECOND else error("Invalid precision value: $precision")
+        }
+    }
   }
 
   val precision =
@@ -32,6 +44,27 @@ data class FhirPathTime(val hour: Int, val minute: Int? = null, val second: Doub
       minute != null -> Precision.MINUTE
       else -> Precision.HOUR
     }
+
+  /** Returns the character count precision for this Time value. */
+  val integerPrecision: Int
+    get() {
+      var p = 2
+      if (minute != null) p += 2
+      if (second != null) {
+        p += 2
+        p += second.decimalPlaces.toInt()
+      }
+      return p
+    }
+
+  /**
+   * Resolves and validates a target precision parameter for Time operations. Returns null if
+   * [requestedPrecision] is invalid for a Time (must be 2, 4, 6, or > 6).
+   */
+  fun resolvePrecision(requestedPrecision: Int? = null): Int? {
+    val resolved = requestedPrecision ?: integerPrecision
+    return if (resolved in setOf(2, 4, 6) || resolved > 6) resolved else null
+  }
 
   fun compareTo(other: FhirPathTime): Int? {
     if (precision != other.precision) {
@@ -61,11 +94,11 @@ data class FhirPathTime(val hour: Int, val minute: Int? = null, val second: Doub
 
       val hour = groups["hour"]!!.value.toInt()
       val minute = groups["minute"]?.value?.toInt()
-      val second = groups["second"]?.value?.toDouble()
+      val second = groups["second"]?.value?.toBigDecimalPreservingScale()
 
       // Use kotlinx.LocalTime to validate the time components
       try {
-        LocalTime(hour, minute ?: 0, second?.toInt() ?: 0)
+        LocalTime(hour, minute ?: 0, second?.toBigInteger()?.intValue() ?: 0)
       } catch (e: Exception) {
         throw IllegalArgumentException("Invalid time component in literal: $string", e)
       }
@@ -76,7 +109,7 @@ data class FhirPathTime(val hour: Int, val minute: Int? = null, val second: Doub
       FhirPathTime(
         hour = localTime.hour,
         minute = localTime.minute,
-        second = localTime.second + (localTime.nanosecond / 1_000_000_000.0),
+        second = createSecondBigDecimal(localTime.second, localTime.nanosecond),
       )
   }
 }
