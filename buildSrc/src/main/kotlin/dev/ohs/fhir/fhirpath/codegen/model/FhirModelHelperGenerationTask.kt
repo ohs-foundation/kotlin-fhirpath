@@ -18,7 +18,6 @@ package dev.ohs.fhir.fhirpath.codegen.model
 
 import dev.ohs.fhir.fhirpath.codegen.model.schema.StructureDefinition
 import dev.ohs.fhir.fhirpath.codegen.model.schema.StructureDefinition.Kind
-import dev.ohs.fhir.fhirpath.codegen.model.schema.sortedByInheritanceDepthDescending
 import kotlinx.serialization.json.Json
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -137,14 +136,32 @@ abstract class FhirModelHelperGenerationTask : DefaultTask() {
       )
       .writeTo(outputDir)
 
+    // Generate type dispatchers for complex types.
+    //
+    // Abstract Base Types:
+    // We filter out non-instantiable abstract base types (`Element`, `Base`, `DataType`, `BackboneType`,
+    // `PrimitiveType`) because:
+    // 1. An `is Base` branch inside `Element.getProperty(name)` recursively calls `Element.getProperty(name)`,
+    //    causing a `StackOverflowError` (see https://github.com/ohs-foundation/kotlin-fhirpath/pull/94).
+    // 2. An `is DataType` branch would invoke `DataType.getProperty()`, which only handles `id` and
+    //    `extension`, skipping the subtype's own properties.
+    // We keep `BackboneElement` because resource backbone elements (e.g. `Patient.Contact`) delegate
+    // to `MoreBackboneElements.kt` via `is BackboneElement -> getProperty(name)`.
+    //
+    // Concrete Subtype Inheritance:
+    // Concrete subtypes in FHIR (e.g. `Age`, `Count`, `Distance`, `Duration` which inherit from `Quantity`)
+    // share the exact same properties as `Quantity`. Even if `is Quantity` matches an `Age` instance first,
+    // `Quantity.getProperty(name)` resolves the exact same properties as `Age.getProperty(name)`.
+    val abstractBaseComplexTypes =
+      setOf("Element", "Base", "DataType", "BackboneType", "PrimitiveType")
+
     ComplexTypeExtensionFileSpecGenerator.generate(
         modelPackageName = modelPackageName,
         modelExtensionPackageName = modelExtPackageName,
         structureDefinitions =
           structureDefinitions
             .filter { it.kind == Kind.COMPLEX_TYPE }
-            .filterNot { it.name == "Element" }
-            .sortedByInheritanceDepthDescending(),
+            .filterNot { it.name in abstractBaseComplexTypes },
       )
       .writeTo(outputDir)
 
