@@ -114,7 +114,7 @@ object ModelExtensionFileSpecGenerator {
               .beginControlFlow("return when(name)")
               .apply {
                 for (element in backboneElement.value) {
-                  addStatement("%S -> %N", element.getElementName(), element.getElementName())
+                  addStatement("%S -> this.%N", element.getElementName(), element.getElementName())
                 }
                 addStatement("else -> error(\"\$name is not a valid property name\")")
               }

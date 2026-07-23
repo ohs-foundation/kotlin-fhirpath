@@ -18,6 +18,7 @@ package dev.ohs.fhir.fhirpath.codegen.model
 
 import dev.ohs.fhir.fhirpath.codegen.model.schema.StructureDefinition
 import dev.ohs.fhir.fhirpath.codegen.model.schema.StructureDefinition.Kind
+import dev.ohs.fhir.fhirpath.codegen.model.schema.sortedByInheritanceDepthDescending
 import kotlinx.serialization.json.Json
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -142,7 +143,8 @@ abstract class FhirModelHelperGenerationTask : DefaultTask() {
         structureDefinitions =
           structureDefinitions
             .filter { it.kind == Kind.COMPLEX_TYPE }
-            .filterNot { it.name == "Element" },
+            .filterNot { it.name == "Element" }
+            .sortedByInheritanceDepthDescending(),
       )
       .writeTo(outputDir)
 

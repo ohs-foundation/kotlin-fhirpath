@@ -32,3 +32,41 @@ val StructureDefinition.backboneElements
           }
         }
     } ?: emptyMap()
+
+/**
+ * Sorts subtypes before their ancestors (e.g. `HumanName` before `Element` before `Base`). Apply
+ * this to the type list before generating type dispatchers, so every instance matches its own
+ * type's branch instead of an ancestor's.
+ *
+ * The generated `Element.getProperty()` / `hasProperty()` / `getAllChildren()` helpers check types
+ * in this list's order, like `when(this) { is HumanName -> ...; is Element -> ... }`, and `when`
+ * picks the first matching branch.
+ *
+ * Without this sort, the list keeps the arbitrary order the files were read from disk, so an
+ * ancestor like `Base` can end up listed first. A `HumanName` is also a `Base`, so it matches the
+ * ancestor's branch, which calls the same helper again, recursing until a StackOverflowError.
+ *
+ * With this sort, each type's own branch always comes before its ancestors' branches, so every
+ * instance is dispatched to its own type.
+ */
+fun List<StructureDefinition>.sortedByInheritanceDepthDescending(): List<StructureDefinition> {
+  val baseNameByName = associate { it.name to it.baseDefinition?.substringAfterLast('/') }
+  val depthByName = mutableMapOf<String, Int>()
+  val inProgress = mutableSetOf<String>()
+
+  fun depthOf(name: String): Int {
+    depthByName[name]?.let {
+      return it
+    }
+    check(inProgress.add(name)) {
+      "Cycle detected while computing inheritance depth for structure definition '$name'"
+    }
+    val baseName = baseNameByName[name]
+    val depth = if (baseName == null || baseName == name) 0 else 1 + depthOf(baseName)
+    inProgress.remove(name)
+    depthByName[name] = depth
+    return depth
+  }
+
+  return sortedByDescending { depthOf(it.name) }
+}
