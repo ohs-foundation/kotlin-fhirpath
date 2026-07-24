@@ -15,6 +15,7 @@
  */
 
 package dev.ohs.fhir.fhirpath.model
+
 import dev.ohs.fhir.model.r5.BackboneElement
 import dev.ohs.fhir.model.r5.Element
 import dev.ohs.fhir.model.r5.Resource
@@ -53,15 +54,15 @@ object FhirR5ModelNavigator : FhirModelNavigator() {
     }
   }
 
-  override fun unwrapProperty(any: Any): Any? {
+  override fun unwrapProperty(any: Any): Any {
     return any.unwrapChoiceValue() ?: any
   }
 
-  override fun getAllChildren(item: Any): Collection<Any> =
-    when (item) {
-      is Resource -> item.getAllChildren()
-      is BackboneElement -> item.getAllChildren()
-      is Element -> item.getAllChildren()
+  override fun getAllChildren(obj: Any): Collection<Any> =
+    when (obj) {
+      is Resource -> obj.getAllChildren()
+      is BackboneElement -> obj.getAllChildren()
+      is Element -> obj.getAllChildren()
       else -> emptyList()
     }
 

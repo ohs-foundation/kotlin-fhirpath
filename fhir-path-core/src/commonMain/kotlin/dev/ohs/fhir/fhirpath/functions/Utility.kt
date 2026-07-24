@@ -19,6 +19,7 @@ package dev.ohs.fhir.fhirpath.functions
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import com.ionspin.kotlin.bignum.integer.BigInteger
 import dev.ohs.fhir.fhirpath.coerceToType
 import dev.ohs.fhir.fhirpath.createSecondBigDecimal
 import dev.ohs.fhir.fhirpath.decimalPlaces
@@ -37,6 +38,7 @@ import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
+import kotlinx.datetime.number
 import kotlinx.datetime.offsetAt
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
@@ -50,8 +52,8 @@ internal fun now(now: Instant): Collection<FhirPathDateTime> {
   return listOf(
     FhirPathDateTime(
       year = localDateTime.year,
-      month = localDateTime.monthNumber,
-      day = localDateTime.dayOfMonth,
+      month = localDateTime.month.number,
+      day = localDateTime.day,
       hour = localDateTime.hour,
       minute = localDateTime.minute,
       second = createSecondBigDecimal(localDateTime.second, localDateTime.nanosecond),
@@ -331,7 +333,7 @@ internal fun Collection<Any>.precision(
 
 /** Get the last day of the given month in the given year. */
 private fun lastDayOfMonth(year: Int, month: Int): Int =
-  LocalDate(year, month, 1).plus(DatePeriod(months = 1)).minus(DatePeriod(days = 1)).dayOfMonth
+  LocalDate(year, month, 1).plus(DatePeriod(months = 1)).minus(DatePeriod(days = 1)).day
 
 /** Delegate boundary computation to the numeric value of a Quantity. */
 private fun FhirPathQuantity.applyBoundary(
@@ -395,10 +397,7 @@ private fun computeDecimalLowBoundary(value: BigDecimal, precision: Int?): Colle
       // (-0.0)
       val targetHalfStep = BigDecimal.fromIntWithExponent(5, -(targetPrecision + 1).toLong())
       if (value < 0 && exactLower >= -targetHalfStep) {
-        BigDecimal.fromBigIntegerWithExponent(
-          com.ionspin.kotlin.bignum.integer.BigInteger.ZERO,
-          -targetPrecision.toLong(),
-        )
+        BigDecimal.fromBigIntegerWithExponent(BigInteger.ZERO, -targetPrecision.toLong())
       } else {
         exactLower.roundToDigitPositionAfterDecimalPoint(
           targetPrecision.toLong(),

@@ -32,7 +32,7 @@ import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
  * See [specification](https://hl7.org/fhirpath/N1/#equals).
  *
  * The FHIRPath specification states every pair of items must be equal for two collections to be
- * equal. However, it does not explicitly states how to account for item comparison results that are
+ * equal. However, it does not explicitly state how to account for item comparison results that are
  * empty sets. This can be interpreted as an inconsistency since this definition does not reduce
  * nicely to the special case of collections with a single item. Consider two collections with a
  * single item in each that are incomparable (returns empty set if compared), if we use the
@@ -83,7 +83,7 @@ internal fun equivalent(
     return false
   }
 
-  var toBeMatched = right.toMutableList()
+  val toBeMatched = right.toMutableList()
   for (item in left) {
     val match =
       toBeMatched.firstOrNull { itemsEquivalent(item, it, fhirPathTypeResolver) } ?: return false

@@ -155,8 +155,7 @@ internal class FhirPathEvaluator(
   ): Collection<Any> {
     val left = visit(ctx.expression(0)!!)
     val right = visit(ctx.expression(1)!!)
-    val op = ctx.getChild(1)!!.text
-    return when (op) {
+    return when (val op = ctx.getChild(1)!!.text) {
       "*" -> multiplication(left, right, fhirPathTypeResolver)
       "/" -> division(left, right, fhirPathTypeResolver)
       "div" -> div(left, right)
@@ -170,9 +169,7 @@ internal class FhirPathEvaluator(
   ): Collection<Any> {
     val left = visit(ctx.expression(0)!!)
     val right = visit(ctx.expression(1)!!)
-    val op = ctx.getChild(1)!!.text
-
-    return when (op) {
+    return when (val op = ctx.getChild(1)!!.text) {
       "+" -> addition(left, right, fhirPathTypeResolver)
       "-" -> subtraction(left, right, fhirPathTypeResolver)
       "&" -> concat(left, right)
@@ -245,8 +242,7 @@ internal class FhirPathEvaluator(
   ): Collection<Any> {
     val left = visit(ctx.expression(0)!!)
     val right = visit(ctx.expression(1)!!)
-    val op = ctx.getChild(1)!!.text
-    return when (op) {
+    return when (val op = ctx.getChild(1)!!.text) {
       "in" ->
         listOf(
           right
@@ -388,15 +384,13 @@ internal class FhirPathEvaluator(
         listOf(thisStack.last())
       }
 
-    ctx.getParent() ==
-      return context.flatMap { item ->
-        val fieldValue = fhirModelNavigator.accessProperty(item, memberName)
-        when (fieldValue) {
-          null -> emptyList()
-          is List<*> -> fieldValue as Collection<Any>
-          else -> listOf(fieldValue)
-        }
+    return context.flatMap { item ->
+      when (val fieldValue = fhirModelNavigator.accessProperty(item, memberName)) {
+        null -> emptyList()
+        is List<*> -> fieldValue as Collection<Any>
+        else -> listOf(fieldValue)
       }
+    }
   }
 
   @OptIn(ExperimentalTime::class)
@@ -405,9 +399,7 @@ internal class FhirPathEvaluator(
   ): Collection<Any> {
     val context = contextStack.last()
     val functionNode = ctx.function()
-    val functionName = visit(functionNode.identifier()).first() as String
-
-    return when (functionName) {
+    return when (val functionName = visit(functionNode.identifier()).first() as String) {
       "iif" -> {
         // See
         // [specification](https://hl7.org/fhirpath/N1/#iifcriterion-expression-true-result-collection-otherwise-result-collection-collection).

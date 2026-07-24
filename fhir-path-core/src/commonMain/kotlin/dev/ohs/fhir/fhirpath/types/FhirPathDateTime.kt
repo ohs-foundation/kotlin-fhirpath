@@ -130,7 +130,7 @@ data class FhirPathDateTime(
   /**
    * Converts the DateTime to an Instant, assuming a zero timezone offset.
    *
-   * This functions is used to compare two values with explicit timezone offsets, or two values
+   * This function is used to compare two values with explicit timezone offsets, or two values
    * without timezone offsets. In the former case, no timezone offset will be assumed in this
    * function; in the latter case, the same timezone offset will be assumed, producing correct
    * comparison result.

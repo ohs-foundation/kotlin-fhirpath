@@ -27,6 +27,5 @@ actual fun listJsonFiles(dir: String): Map<String, String> {
     .listFiles()!!
     .asSequence()
     .filter { it.name.endsWith(".json") }
-    .map { it.name to it.readText() }
-    .toMap()
+    .associate { it.name to it.readText() }
 }

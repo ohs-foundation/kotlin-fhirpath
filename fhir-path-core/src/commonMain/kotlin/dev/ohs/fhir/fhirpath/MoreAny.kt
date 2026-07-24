@@ -98,8 +98,8 @@ private fun Pair<Any, Any>.toCommonFhirPathType(): Pair<Any, Any> {
  * Note if the two objects cannot be converted to the same FHIRPath system type, they will still be
  * converted to different FHIRPath system types.
  *
- * For example, a pair of objects of type Fhir.integer and System.Decimal will be converted to two
- * objects of type System.Decimal; a pair of objects of type Fhir.date and System.Decimal will be
+ * For example, a pair of objects of type `Fhir.integer` and System.Decimal will be converted to two
+ * objects of type System.Decimal; a pair of objects of type `Fhir.date` and System.Decimal will be
  * converted to two objects of type System.Date and System.Decimal.
  */
 internal fun Pair<Any, Any>.asComparableOperands(

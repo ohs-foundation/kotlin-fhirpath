@@ -48,5 +48,5 @@ abstract class FhirModelNavigator {
 
   protected abstract fun getProperty(obj: Any, propertyName: String): Any?
 
-  protected abstract fun unwrapProperty(any: Any): Any?
+  protected abstract fun unwrapProperty(any: Any): Any
 }

@@ -170,7 +170,7 @@ values that do not have one. See the relevant sections on
 [equivalence](https://hl7.org/fhirpath/N1/#datetime-equivalence), and
 [comparison](https://hl7.org/fhirpath/N1/#comparison).
 
-To prioritise safety and correctness, when comparing date time values without a timezone offset with
+To prioritize safety and correctness, when comparing date time values without a timezone offset with
 date time values with a timezone offset, this implementation **does not assume a default timezone
 offset** (such as UTC or the system's timezone offset). This is because the data could have
 originated from a different system or context unknown to this implementation, making any "guess"
