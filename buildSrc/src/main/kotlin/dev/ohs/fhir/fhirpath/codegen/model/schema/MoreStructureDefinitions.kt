@@ -32,5 +32,3 @@ val StructureDefinition.backboneElements
           }
         }
     } ?: emptyMap()
-
-

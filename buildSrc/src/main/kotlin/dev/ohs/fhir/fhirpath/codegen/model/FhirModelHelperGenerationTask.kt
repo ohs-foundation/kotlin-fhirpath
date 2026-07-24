@@ -136,22 +136,23 @@ abstract class FhirModelHelperGenerationTask : DefaultTask() {
       )
       .writeTo(outputDir)
 
-    // Generate type dispatchers for complex types.
+    // Generate extension functions for complex types.
     //
-    // Abstract Base Types:
-    // We filter out non-instantiable abstract base types (`Element`, `Base`, `DataType`, `BackboneType`,
-    // `PrimitiveType`) because:
-    // 1. An `is Base` branch inside `Element.getProperty(name)` recursively calls `Element.getProperty(name)`,
-    //    causing a `StackOverflowError` (see https://github.com/ohs-foundation/kotlin-fhirpath/pull/94).
+    // Abstract base complex types are filtered out because:
+    // 1. An `is Base` branch inside `Element.getProperty(name)` recursively calls
+    // `Element.getProperty(name)`, causing a `StackOverflowError` (see
+    // https://github.com/ohs-foundation/kotlin-fhirpath/issues/75).
     // 2. An `is DataType` branch would invoke `DataType.getProperty()`, which only handles `id` and
-    //    `extension`, skipping the subtype's own properties.
-    // We keep `BackboneElement` because resource backbone elements (e.g. `Patient.Contact`) delegate
-    // to `MoreBackboneElements.kt` via `is BackboneElement -> getProperty(name)`.
+    // `extension`, skipping the subtype's own properties.
     //
-    // Concrete Subtype Inheritance:
-    // Concrete subtypes in FHIR (e.g. `Age`, `Count`, `Distance`, `Duration` which inherit from `Quantity`)
-    // share the exact same properties as `Quantity`. Even if `is Quantity` matches an `Age` instance first,
-    // `Quantity.getProperty(name)` resolves the exact same properties as `Age.getProperty(name)`.
+    // We keep `BackboneElement` because resource backbone elements (e.g. `Patient.Contact`)
+    // delegate to `MoreBackboneElements.kt` via `is BackboneElement -> getProperty(name)`.
+    //
+    // The only concrete subtype inheritance in FHIR involves `Age`, `Count`, `Distance`, and
+    // `Duration` inheriting from `Quantity`. These types share the same properties, therefore do
+    // not
+    // need to be treated differently in the context of these extension functions.
+
     val abstractBaseComplexTypes =
       setOf("Element", "Base", "DataType", "BackboneType", "PrimitiveType")
 
