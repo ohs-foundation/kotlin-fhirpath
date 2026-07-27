@@ -128,6 +128,10 @@ internal fun Collection<Any>.invoke(
     "children" -> this.children(fhirModelNavigator)
     "descendants" -> this.descendants(fhirModelNavigator)
 
+    // FHIR-specific functions
+    // https://hl7.org/fhir/fhirpath.html#functions
+    "extension" -> this.extension(params, fhirModelNavigator)
+
     // Utility functions
     // https://hl7.org/fhirpath/N1/#utility-functions
     "now" -> now(now)
