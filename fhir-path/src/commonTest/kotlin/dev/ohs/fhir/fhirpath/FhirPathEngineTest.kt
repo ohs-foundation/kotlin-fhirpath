@@ -65,12 +65,6 @@ val skippedTestCaseToReasonMap =
       "No error should be thrown according to https://hl7.org/fhirpath/#as-type-specifier",
     "testDateTimeGreaterThanDate1" to
       "Comparison of two date time values, one with a timezone offset one without",
-    "testStringIntegerLiteralToQuantity" to
-      "Unclear if integers should be converted to decimals as part of quantity. See https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/Quantity.20and.20Decimal/near/543270110",
-    "testQuantityLiteralWkToString" to
-      "Unclear if integers should be converted to decimals as part of quantity. See https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/Quantity.20and.20Decimal/near/543270110",
-    "testQuantityLiteralWeekToString" to
-      "Unclear if integers should be converted to decimals as part of quantity. See https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/Quantity.20and.20Decimal/near/543270110",
     "testQuantity4" to "https://github.com/FHIR/fhir-test-cases/pull/243",
     "testSubSetOf3" to
       "The test resource is invalid and missing (https://github.com/FHIR/fhir-test-cases/issues/247); the scope of \"\$this\" is unclear (https://jira.hl7.org/browse/FHIR-44601)",
