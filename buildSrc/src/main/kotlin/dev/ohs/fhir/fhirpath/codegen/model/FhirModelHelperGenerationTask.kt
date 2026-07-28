@@ -153,10 +153,10 @@ abstract class FhirModelHelperGenerationTask : DefaultTask() {
     // not
     // need to be treated differently in the context of these extension functions.
     //
-    // Primitive types are included alongside complex types: FHIR primitives are Elements carrying
-    // `id` and `extension`, which must be navigable (e.g. `Patient.birthDate.extension(...)`).
-    // The same argument as for `Quantity` applies to primitive inheritance (e.g. `code` inheriting
-    // from `string`): all primitives share the same properties, so arm order does not matter.
+    // Primitive types are also included so that their `id` and `extension` are navigable, e.g.
+    // `Patient.birthDate.extension(...)`. Dispatch order among primitives does not matter: a
+    // `code` picked up by its base type `string` still resolves the same `id`, `extension` and
+    // `value`.
 
     val abstractBaseComplexTypes =
       setOf("Element", "Base", "DataType", "BackboneType", "PrimitiveType")
