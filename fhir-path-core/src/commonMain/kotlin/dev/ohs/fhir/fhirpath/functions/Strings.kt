@@ -186,6 +186,68 @@ internal fun Collection<Any>.toChars(fhirPathTypeResolver: FhirPathTypeResolver)
 
 // Standard for Trial Use (STU)
 
+/**
+ * Encodes the single string item in the input collection using the specified format. Supported
+ * formats: `'base64'`, `'urlbase64'`, `'hex'`, and `'url'`.
+ *
+ * See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#encodeformat--string--string).
+ */
+@OptIn(kotlin.io.encoding.ExperimentalEncodingApi::class)
+internal fun Collection<Any>.encode(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<String> {
+  check(size <= 1) { "encode() cannot be called on a collection with more than 1 item" }
+  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+  val format = params.firstOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+
+  val result =
+    try {
+      when (format.lowercase()) {
+        "base64" -> kotlin.io.encoding.Base64.encode(input.encodeToByteArray())
+        "urlbase64" -> kotlin.io.encoding.Base64.UrlSafe.encode(input.encodeToByteArray())
+        "hex" -> hexEncode(input)
+        "url" -> urlEncode(input)
+        else -> return emptyList()
+      }
+    } catch (_: Exception) {
+      return emptyList()
+    }
+
+  return listOf(result)
+}
+
+/**
+ * Decodes the single string item in the input collection encoded in the specified format. Supported
+ * formats: `'base64'`, `'urlbase64'`, `'hex'`, and `'url'`.
+ *
+ * See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#decodeformat--string--string).
+ */
+@OptIn(kotlin.io.encoding.ExperimentalEncodingApi::class)
+internal fun Collection<Any>.decode(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<String> {
+  check(size <= 1) { "decode() cannot be called on a collection with more than 1 item" }
+  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+  val format = params.firstOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+
+  val result =
+    try {
+      when (format.lowercase()) {
+        "base64" -> kotlin.io.encoding.Base64.decode(input).decodeToString()
+        "urlbase64" -> kotlin.io.encoding.Base64.UrlSafe.decode(input).decodeToString()
+        "hex" -> hexDecode(input)
+        "url" -> urlDecode(input)
+        else -> return emptyList()
+      }
+    } catch (_: Exception) {
+      return emptyList()
+    }
+
+  return listOf(result)
+}
+
 /** See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#trim--string). */
 internal fun Collection<Any>.trim(fhirPathTypeResolver: FhirPathTypeResolver): Collection<Any> {
   check(size <= 1) { "trim() cannot be called on a collection with more than 1 item" }
@@ -228,3 +290,73 @@ private fun Any.unwrapString(fhirPathTypeResolver: FhirPathTypeResolver): String
 }
 
 private fun String.toSingleLineModeRegex(): Regex = "$SINGLE_LINE_MODE_REGEX_PREFIX$this".toRegex()
+
+/** Converts a UTF-8 string to a lowercase hexadecimal representation (2 hex digits per byte). */
+private fun hexEncode(input: String): String =
+  input.encodeToByteArray().joinToString("") { byte ->
+    // Mask signed Kotlin Byte to unsigned 0..255 integer, convert to base-16 string,
+    // and left-pad with '0' to ensure every byte produces 2 hex digits.
+    (byte.toInt() and 0xFF).toString(16).padStart(2, '0')
+  }
+
+/** Decodes a hexadecimal string (case-insensitive) back to a UTF-8 string. */
+private fun hexDecode(hex: String): String {
+  require(hex.length % 2 == 0) { "Hexadecimal string must have an even length" }
+  val bytes = ByteArray(hex.length / 2) { i -> hex.substring(i * 2, i * 2 + 2).toInt(16).toByte() }
+  return bytes.decodeToString()
+}
+
+/** Encodes non-unreserved characters in a UTF-8 string using URI percent-encoding (%XX). */
+private fun urlEncode(input: String): String {
+  val sb = StringBuilder()
+  for (byte in input.encodeToByteArray()) {
+    val unsignedByte = byte.toInt() and 0xFF
+    val char = unsignedByte.toChar()
+    if (isUnreservedUrlChar(char)) {
+      sb.append(char)
+    } else {
+      sb.append('%')
+      sb.append(unsignedByte.toString(16).uppercase().padStart(2, '0'))
+    }
+  }
+  return sb.toString()
+}
+
+/** Decodes URI percent-encoded (%XX) sequences back to a UTF-8 string. */
+private fun urlDecode(input: String): String {
+  val bytes = mutableListOf<Byte>()
+  var i = 0
+  while (i < input.length) {
+    when (val c = input[i]) {
+      '%' -> {
+        require(i + 2 < input.length)
+        val hexByte = input.substring(i + 1, i + 3).toInt(16).toByte()
+        bytes.add(hexByte)
+        i += 3
+      }
+      '+' -> {
+        bytes.add(' '.code.toByte())
+        i++
+      }
+      else -> {
+        bytes.add(c.code.toByte())
+        i++
+      }
+    }
+  }
+  return bytes.toByteArray().decodeToString()
+}
+
+/**
+ * Checks whether a character is an unreserved URI character per RFC 3986 Section 2.3
+ * (alphanumerics, hyphen, underscore, period, and tilde). Unreserved characters do not require
+ * percent-encoding.
+ */
+private fun isUnreservedUrlChar(ch: Char): Boolean =
+  ch in 'a'..'z' ||
+    ch in 'A'..'Z' ||
+    ch in '0'..'9' ||
+    ch == '-' ||
+    ch == '_' ||
+    ch == '.' ||
+    ch == '~'

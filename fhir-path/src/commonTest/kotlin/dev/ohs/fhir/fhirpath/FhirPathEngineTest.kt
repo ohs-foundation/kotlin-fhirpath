@@ -44,7 +44,6 @@ private val fhirPathEngine = FhirPathEngine.forR4()
  */
 val skippedTestGroupToReasonMap =
   mapOf(
-    "testEncodeDecode" to "Unimplemented",
     "testEscapeUnescape" to "Unimplemented",
     "testVariables" to "Unimplemented",
     "testExtension" to "Unimplemented",

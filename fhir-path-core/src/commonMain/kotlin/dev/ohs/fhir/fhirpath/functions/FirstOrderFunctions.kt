@@ -106,6 +106,8 @@ internal fun Collection<Any>.invoke(
 
     // Additional string functions (STU)
     // https://build.fhir.org/ig/HL7/FHIRPath/#additional-string-functions
+    "encode" -> this.encode(params, fhirPathTypeResolver)
+    "decode" -> this.decode(params, fhirPathTypeResolver)
     "trim" -> this.trim(fhirPathTypeResolver)
     "split" -> this.split(params, fhirPathTypeResolver)
     "join" -> this.join(params, fhirPathTypeResolver)
