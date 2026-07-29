@@ -19,6 +19,7 @@ package dev.ohs.fhir.fhirpath.functions
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import dev.ohs.fhir.fhirpath.isValidUcumUnit
+import dev.ohs.fhir.fhirpath.operators.DECIMAL_MODE
 import dev.ohs.fhir.fhirpath.toEqualCanonicalized
 import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.toPlainStringPreservingDecimalPlaces
@@ -456,7 +457,6 @@ private fun convertQuantityUnit(
   ) {
     return emptyList()
   }
-
-  val convertedValue = sourceCanonicalValue / targetCanonicalScale
+  val convertedValue = sourceCanonicalValue.divide(targetCanonicalScale, DECIMAL_MODE)
   return listOf(FhirPathQuantity(value = convertedValue, unit = targetUnit))
 }
