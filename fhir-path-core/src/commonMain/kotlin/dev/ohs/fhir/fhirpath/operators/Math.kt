@@ -22,16 +22,17 @@ import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import dev.ohs.fhir.fhirpath.createSecondBigDecimal
 import dev.ohs.fhir.fhirpath.div
-import dev.ohs.fhir.fhirpath.formatUcumUnit
-import dev.ohs.fhir.fhirpath.parseUcumUnit
 import dev.ohs.fhir.fhirpath.times
-import dev.ohs.fhir.fhirpath.toEqualCanonicalized
 import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
 import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import dev.ohs.fhir.fhirpath.types.FhirPathTime
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
+import dev.ohs.fhir.fhirpath.types.div
+import dev.ohs.fhir.fhirpath.types.minus
+import dev.ohs.fhir.fhirpath.types.plus
+import dev.ohs.fhir.fhirpath.types.times
 import kotlin.time.ExperimentalTime
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
@@ -89,7 +90,7 @@ internal fun multiplication(
       listOf(leftItem * rightItem)
     }
     leftItem is FhirPathQuantity && rightItem is FhirPathQuantity -> {
-      listOf(leftItem * rightItem)
+      (leftItem * rightItem)?.let { listOf(it) } ?: emptyList()
     }
     else -> error("Cannot multiply $leftItem and $rightItem")
   }
@@ -149,7 +150,7 @@ internal fun addition(
     leftItem is BigDecimal && rightItem is BigDecimal -> listOf(leftItem + rightItem)
     leftItem is String && rightItem is String -> listOf(leftItem + rightItem)
     leftItem is FhirPathQuantity && rightItem is FhirPathQuantity ->
-      TODO("Implement adding two quantities")
+      (leftItem + rightItem)?.let { listOf(it) } ?: emptyList()
     leftItem is FhirPathDate && rightItem is FhirPathQuantity -> listOf(leftItem + rightItem)
     leftItem is FhirPathDateTime && rightItem is FhirPathQuantity -> listOf(leftItem + rightItem)
     leftItem is FhirPathTime && rightItem is FhirPathQuantity -> listOf(leftItem + rightItem)
@@ -176,7 +177,7 @@ internal fun subtraction(
     leftItem is BigDecimal && rightItem is Long -> listOf(leftItem - rightItem)
     leftItem is BigDecimal && rightItem is BigDecimal -> listOf(leftItem - rightItem)
     leftItem is FhirPathQuantity && rightItem is FhirPathQuantity ->
-      TODO("Implement subtracting two quantities")
+      (leftItem - rightItem)?.let { listOf(it) } ?: emptyList()
     leftItem is FhirPathDate && rightItem is FhirPathQuantity -> listOf(leftItem - rightItem)
     leftItem is FhirPathDateTime && rightItem is FhirPathQuantity -> listOf(leftItem - rightItem)
     leftItem is FhirPathTime && rightItem is FhirPathQuantity -> listOf(leftItem - rightItem)
@@ -247,40 +248,6 @@ internal fun concat(left: Collection<Any>, right: Collection<Any>): Collection<A
   val leftString = (left.singleOrNull() as String?) ?: ""
   val rightString: String = (right.singleOrNull() as String?) ?: ""
   return listOf(leftString + rightString)
-}
-
-private operator fun FhirPathQuantity.times(multiplier: BigDecimal): FhirPathQuantity {
-  return FhirPathQuantity(value = this.value!! * multiplier, unit = this.unit)
-}
-
-/** Multiplies two quantities, combining their UCUM units. */
-private operator fun FhirPathQuantity.times(other: FhirPathQuantity): FhirPathQuantity {
-  val leftCanonical = this.toEqualCanonicalized()
-  val rightCanonical = other.toEqualCanonicalized()
-
-  val resultValue = leftCanonical.value!! * rightCanonical.value!!
-
-  val combinedUnits =
-    parseUcumUnit(leftCanonical.unit ?: "") * parseUcumUnit(rightCanonical.unit ?: "")
-  val resultUnitString = formatUcumUnit(combinedUnits)
-
-  return FhirPathQuantity(value = resultValue, unit = resultUnitString)
-}
-
-/** Divides two quantities, combining their UCUM units. Returns `null` if the divisor is zero. */
-private operator fun FhirPathQuantity.div(other: FhirPathQuantity): FhirPathQuantity? {
-  val leftCanonical = this.toEqualCanonicalized()
-  val rightCanonical = other.toEqualCanonicalized()
-
-  if (rightCanonical.value!! == BigDecimal.ZERO) return null
-
-  val resultValue = leftCanonical.value!!.divide(rightCanonical.value, DECIMAL_MODE)
-
-  val combinedUnits =
-    parseUcumUnit(leftCanonical.unit ?: "") / parseUcumUnit(rightCanonical.unit ?: "")
-  val resultUnitString = formatUcumUnit(combinedUnits)
-
-  return FhirPathQuantity(value = resultValue, unit = resultUnitString)
 }
 
 private operator fun FhirPathDate.plus(duration: FhirPathQuantity): FhirPathDate {
