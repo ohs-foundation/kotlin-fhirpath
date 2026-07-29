@@ -140,7 +140,10 @@ internal fun Collection<Any>.toDate(
 
   return when (val value = single().toFhirPathType(fhirPathTypeResolver)) {
     is FhirPathDate -> listOf(value)
-    is FhirPathDateTime -> TODO("Clarify the requirement in the specification")
+    // N.B. The specification does not explicitly specify how timezone offsets affect the conversion
+    // (e.g., whether to convert to UTC or a specific timezone first). We simply extract the year,
+    // month, and day components directly.
+    is FhirPathDateTime -> listOf(FhirPathDate(value.year, value.month, value.day))
     is String ->
       try {
         listOf(FhirPathDate.fromString(value))
