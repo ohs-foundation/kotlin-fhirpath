@@ -312,7 +312,6 @@ internal fun Collection<Any>.toQuantity(
   }
 }
 
-
 /** See [specification](https://hl7.org/fhirpath/N1/#convertstoquantityunit-string-boolean). */
 internal fun Collection<Any>.convertsToQuantity(
   fhirPathTypeResolver: FhirPathTypeResolver
@@ -438,8 +437,7 @@ private fun convertQuantityUnit(
   unit: String,
 ): Collection<FhirPathQuantity> {
   val unquotedUnit = unit.trim('\'')
-  val targetUnit =
-    if (unquotedUnit in CALENDAR_DURATION_LIST) unquotedUnit else "'$unquotedUnit'"
+  val targetUnit = if (unquotedUnit in CALENDAR_DURATION_LIST) unquotedUnit else "'$unquotedUnit'"
 
   if (quantity.unit == targetUnit) return listOf(quantity)
 

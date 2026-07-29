@@ -35,7 +35,7 @@ import kotlin.math.pow
  *
  * See [FHIRPath, Time-valued quantities](https://hl7.org/fhirpath/N1/#time-valued-quantities).
  */
-internal fun FhirPathQuantity.toEqualCanonicalized(): FhirPathQuantity =
+fun FhirPathQuantity.toEqualCanonicalized(): FhirPathQuantity =
   toEqualUcumDefiniteDuration().stripUcumPrefix().toCanonicalizedUcumUnit()
 
 /**
@@ -48,7 +48,7 @@ internal fun FhirPathQuantity.toEqualCanonicalized(): FhirPathQuantity =
  *
  * See [FHIRPath, Time-valued quantities](https://hl7.org/fhirpath/N1/#time-valued-quantities).
  */
-internal fun FhirPathQuantity.toEquivalentCanonicalized(): FhirPathQuantity =
+fun FhirPathQuantity.toEquivalentCanonicalized(): FhirPathQuantity =
   toEquivalentUcumDefiniteDuration().stripUcumPrefix().toCanonicalizedUcumUnit()
 
 /** Returns true if the given unit string is a valid UCUM unit (base, derived, or prefixed). */
