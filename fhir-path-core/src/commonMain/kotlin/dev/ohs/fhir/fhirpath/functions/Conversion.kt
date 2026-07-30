@@ -18,6 +18,9 @@ package dev.ohs.fhir.fhirpath.functions
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import dev.ohs.fhir.fhirpath.isValidUcumUnit
+import dev.ohs.fhir.fhirpath.operators.DECIMAL_MODE
+import dev.ohs.fhir.fhirpath.toEqualCanonicalized
 import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.toPlainStringPreservingDecimalPlaces
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
@@ -25,7 +28,6 @@ import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
 import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import dev.ohs.fhir.fhirpath.types.FhirPathTime
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
-import dev.ohs.fhir.fhirpath.ucum.Unit
 import kotlinx.datetime.LocalTime
 
 /**
@@ -266,32 +268,42 @@ internal fun Collection<Any>.toQuantity(
       val pair1 = (item to DEFAULT_UNIT)
       listOf(FhirPathQuantity(value = pair1.first, unit = pair1.second))
     }
-    is FhirPathQuantity -> listOf(item)
+    is FhirPathQuantity -> {
+      if (targetUnit != null) {
+        convertQuantityUnit(item, targetUnit)
+      } else {
+        listOf(item)
+      }
+    }
     is String -> {
       val match = QUANTITY_REGEX.matchEntire(item.trim()) ?: return emptyList()
       val value = match.groups["value"]?.value!!.toBigDecimal()
-      val unit =
-        match.groups["unit"]?.value?.also {
-          if (Unit.fromString(it) == null) {
-            return emptyList()
+      val unit = match.groups["unit"]?.value?.trim()
+      val calendarDuration = match.groups["time"]?.value
+
+      val parsedUnit: String =
+        when {
+          unit != null -> {
+            if (!isValidUcumUnit(unit)) {
+              return emptyList()
+            }
+            "'$unit'"
           }
-        }
-      val calendarDuration =
-        match.groups["time"]?.value?.also {
-          if (it !in CALENDAR_DURATION_LIST) {
-            return emptyList()
+          calendarDuration != null -> {
+            if (calendarDuration !in CALENDAR_DURATION_LIST) {
+              return emptyList()
+            }
+            calendarDuration
           }
+          else -> DEFAULT_UNIT
         }
+
+      val parsedQuantity = FhirPathQuantity(value = value, unit = parsedUnit)
       if (targetUnit != null) {
-        if (unit != null && targetUnit != "'$unit'") {
-          TODO("Handle unit conversion")
-        }
-        if (calendarDuration != null && targetUnit != calendarDuration) {
-          TODO("Handle calendar duration conversion")
-        }
+        convertQuantityUnit(parsedQuantity, targetUnit)
+      } else {
+        listOf(parsedQuantity)
       }
-      val pair = (value to (unit?.let { "'$it'" } ?: calendarDuration ?: DEFAULT_UNIT))
-      listOf(FhirPathQuantity(value = pair.first, unit = pair.second))
     }
     is Boolean -> {
       val pair1 = ((if (item) BigDecimal.ONE else BigDecimal.ZERO) to DEFAULT_UNIT)
@@ -410,4 +422,41 @@ internal fun Collection<Any>.convertsToTime(
 
     else -> listOf(false)
   }
+}
+
+/**
+ * Converts a [quantity] to the specified [unit] (which can be a UCUM unit or a FHIRPath calendar
+ * duration).
+ *
+ * Both [quantity] and a unit quantity of 1 [unit] are canonicalized to their base UCUM
+ * representations using [toEqualCanonicalized]. If their base units match, the scaled value
+ * (`sourceCanonicalValue / targetCanonicalScale`) is computed and returned with [unit]. Returns an
+ * empty collection if the units are incompatible or if exact conversion is not possible.
+ */
+private fun convertQuantityUnit(
+  quantity: FhirPathQuantity,
+  unit: String,
+): Collection<FhirPathQuantity> {
+  val unquotedUnit = unit.trim('\'')
+  val targetUnit = if (unquotedUnit in CALENDAR_DURATION_LIST) unquotedUnit else "'$unquotedUnit'"
+
+  if (quantity.unit == targetUnit) return listOf(quantity)
+
+  val sourceCanonical = quantity.toEqualCanonicalized()
+  val targetCanonical =
+    FhirPathQuantity(value = BigDecimal.ONE, unit = targetUnit).toEqualCanonicalized()
+
+  val sourceCanonicalUnit = sourceCanonical.unit ?: return emptyList()
+  val targetCanonicalUnit = targetCanonical.unit ?: return emptyList()
+  val sourceCanonicalValue = sourceCanonical.value ?: return emptyList()
+  val targetCanonicalScale = targetCanonical.value ?: return emptyList()
+
+  if (
+    sourceCanonicalUnit != targetCanonicalUnit ||
+      targetCanonicalScale.compareTo(BigDecimal.ZERO) == 0
+  ) {
+    return emptyList()
+  }
+  val convertedValue = sourceCanonicalValue.divide(targetCanonicalScale, DECIMAL_MODE)
+  return listOf(FhirPathQuantity(value = convertedValue, unit = targetUnit))
 }

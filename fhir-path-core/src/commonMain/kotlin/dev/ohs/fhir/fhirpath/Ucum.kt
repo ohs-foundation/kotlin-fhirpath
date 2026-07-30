@@ -35,7 +35,7 @@ import kotlin.math.pow
  *
  * See [FHIRPath, Time-valued quantities](https://hl7.org/fhirpath/N1/#time-valued-quantities).
  */
-public fun FhirPathQuantity.toEqualCanonicalized(): FhirPathQuantity =
+fun FhirPathQuantity.toEqualCanonicalized(): FhirPathQuantity =
   toEqualUcumDefiniteDuration().stripUcumPrefix().toCanonicalizedUcumUnit()
 
 /**
@@ -48,8 +48,26 @@ public fun FhirPathQuantity.toEqualCanonicalized(): FhirPathQuantity =
  *
  * See [FHIRPath, Time-valued quantities](https://hl7.org/fhirpath/N1/#time-valued-quantities).
  */
-public fun FhirPathQuantity.toEquivalentCanonicalized(): FhirPathQuantity =
+fun FhirPathQuantity.toEquivalentCanonicalized(): FhirPathQuantity =
   toEquivalentUcumDefiniteDuration().stripUcumPrefix().toCanonicalizedUcumUnit()
+
+/** Returns true if the given unit string is a valid UCUM unit (base, derived, or prefixed). */
+internal fun isValidUcumUnit(unit: String): Boolean {
+  val unquotedUnit = unit.trim('\'')
+  if (Unit.fromString(unquotedUnit) != null || BaseUnit.fromString(unquotedUnit) != null) {
+    return true
+  }
+  for (prefix in Prefix.entries) {
+    if (!unquotedUnit.startsWith(prefix.code)) continue
+    val codeWithoutPrefix = unquotedUnit.removePrefix(prefix.code)
+    if (
+      Unit.fromString(codeWithoutPrefix) != null || BaseUnit.fromString(codeWithoutPrefix) != null
+    ) {
+      return true
+    }
+  }
+  return false
+}
 
 /**
  * Converts a FHIRPath calendar duration to the equal UCUM definite unit if there is one. Returns
