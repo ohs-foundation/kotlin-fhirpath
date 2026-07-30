@@ -35,7 +35,7 @@ internal fun Collection<Any>.extension(
       when (val extensions = fhirModelNavigator.accessProperty(item, "extension")) {
         null -> emptyList()
         is List<*> -> extensions.filterNotNull()
-        else -> listOf(extensions)
+        else -> error("Expected `extension` to be a list but was: $extensions")
       }
     }
     .filter { fhirModelNavigator.accessProperty(it, "url") == url }
