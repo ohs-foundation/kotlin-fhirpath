@@ -46,9 +46,17 @@ class FhirR4ModelNavigatorTest {
   }
 
   @Test
-  fun `returns null for non existent property on resource`() {
+  fun `returns null for non existent property on resource in lenient mode`() {
     val patient = Patient(id = "p1")
     assertNull(FhirR4ModelNavigator.accessProperty(patient, "nonExistentProperty"))
+  }
+
+  @Test
+  fun `throws exception for non existent property on resource in strict mode`() {
+    val patient = Patient(id = "p1")
+    kotlin.test.assertFailsWith<IllegalStateException> {
+      FhirR4ModelNavigator.accessProperty(patient, "nonExistentProperty", strictMode = true)
+    }
   }
 
   @Test

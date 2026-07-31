@@ -262,13 +262,13 @@ Any other values are invalid precision values and will throw an error if passed 
 
 ### Error handling
 
-The FHIRPath specification
-[does not specify](https://hl7.org/fhirpath/N1/#type-safety-and-strict-evaluation) the desired
-behavior when type checking errors occur, allowing the implementation to adopt a strict (e.g. throws
-an exception) or a lenient (e.g. returns an empty collection) approach. However, the
-[official test suite](https://github.com/FHIR/fhir-test-cases) include test cases that require
-lenient type checking. To accommodate such cases, this implementation returns an empty collection
-when the FHIRPath expression attempts to access a data element that does not exist.
+Whilst this library does not perform compile-time type checking discussed in the
+[specification](https://hl7.org/fhirpath/N1/#type-safety-and-strict-evaluation), it supports two
+run-time property access modes:
+
+* **Lenient mode (default):** Returns an empty collection (`{}`) when accessing an undefined
+  property.
+* **Strict mode:** Throws an `IllegalStateException` when accessing an undefined property.
 
 ## Conformance
 
@@ -295,6 +295,8 @@ documented in the table below.
 | `testPlusDate21`                   | Specification/Test |     |                                                        | As `testPlusDate13`.                                                                                                                                                                                   |
 | `testPlusDate22`                   | Specification/Test |     |                                                        | As `testPlusDate13`.                                                                                                                                                                                   |
 | `testMinus5`                       | Specification/Test |     |                                                        | As `testPlusDate13`.                                                                                                                                                                                   |
+| `testDollarOrderNotAllowed`        | Implementation     |     |                                                        | Ordered function validation not implemented. Test expects error when using `skip()` on unordered collection (`children()`), but engine does not track collection ordering.                             |
+| `testPolymorphicsB`                | Test               |     |                                                        | Test case expects output in lenient mode for invalid property navigation.                                                                                                                              |
 | `testType22`                       | Implementation     |     |                                                        | `is` with an unknown `System` type should evaluate to false, but the type resolver throws.                                                                                                             |
 | `testTypeA*`                       | Implementation     |     |                                                        | Evaluating `Parameters.parameter[x].value` crashes with `NoSuchElementException`.                                                                                                                      |
 | `testConformsTo*`                  | Implementation     |     |                                                        | Function `conformsTo` is not implemented.                                                                                                                                                              |
@@ -378,10 +380,21 @@ dependencies {
 }
 ```
 
+### Creating FHIRPath engine
+
+Create a `FhirPathEngine` for the FHIR version you are working with (R4, R4B, or R5):
+
+```kotlin
+// Create an engine for FHIR R4
+val fhirPathEngine = FhirPathEngine.forR4()
+
+// Create an engine with strict mode enabled (throws on invalid property access)
+val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
+```
+
 ### Evaluating FHIRPath expressions
 
-To evaluate a FHIRPath expression, create a `FhirPathEngine` for the FHIR version you are working
-with and use the `evaluateExpression` function. Here is an example targeting FHIR R4:
+Use `evaluateExpression` API to evaluate FHIRPath expressions against a FHIR resource:
 
 ```kotlin
 import dev.ohs.fhir.fhirpath.FhirPathEngine
@@ -392,12 +405,13 @@ val patientExampleJson = ... // Load "patient-example.json"
 val json = Json { ignoreUnknownKeys = true }
 val patient = json.decodeFromString<Patient>(patientExampleJson)
 
-// Create the R4 evaluator engine
 val fhirPathEngine = FhirPathEngine.forR4()
-
-// Evaluate expressions
 val results = fhirPathEngine.evaluateExpression("name.given", patient)
 // ["Peter", "James", "Jim", "Peter", "James"]
+
+// In strict mode, accessing an unrecognized property throws an IllegalStateException
+val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
+strictEngine.evaluateExpression("name.given1", patient) // Throws IllegalStateException
 ```
 
 ## Developer Guide

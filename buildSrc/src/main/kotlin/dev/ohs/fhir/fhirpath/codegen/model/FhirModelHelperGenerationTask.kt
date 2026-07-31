@@ -136,27 +136,22 @@ abstract class FhirModelHelperGenerationTask : DefaultTask() {
       )
       .writeTo(outputDir)
 
-    // Generate extension functions for complex types.
+    // Generate extension functions for complex and primitive types.
     //
     // Abstract base complex types are filtered out because:
     // 1. An `is Base` branch inside `Element.getProperty(name)` recursively calls
-    // `Element.getProperty(name)`, causing a `StackOverflowError` (see
-    // https://github.com/ohs-foundation/kotlin-fhirpath/issues/75).
-    // 2. An `is DataType` branch would invoke `DataType.getProperty()`, which only handles `id` and
-    // `extension`, skipping the subtype's own properties.
+    //    `Element.getProperty(name)`, causing a StackOverflowError (see #75).
+    // 2. An `is DataType` branch would invoke `DataType.getProperty()`, which only handles `id`
+    //    and `extension`, skipping the subtype's specific properties.
     //
     // We keep `BackboneElement` because resource backbone elements (e.g. `Patient.Contact`)
     // delegate to `MoreBackboneElements.kt` via `is BackboneElement -> getProperty(name)`.
     //
-    // The only concrete subtype inheritance in FHIR involves `Age`, `Count`, `Distance`, and
-    // `Duration` inheriting from `Quantity`. These types share the same properties, therefore do
-    // not
-    // need to be treated differently in the context of these extension functions.
-    //
-    // Primitive types are also included so that their `id` and `extension` are navigable, e.g.
-    // `Patient.birthDate.extension(...)`. Dispatch order among primitives does not matter: a
-    // `code` picked up by its base type `string` still resolves the same `id`, `extension` and
-    // `value`.
+    // Subtype inheritance for concrete types requires no special handling:
+    // - Primitive subtypes (e.g. `code` extending `string`) matched by a base type branch still
+    // resolve the same `id`, `extension`, and `value`.
+    // - Complex `Quantity` subtypes (`Age`, `Count`, `Distance`, `Duration`) matched by a base type
+    // branch still resolve the same `value`, `unit`, `system`, `code`, and `comparator`.
 
     val abstractBaseComplexTypes =
       setOf("Element", "Base", "DataType", "BackboneType", "PrimitiveType")
