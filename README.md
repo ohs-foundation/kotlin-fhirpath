@@ -157,6 +157,15 @@ specification across different FHIR versions. In particular, DateTime and Time i
 include partial time (e.g. missing minutes and seconds), which is not allowed in FHIR. Therefore,
 new implementations are needed.
 
+### Type conversion
+
+Conversion from FHIR types to FHIRPath types does not occur immediately after data elements are
+extracted from FHIR resources, in order to preserve properties such as `id` and `extension` on the
+FHIR elements. Instead, conversion only occurs when values need to be compared: for equality and
+comparison operators, membership (`in`, `contains`), and set functions such as `union`, `distinct`,
+`intersect`, `exclude`, `subsetOf` and `supersetOf`. These functions return the original items;
+converted values are only used to decide equality.
+
 ### Timezone offset in date time values
 
 This FHIRPath implementation adopts a strict, safety-first approach to date time comparisons,
@@ -310,8 +319,6 @@ documented in the table below.
 | `testFHIRPathIsFunction9`          | Test               |     |                                                        | As above. Once the input is updated, this test also needs subtype-aware `is` (`Age` specializes `Quantity`).                                                                                           |
 | `testFHIRPathIsFunction10`         | Test               |     |                                                        | As above.                                                                                                                                                                                              |
 | `testContainedId`                  | Implementation     |     |                                                        |                                                                                                                                                                                                        |
-| `testCombine2`                     | Implementation     |     |                                                        | FHIR String and Kotlin String comparison issue in `exclude()` function.                                                                                                                                |
-| `testCombine3`                     | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
 | `testPrimitiveExtensions`          | Implementation     |     |                                                        | Function `hasValue` is not implemented.                                                                                                                                                                |
 
 The root cause column documents if the test failure is caused by implementation issues in this
