@@ -7,7 +7,7 @@ plugins {
 val generateR5Helpers = tasks.register<FhirModelHelperGenerationTask>("generateR5Helpers") {
     description = "Generate FHIR model extensions for R5"
     this.corePackageFiles.from(
-        File(project.rootDir, "third_party/hl7.fhir.r5.core/package").listFiles()
+        layout.projectDirectory.dir("../third_party/hl7.fhir.r5.core/package")
     )
     this.fhirVersion.set("r5")
     outputDirectory.set(layout.buildDirectory.dir("generated/r5/kotlin"))

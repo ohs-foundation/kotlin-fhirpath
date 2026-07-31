@@ -34,7 +34,7 @@ import org.gradle.api.tasks.TaskAction
 @CacheableTask
 abstract class FhirModelHelperGenerationTask : DefaultTask() {
   @get:InputFiles
-  @get:PathSensitive(PathSensitivity.NONE)
+  @get:PathSensitive(PathSensitivity.RELATIVE)
   // These are files retrieved from third_party/hl7.fhir.<R4|R4B|R5>.core directory
   abstract val corePackageFiles: ConfigurableFileCollection
 
