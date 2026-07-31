@@ -16,6 +16,9 @@
 
 package dev.ohs.fhir.fhirpath.functions
 
+import dev.ohs.fhir.fhirpath.toFhirPathType
+import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
+
 /**
  * See [specification](https://hl7.org/fhirpath/N1/#unionother-collection).
  *
@@ -23,9 +26,18 @@ package dev.ohs.fhir.fhirpath.functions
  * documentation.
  *
  * TODO: Correct URL once https://jira.hl7.org/browse/FHIR-52050 is addressed.
+ *
+ * Duplicates are detected on the converted FHIRPath values, but the original items are kept and the
+ * first occurrence of each value wins. The surviving representation therefore depends on operand
+ * order: if `a` holds a FHIR string and `b` a FHIRPath string of the same value, `a.union(b)` keeps
+ * the FHIR string and `b.union(a)` keeps the FHIRPath string. Both results are equal per the `=`
+ * operator, and the specification does not prescribe which duplicate to keep.
  */
-internal fun Collection<Any>.union(other: Collection<Any>): Collection<Any> {
-  return (this + other).distinct()
+internal fun Collection<Any>.union(
+  other: Collection<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Any> {
+  return (this + other).distinctBy { it.toFhirPathType(fhirPathTypeResolver) }
 }
 
 /** See [specification](https://hl7.org/fhirpath/N1/#combineother-collection-collection). */

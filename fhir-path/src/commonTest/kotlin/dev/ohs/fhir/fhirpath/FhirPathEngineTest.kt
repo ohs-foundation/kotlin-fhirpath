@@ -94,8 +94,6 @@ val skippedTestCaseToReasonMap =
     "testPeriodInvariantOld" to "hasValue() is not implemented.",
     "testPeriodInvariantNew" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
-    "testCombine2" to "FHIR String and Kotlin String comparison issue in exclude()",
-    "testCombine3" to "As above",
     "testContainedId" to "TBD",
     "testPrimitiveExtensions" to "Function `hasValue` is not implemented.",
     "testSort8" to "Test uses `-\$this` for descending string sort, but spec uses asc/desc.",

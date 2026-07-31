@@ -16,6 +16,9 @@
 
 package dev.ohs.fhir.fhirpath.functions
 
+import dev.ohs.fhir.fhirpath.toFhirPathType
+import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
+
 /** See [specification](https://hl7.org/fhirpath/N1/#single-collection). */
 internal fun Collection<Any>.singleFun(): Collection<Any> =
   if (isEmpty()) {
@@ -40,12 +43,32 @@ internal fun Collection<Any>.lastFun(): Collection<Any> =
     listOf(this.last())
   }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#intersectother-collection-collection). */
-internal fun Collection<Any>.intersectFun(other: Collection<Any>): Collection<Any> {
-  return this.toSet().intersect(other.toSet())
+/**
+ * See [specification](https://hl7.org/fhirpath/N1/#intersectother-collection-collection).
+ *
+ * The specification requires duplicates to be eliminated from the result (unlike [exclude], which
+ * keeps them). Original items are preserved; conversion to FHIRPath types is only used for
+ * comparison, and the first occurrence of duplicate values is kept.
+ */
+internal fun Collection<Any>.intersectFun(
+  other: Collection<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Any> {
+  val otherConverted = other.mapTo(mutableSetOf()) { it.toFhirPathType(fhirPathTypeResolver) }
+  return this.filter { otherConverted.contains(it.toFhirPathType(fhirPathTypeResolver)) }
+    .distinctBy { it.toFhirPathType(fhirPathTypeResolver) }
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#excludeother-collection-collection). */
-internal fun Collection<Any>.exclude(other: Collection<Any>): Collection<Any> {
-  return this.toMutableList().apply { removeAll(other) }
+/**
+ * See [specification](https://hl7.org/fhirpath/N1/#excludeother-collection-collection).
+ *
+ * Unlike [intersectFun], the specification does not eliminate duplicates here. Original items are
+ * preserved; conversion to FHIRPath types is only used for comparison.
+ */
+internal fun Collection<Any>.exclude(
+  other: Collection<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Any> {
+  val otherConverted = other.mapTo(mutableSetOf()) { it.toFhirPathType(fhirPathTypeResolver) }
+  return this.filterNot { otherConverted.contains(it.toFhirPathType(fhirPathTypeResolver)) }
 }
