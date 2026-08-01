@@ -48,7 +48,6 @@ val skippedTestGroupToReasonMap =
     "testVariables" to "Unimplemented",
     "testConformsTo" to "Unimplemented",
     "Comparable" to "Unimplemented",
-    "Precision" to "Unimplemented",
   )
 
 /**
