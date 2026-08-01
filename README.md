@@ -157,6 +157,15 @@ specification across different FHIR versions. In particular, DateTime and Time i
 include partial time (e.g. missing minutes and seconds), which is not allowed in FHIR. Therefore,
 new implementations are needed.
 
+### Profile validation
+
+The `conformsTo()` function supports the base FHIR profiles
+(`http://hl7.org/fhir/StructureDefinition/<Type>`): the input element's type is compared to the
+type named by the structure. Custom profiles (e.g. US Core) would require profile validation,
+which is not implemented. Passing a custom profile URL results in an error, consistent with the
+specification's requirement to error when a structure cannot be resolved
+(https://hl7.org/fhir/fhirpath.html#functions).
+
 ### Timezone offset in date time values
 
 This FHIRPath implementation adopts a strict, safety-first approach to date time comparisons,
@@ -296,7 +305,6 @@ documented in the table below.
 | `testType22`                       | Implementation     |     |                                                        | `is` with an unknown `System` type should evaluate to false, but the type resolver throws.                                                                                                             |
 | `testType23`                       | Implementation     |     |                                                        | As `testType20`.                                                                                                                                                                                       |
 | `testTypeA*`                       | Implementation     |     |                                                        | Evaluating `Parameters.parameter[x].value` crashes with `NoSuchElementException`.                                                                                                                      |
-| `testConformsTo*`                  | Implementation     |     |                                                        | Function `conformsTo` is not implemented.                                                                                                                                                              |
 | `LowBoundaryDateTimeMillisecond1`  | Specification/Test |     |                                                        | Diverges from FHIRPath specification. See [Discussion](https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639). |
 | `HighBoundaryDateTimeMillisecond1` | Specification/Test |     | As above.                                              | As above.                                                                                                                                                                                              |
 | `HighBoundaryDateTimeMillisecond3` | Specification/Test |     | As above.                                              | As above.                                                                                                                                                                                              |

@@ -133,6 +133,7 @@ internal fun Collection<Any>.invoke(
     // FHIR-specific functions
     // https://hl7.org/fhir/fhirpath.html#functions
     "extension" -> this.extension(params, fhirModelNavigator)
+    "conformsTo" -> this.conformsTo(params, fhirPathTypeResolver)
 
     // Utility functions
     // https://hl7.org/fhirpath/N1/#utility-functions
