@@ -116,8 +116,14 @@ class FhirPathEngineTest :
   FunSpec({
     val inputMap: Map<String, Resource> =
       listJsonFiles(TEST_INPUT_DIR)
-        .mapKeys { it.key.replace(".json$".toRegex(), ".xml") }
-        .mapValues { jsonR4.decodeFromString(it.value) }
+        .flatMap { entry ->
+          val resource = jsonR4.decodeFromString<Resource>(entry.value)
+          listOf(
+            entry.key to resource,
+            entry.key.replace(".json$".toRegex(), ".xml") to resource
+          )
+        }
+        .toMap()
     val xmlContent = loadFile("${TEST_RESOURCE_DIR}/tests-fhir-r4.xml")
     val testSuite = XML.decodeFromString<Tests>(xmlContent)
 

@@ -67,8 +67,13 @@ internal fun Collection<Any>.startsWith(
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
   check(size <= 1) { "startsWith() cannot be called on a collection with more than 1 item" }
-  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
-  val prefix = params.single().unwrapString(fhirPathTypeResolver)!!
+  val item = singleOrNull() ?: return emptyList()
+  val input =
+    item.unwrapString(fhirPathTypeResolver)
+      ?: error("startsWith() cannot be called on non-string item: $item")
+  val prefix =
+    params.single().unwrapString(fhirPathTypeResolver)
+      ?: error("startsWith() prefix must be a string")
   return listOf(input.startsWith(prefix))
 }
 
@@ -78,8 +83,13 @@ internal fun Collection<Any>.endsWith(
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
   check(size <= 1) { "endsWith() cannot be called on a collection with more than 1 item" }
-  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
-  val suffix = params.single().unwrapString(fhirPathTypeResolver)!!
+  val item = singleOrNull() ?: return emptyList()
+  val input =
+    item.unwrapString(fhirPathTypeResolver)
+      ?: error("endsWith() cannot be called on non-string item: $item")
+  val suffix =
+    params.single().unwrapString(fhirPathTypeResolver)
+      ?: error("endsWith() suffix must be a string")
   return listOf(input.endsWith(suffix))
 }
 
@@ -89,8 +99,13 @@ internal fun Collection<Any>.strContains(
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
   check(size <= 1) { "contains() cannot be called on a collection with more than 1 item" }
-  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
-  val substring = params.single().unwrapString(fhirPathTypeResolver)!!
+  val item = singleOrNull() ?: return emptyList()
+  val input =
+    item.unwrapString(fhirPathTypeResolver)
+      ?: error("contains() cannot be called on non-string item: $item")
+  val substring =
+    params.single().unwrapString(fhirPathTypeResolver)
+      ?: error("contains() substring must be a string")
   return listOf(input.contains(substring))
 }
 
