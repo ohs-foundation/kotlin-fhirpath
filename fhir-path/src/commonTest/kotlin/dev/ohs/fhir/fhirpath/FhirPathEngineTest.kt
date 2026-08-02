@@ -96,12 +96,6 @@ val skippedTestCaseToReasonMap =
     "testSort10" to "Test uses `-` prefix for descending sort, but spec uses asc/desc.",
     "testType22" to
       "`is` with an unknown `System` type should evaluate to false, but the type resolver throws `Unknown System type Patient`.",
-    "testTypeA" to
-      "Evaluating `Parameters.parameter[x].value` crashes with `NoSuchElementException: ArrayDeque is empty`.",
-    "testTypeA1" to "As `testTypeA`.",
-    "testTypeA2" to "As `testTypeA`.",
-    "testTypeA3" to "As `testTypeA`.",
-    "testTypeA4" to "As `testTypeA`.",
     "HighBoundaryDateTimeMillisecond1" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "HighBoundaryDateTimeMillisecond3" to

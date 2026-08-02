@@ -371,18 +371,18 @@ internal class FhirPathEvaluator(
     val memberName = visit(ctx.identifier()).first() as String
 
     // Evaluate to the initial context if it matches the resource type
-    with(contextStack.first().single()) {
-      if (this::class.simpleName == memberName) {
-        return listOf(this)
+    contextStack.firstOrNull()?.singleOrNull()?.let { initialContext ->
+      if (initialContext::class.simpleName == memberName) {
+        return listOf(initialContext)
       }
     }
 
     // Use $this context if the member invocation is implicit, otherwise use the evaluation context
     val context =
       if (ctx.getParent() is fhirpathParser.InvocationExpressionContext) {
-        contextStack.last()
+        contextStack.lastOrNull() ?: emptyList()
       } else {
-        listOf(thisStack.last())
+        thisStack.lastOrNull()?.let { listOf(it) } ?: emptyList()
       }
 
     return context.flatMap { item ->
