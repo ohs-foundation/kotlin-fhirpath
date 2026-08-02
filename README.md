@@ -157,14 +157,20 @@ specification across different FHIR versions. In particular, DateTime and Time i
 include partial time (e.g. missing minutes and seconds), which is not allowed in FHIR. Therefore,
 new implementations are needed.
 
-### Type conversion
+### FHIR data type conversion
 
-Conversion from FHIR types to FHIRPath types does not occur immediately after data elements are
-extracted from FHIR resources, in order to preserve properties such as `id` and `extension` on the
-FHIR elements. Instead, conversion only occurs when values need to be compared: for equality and
-comparison operators, membership (`in`, `contains`), and set functions such as `union`, `distinct`,
-`intersect`, `exclude`, `subsetOf` and `supersetOf`. These functions return the original items;
-converted values are only used to decide equality.
+To preserve metadata properties such as `id` and `extension`, FHIR primitive types are kept intact
+during expression evaluation for as long as possible, rather than being converted to their
+corresponding FHIRPath system types.
+
+However, certain operations require this conversion so that elements can be compared by their
+underlying values. For example, when comparing a FHIR string (`FHIR.string`) with a FHIRPath string
+literal (`System.string`), the primitive string value must be extracted from the FHIR object.
+
+To balance these two requirements, such conversions are performed last-minute only. The operations
+that trigger conversion include equality (`=`), comparison (`<`, `<=`, `>`, `>=`), membership (`in`,
+`contains`), and set functions (`union`, `distinct`, `intersect`, `exclude`, `subsetOf`,
+`supersetOf`).
 
 ### Timezone offset in date time values
 
