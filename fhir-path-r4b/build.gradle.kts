@@ -10,20 +10,10 @@ val generateR4BHelpers = tasks.register<FhirModelHelperGenerationTask>("generate
         layout.projectDirectory.dir("../third_party/hl7.fhir.r4b.core/package")
     )
     this.fhirVersion.set("r4b")
-    outputDirectory.set(layout.buildDirectory.dir("generated/r4b/kotlin"))
+    outputDirectory.set(layout.projectDirectory.dir("src/commonMain/kotlin"))
 }
 
-kotlin {
-    sourceSets {
-        commonMain {
-            kotlin {
-                srcDir(generateR4BHelpers)
-            }
-        }
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
     dependsOn(generateR4BHelpers)
 }
 

@@ -10,20 +10,10 @@ val generateR5Helpers = tasks.register<FhirModelHelperGenerationTask>("generateR
         layout.projectDirectory.dir("../third_party/hl7.fhir.r5.core/package")
     )
     this.fhirVersion.set("r5")
-    outputDirectory.set(layout.buildDirectory.dir("generated/r5/kotlin"))
+    outputDirectory.set(layout.projectDirectory.dir("src/commonMain/kotlin"))
 }
 
-kotlin {
-    sourceSets {
-        commonMain {
-            kotlin {
-                srcDir(generateR5Helpers)
-            }
-        }
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
     dependsOn(generateR5Helpers)
 }
 

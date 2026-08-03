@@ -1,0 +1,104 @@
+package dev.ohs.fhir.model.r4.ext
+
+import dev.ohs.fhir.model.r4.DocumentManifest
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.String
+import kotlin.collections.List
+
+internal fun DocumentManifest.getProperty(name: String): Any? = when(name) {
+  "id" -> this.id
+  "meta" -> this.meta
+  "implicitRules" -> this.implicitRules
+  "language" -> this.language
+  "text" -> this.text
+  "contained" -> this.contained
+  "extension" -> this.extension
+  "modifierExtension" -> this.modifierExtension
+  "masterIdentifier" -> this.masterIdentifier
+  "identifier" -> this.identifier
+  "status" -> this.status
+  "type" -> this.type
+  "subject" -> this.subject
+  "created" -> this.created
+  "author" -> this.author
+  "recipient" -> this.recipient
+  "source" -> this.source
+  "description" -> this.description
+  "content" -> this.content
+  "related" -> this.related
+  else -> error("$name is not a valid property name")
+}
+
+internal fun DocumentManifest.hasProperty(name: String): Boolean = when(name) {
+  "id" -> true
+  "meta" -> true
+  "implicitRules" -> true
+  "language" -> true
+  "text" -> true
+  "contained" -> true
+  "extension" -> true
+  "modifierExtension" -> true
+  "masterIdentifier" -> true
+  "identifier" -> true
+  "status" -> true
+  "type" -> true
+  "subject" -> true
+  "created" -> true
+  "author" -> true
+  "recipient" -> true
+  "source" -> true
+  "description" -> true
+  "content" -> true
+  "related" -> true
+  else -> false
+}
+
+internal fun DocumentManifest.getAllChildren(): List<Any> = buildList {
+  this@getAllChildren.id?.let { add(it) }
+  this@getAllChildren.meta?.let { add(it) }
+  this@getAllChildren.implicitRules?.let { add(it) }
+  this@getAllChildren.language?.let { add(it) }
+  this@getAllChildren.text?.let { add(it) }
+  addAll(this@getAllChildren.contained)
+  addAll(this@getAllChildren.extension)
+  addAll(this@getAllChildren.modifierExtension)
+  this@getAllChildren.masterIdentifier?.let { add(it) }
+  addAll(this@getAllChildren.identifier)
+  add(this@getAllChildren.status)
+  this@getAllChildren.type?.let { add(it) }
+  this@getAllChildren.subject?.let { add(it) }
+  this@getAllChildren.created?.let { add(it) }
+  addAll(this@getAllChildren.author)
+  addAll(this@getAllChildren.recipient)
+  this@getAllChildren.source?.let { add(it) }
+  this@getAllChildren.description?.let { add(it) }
+  addAll(this@getAllChildren.content)
+  addAll(this@getAllChildren.related)
+}
+
+internal fun DocumentManifest.Related.getProperty(name: String): Any? = when(name) {
+  "id" -> this.id
+  "extension" -> this.extension
+  "modifierExtension" -> this.modifierExtension
+  "identifier" -> this.identifier
+  "ref" -> this.ref
+  else -> error("$name is not a valid property name")
+}
+
+internal fun DocumentManifest.Related.hasProperty(name: String): Boolean = when(name) {
+  "id" -> true
+  "extension" -> true
+  "modifierExtension" -> true
+  "identifier" -> true
+  "ref" -> true
+  else -> false
+}
+
+internal fun DocumentManifest.Related.getAllChildren(): List<Any> = buildList {
+  this@getAllChildren.id?.let { add(it) }
+  addAll(this@getAllChildren.extension)
+  addAll(this@getAllChildren.modifierExtension)
+  this@getAllChildren.identifier?.let { add(it) }
+  this@getAllChildren.ref?.let { add(it) }
+}
