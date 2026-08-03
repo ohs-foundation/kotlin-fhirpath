@@ -48,6 +48,24 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 interface FhirPathType {
   val namespace: String
   val typeName: String
+
+  fun isSubtypeOf(superType: FhirPathType): Boolean {
+    if (this == superType || typeName == superType.typeName) return true
+    if (superType.typeName == "Quantity") {
+      return when (typeName) {
+        "Age",
+        "Count",
+        "Distance",
+        "Duration",
+        "Quantity" -> true
+        else -> false
+      }
+    }
+    if (superType.typeName == "Resource" || superType.typeName == "DomainResource") {
+      return this is FhirType && this.typeName != "Element"
+    }
+    return false
+  }
 }
 
 interface FhirType : FhirPathType {
