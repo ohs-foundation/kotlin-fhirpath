@@ -32,6 +32,10 @@ class FhirPathEngine(
 ) {
   private val evaluator = FhirPathEvaluator(fhirPathTypeResolver, fhirModelNavigator, strictMode)
 
+  // Parse trees are immutable and reused across resources, so cache them by expression string.
+  // Unbounded cache, sized by the caller's distinct expressions (a fixed search-parameter set here).
+  private val parsedExpressionCache = HashMap<String, fhirpathParser.ExpressionContext>()
+
   val traces: Map<String, List<TraceEntry>>
     get() = evaluator.traces
 
@@ -48,23 +52,7 @@ class FhirPathEngine(
     base: Any?,
     variables: Map<String, Any?> = emptyMap(),
   ): Collection<Any> {
-    val lexer = fhirpathLexer(CharStreams.fromString(expression))
-    val tokenStream = CommonTokenStream(lexer)
-    val parser =
-      fhirpathParser(tokenStream).apply {
-        // Make sure the parser fails for invalid expressions instead of trying to recover
-        errorHandler = BailErrorStrategy()
-      }
-
-    val parsedExpression = parser.expression()
-    // ANTLR attempts to parse the entire expression but does not throw an error when it cannot. In
-    // such cases, explicitly check that the entire expression has been consumed to ensure that the
-    // expression is valid.
-    if (tokenStream.LA(1) != Token.EOF) {
-      error(
-        "Expression contains extraneous input that could not be parsed: '${tokenStream[parser.currentToken!!.tokenIndex + 1].text}'"
-      )
-    }
+    val parsedExpression = parsedExpressionCache.getOrPut(expression) { parseExpression(expression) }
 
     evaluator.initialize(context = base, variables = variables)
 
@@ -77,6 +65,25 @@ class FhirPathEngine(
     // are needed.
     val result = evaluator.visit(parsedExpression).map { it.toFhirPathType(fhirPathTypeResolver) }
     return result
+  }
+
+  private fun parseExpression(expression: String): fhirpathParser.ExpressionContext {
+    val lexer = fhirpathLexer(CharStreams.fromString(expression))
+    val tokenStream = CommonTokenStream(lexer)
+    val parser =
+      fhirpathParser(tokenStream).apply {
+        // Make sure the parser fails for invalid expressions instead of trying to recover
+        errorHandler = BailErrorStrategy()
+      }
+
+    val parsedExpression = parser.expression()
+    // ANTLR may not error on incomplete parsing; verify the whole expression was consumed (EOF).
+    if (tokenStream.LA(1) != Token.EOF) {
+      error(
+        "Expression contains extraneous input that could not be parsed: '${tokenStream[parser.currentToken!!.tokenIndex + 1].text}'"
+      )
+    }
+    return parsedExpression
   }
 
   companion object
