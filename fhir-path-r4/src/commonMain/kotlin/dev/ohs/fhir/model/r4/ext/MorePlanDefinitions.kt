@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.ohs.fhir.model.r4.ext
 
 import dev.ohs.fhir.model.r4.PlanDefinition
@@ -6,91 +22,93 @@ import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
 
-internal fun PlanDefinition.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "meta" -> this.meta
-  "implicitRules" -> this.implicitRules
-  "language" -> this.language
-  "text" -> this.text
-  "contained" -> this.contained
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "url" -> this.url
-  "identifier" -> this.identifier
-  "version" -> this.version
-  "name" -> this.name
-  "title" -> this.title
-  "subtitle" -> this.subtitle
-  "type" -> this.type
-  "status" -> this.status
-  "experimental" -> this.experimental
-  "subject" -> this.subject
-  "date" -> this.date
-  "publisher" -> this.publisher
-  "contact" -> this.contact
-  "description" -> this.description
-  "useContext" -> this.useContext
-  "jurisdiction" -> this.jurisdiction
-  "purpose" -> this.purpose
-  "usage" -> this.usage
-  "copyright" -> this.copyright
-  "approvalDate" -> this.approvalDate
-  "lastReviewDate" -> this.lastReviewDate
-  "effectivePeriod" -> this.effectivePeriod
-  "topic" -> this.topic
-  "author" -> this.author
-  "editor" -> this.editor
-  "reviewer" -> this.reviewer
-  "endorser" -> this.endorser
-  "relatedArtifact" -> this.relatedArtifact
-  "library" -> this.library
-  "goal" -> this.goal
-  "action" -> this.action
-  else -> error("$name is not a valid property name")
-}
+internal fun PlanDefinition.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "meta" -> this.meta
+    "implicitRules" -> this.implicitRules
+    "language" -> this.language
+    "text" -> this.text
+    "contained" -> this.contained
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "url" -> this.url
+    "identifier" -> this.identifier
+    "version" -> this.version
+    "name" -> this.name
+    "title" -> this.title
+    "subtitle" -> this.subtitle
+    "type" -> this.type
+    "status" -> this.status
+    "experimental" -> this.experimental
+    "subject" -> this.subject
+    "date" -> this.date
+    "publisher" -> this.publisher
+    "contact" -> this.contact
+    "description" -> this.description
+    "useContext" -> this.useContext
+    "jurisdiction" -> this.jurisdiction
+    "purpose" -> this.purpose
+    "usage" -> this.usage
+    "copyright" -> this.copyright
+    "approvalDate" -> this.approvalDate
+    "lastReviewDate" -> this.lastReviewDate
+    "effectivePeriod" -> this.effectivePeriod
+    "topic" -> this.topic
+    "author" -> this.author
+    "editor" -> this.editor
+    "reviewer" -> this.reviewer
+    "endorser" -> this.endorser
+    "relatedArtifact" -> this.relatedArtifact
+    "library" -> this.library
+    "goal" -> this.goal
+    "action" -> this.action
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun PlanDefinition.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "meta" -> true
-  "implicitRules" -> true
-  "language" -> true
-  "text" -> true
-  "contained" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "url" -> true
-  "identifier" -> true
-  "version" -> true
-  "name" -> true
-  "title" -> true
-  "subtitle" -> true
-  "type" -> true
-  "status" -> true
-  "experimental" -> true
-  "subject" -> true
-  "date" -> true
-  "publisher" -> true
-  "contact" -> true
-  "description" -> true
-  "useContext" -> true
-  "jurisdiction" -> true
-  "purpose" -> true
-  "usage" -> true
-  "copyright" -> true
-  "approvalDate" -> true
-  "lastReviewDate" -> true
-  "effectivePeriod" -> true
-  "topic" -> true
-  "author" -> true
-  "editor" -> true
-  "reviewer" -> true
-  "endorser" -> true
-  "relatedArtifact" -> true
-  "library" -> true
-  "goal" -> true
-  "action" -> true
-  else -> false
-}
+internal fun PlanDefinition.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "meta" -> true
+    "implicitRules" -> true
+    "language" -> true
+    "text" -> true
+    "contained" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "url" -> true
+    "identifier" -> true
+    "version" -> true
+    "name" -> true
+    "title" -> true
+    "subtitle" -> true
+    "type" -> true
+    "status" -> true
+    "experimental" -> true
+    "subject" -> true
+    "date" -> true
+    "publisher" -> true
+    "contact" -> true
+    "description" -> true
+    "useContext" -> true
+    "jurisdiction" -> true
+    "purpose" -> true
+    "usage" -> true
+    "copyright" -> true
+    "approvalDate" -> true
+    "lastReviewDate" -> true
+    "effectivePeriod" -> true
+    "topic" -> true
+    "author" -> true
+    "editor" -> true
+    "reviewer" -> true
+    "endorser" -> true
+    "relatedArtifact" -> true
+    "library" -> true
+    "goal" -> true
+    "action" -> true
+    else -> false
+  }
 
 internal fun PlanDefinition.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -134,33 +152,35 @@ internal fun PlanDefinition.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.action)
 }
 
-internal fun PlanDefinition.Goal.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "category" -> this.category
-  "description" -> this.description
-  "priority" -> this.priority
-  "start" -> this.start
-  "addresses" -> this.addresses
-  "documentation" -> this.documentation
-  "target" -> this.target
-  else -> error("$name is not a valid property name")
-}
+internal fun PlanDefinition.Goal.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "category" -> this.category
+    "description" -> this.description
+    "priority" -> this.priority
+    "start" -> this.start
+    "addresses" -> this.addresses
+    "documentation" -> this.documentation
+    "target" -> this.target
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun PlanDefinition.Goal.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "category" -> true
-  "description" -> true
-  "priority" -> true
-  "start" -> true
-  "addresses" -> true
-  "documentation" -> true
-  "target" -> true
-  else -> false
-}
+internal fun PlanDefinition.Goal.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "category" -> true
+    "description" -> true
+    "priority" -> true
+    "start" -> true
+    "addresses" -> true
+    "documentation" -> true
+    "target" -> true
+    else -> false
+  }
 
 internal fun PlanDefinition.Goal.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -175,25 +195,27 @@ internal fun PlanDefinition.Goal.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.target)
 }
 
-internal fun PlanDefinition.Goal.Target.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "measure" -> this.measure
-  "detail" -> this.detail
-  "due" -> this.due
-  else -> error("$name is not a valid property name")
-}
+internal fun PlanDefinition.Goal.Target.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "measure" -> this.measure
+    "detail" -> this.detail
+    "due" -> this.due
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun PlanDefinition.Goal.Target.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "measure" -> true
-  "detail" -> true
-  "due" -> true
-  else -> false
-}
+internal fun PlanDefinition.Goal.Target.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "measure" -> true
+    "detail" -> true
+    "due" -> true
+    else -> false
+  }
 
 internal fun PlanDefinition.Goal.Target.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -204,73 +226,75 @@ internal fun PlanDefinition.Goal.Target.getAllChildren(): List<Any> = buildList 
   this@getAllChildren.due?.let { add(it) }
 }
 
-internal fun PlanDefinition.Action.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "prefix" -> this.prefix
-  "title" -> this.title
-  "description" -> this.description
-  "textEquivalent" -> this.textEquivalent
-  "priority" -> this.priority
-  "code" -> this.code
-  "reason" -> this.reason
-  "documentation" -> this.documentation
-  "goalId" -> this.goalId
-  "subject" -> this.subject
-  "trigger" -> this.trigger
-  "condition" -> this.condition
-  "input" -> this.input
-  "output" -> this.output
-  "relatedAction" -> this.relatedAction
-  "timing" -> this.timing
-  "participant" -> this.participant
-  "type" -> this.type
-  "groupingBehavior" -> this.groupingBehavior
-  "selectionBehavior" -> this.selectionBehavior
-  "requiredBehavior" -> this.requiredBehavior
-  "precheckBehavior" -> this.precheckBehavior
-  "cardinalityBehavior" -> this.cardinalityBehavior
-  "definition" -> this.definition
-  "transform" -> this.transform
-  "dynamicValue" -> this.dynamicValue
-  "action" -> this.action
-  else -> error("$name is not a valid property name")
-}
+internal fun PlanDefinition.Action.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "prefix" -> this.prefix
+    "title" -> this.title
+    "description" -> this.description
+    "textEquivalent" -> this.textEquivalent
+    "priority" -> this.priority
+    "code" -> this.code
+    "reason" -> this.reason
+    "documentation" -> this.documentation
+    "goalId" -> this.goalId
+    "subject" -> this.subject
+    "trigger" -> this.trigger
+    "condition" -> this.condition
+    "input" -> this.input
+    "output" -> this.output
+    "relatedAction" -> this.relatedAction
+    "timing" -> this.timing
+    "participant" -> this.participant
+    "type" -> this.type
+    "groupingBehavior" -> this.groupingBehavior
+    "selectionBehavior" -> this.selectionBehavior
+    "requiredBehavior" -> this.requiredBehavior
+    "precheckBehavior" -> this.precheckBehavior
+    "cardinalityBehavior" -> this.cardinalityBehavior
+    "definition" -> this.definition
+    "transform" -> this.transform
+    "dynamicValue" -> this.dynamicValue
+    "action" -> this.action
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun PlanDefinition.Action.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "prefix" -> true
-  "title" -> true
-  "description" -> true
-  "textEquivalent" -> true
-  "priority" -> true
-  "code" -> true
-  "reason" -> true
-  "documentation" -> true
-  "goalId" -> true
-  "subject" -> true
-  "trigger" -> true
-  "condition" -> true
-  "input" -> true
-  "output" -> true
-  "relatedAction" -> true
-  "timing" -> true
-  "participant" -> true
-  "type" -> true
-  "groupingBehavior" -> true
-  "selectionBehavior" -> true
-  "requiredBehavior" -> true
-  "precheckBehavior" -> true
-  "cardinalityBehavior" -> true
-  "definition" -> true
-  "transform" -> true
-  "dynamicValue" -> true
-  "action" -> true
-  else -> false
-}
+internal fun PlanDefinition.Action.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "prefix" -> true
+    "title" -> true
+    "description" -> true
+    "textEquivalent" -> true
+    "priority" -> true
+    "code" -> true
+    "reason" -> true
+    "documentation" -> true
+    "goalId" -> true
+    "subject" -> true
+    "trigger" -> true
+    "condition" -> true
+    "input" -> true
+    "output" -> true
+    "relatedAction" -> true
+    "timing" -> true
+    "participant" -> true
+    "type" -> true
+    "groupingBehavior" -> true
+    "selectionBehavior" -> true
+    "requiredBehavior" -> true
+    "precheckBehavior" -> true
+    "cardinalityBehavior" -> true
+    "definition" -> true
+    "transform" -> true
+    "dynamicValue" -> true
+    "action" -> true
+    else -> false
+  }
 
 internal fun PlanDefinition.Action.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -305,23 +329,25 @@ internal fun PlanDefinition.Action.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.action)
 }
 
-internal fun PlanDefinition.Action.Condition.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "kind" -> this.kind
-  "expression" -> this.expression
-  else -> error("$name is not a valid property name")
-}
+internal fun PlanDefinition.Action.Condition.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "kind" -> this.kind
+    "expression" -> this.expression
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun PlanDefinition.Action.Condition.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "kind" -> true
-  "expression" -> true
-  else -> false
-}
+internal fun PlanDefinition.Action.Condition.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "kind" -> true
+    "expression" -> true
+    else -> false
+  }
 
 internal fun PlanDefinition.Action.Condition.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -331,25 +357,27 @@ internal fun PlanDefinition.Action.Condition.getAllChildren(): List<Any> = build
   this@getAllChildren.expression?.let { add(it) }
 }
 
-internal fun PlanDefinition.Action.RelatedAction.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "actionId" -> this.actionId
-  "relationship" -> this.relationship
-  "offset" -> this.offset
-  else -> error("$name is not a valid property name")
-}
+internal fun PlanDefinition.Action.RelatedAction.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "actionId" -> this.actionId
+    "relationship" -> this.relationship
+    "offset" -> this.offset
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun PlanDefinition.Action.RelatedAction.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "actionId" -> true
-  "relationship" -> true
-  "offset" -> true
-  else -> false
-}
+internal fun PlanDefinition.Action.RelatedAction.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "actionId" -> true
+    "relationship" -> true
+    "offset" -> true
+    else -> false
+  }
 
 internal fun PlanDefinition.Action.RelatedAction.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -360,23 +388,25 @@ internal fun PlanDefinition.Action.RelatedAction.getAllChildren(): List<Any> = b
   this@getAllChildren.offset?.let { add(it) }
 }
 
-internal fun PlanDefinition.Action.Participant.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "type" -> this.type
-  "role" -> this.role
-  else -> error("$name is not a valid property name")
-}
+internal fun PlanDefinition.Action.Participant.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "type" -> this.type
+    "role" -> this.role
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun PlanDefinition.Action.Participant.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "type" -> true
-  "role" -> true
-  else -> false
-}
+internal fun PlanDefinition.Action.Participant.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "type" -> true
+    "role" -> true
+    else -> false
+  }
 
 internal fun PlanDefinition.Action.Participant.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -386,23 +416,25 @@ internal fun PlanDefinition.Action.Participant.getAllChildren(): List<Any> = bui
   this@getAllChildren.role?.let { add(it) }
 }
 
-internal fun PlanDefinition.Action.DynamicValue.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "path" -> this.path
-  "expression" -> this.expression
-  else -> error("$name is not a valid property name")
-}
+internal fun PlanDefinition.Action.DynamicValue.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "path" -> this.path
+    "expression" -> this.expression
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun PlanDefinition.Action.DynamicValue.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "path" -> true
-  "expression" -> true
-  else -> false
-}
+internal fun PlanDefinition.Action.DynamicValue.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "path" -> true
+    "expression" -> true
+    else -> false
+  }
 
 internal fun PlanDefinition.Action.DynamicValue.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }

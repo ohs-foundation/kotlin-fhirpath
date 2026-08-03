@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.ohs.fhir.model.r4b.ext
 
 import dev.ohs.fhir.model.r4b.Condition
@@ -6,63 +22,65 @@ import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
 
-internal fun Condition.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "meta" -> this.meta
-  "implicitRules" -> this.implicitRules
-  "language" -> this.language
-  "text" -> this.text
-  "contained" -> this.contained
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "identifier" -> this.identifier
-  "clinicalStatus" -> this.clinicalStatus
-  "verificationStatus" -> this.verificationStatus
-  "category" -> this.category
-  "severity" -> this.severity
-  "code" -> this.code
-  "bodySite" -> this.bodySite
-  "subject" -> this.subject
-  "encounter" -> this.encounter
-  "onset" -> this.onset
-  "abatement" -> this.abatement
-  "recordedDate" -> this.recordedDate
-  "recorder" -> this.recorder
-  "asserter" -> this.asserter
-  "stage" -> this.stage
-  "evidence" -> this.evidence
-  "note" -> this.note
-  else -> error("$name is not a valid property name")
-}
+internal fun Condition.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "meta" -> this.meta
+    "implicitRules" -> this.implicitRules
+    "language" -> this.language
+    "text" -> this.text
+    "contained" -> this.contained
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "identifier" -> this.identifier
+    "clinicalStatus" -> this.clinicalStatus
+    "verificationStatus" -> this.verificationStatus
+    "category" -> this.category
+    "severity" -> this.severity
+    "code" -> this.code
+    "bodySite" -> this.bodySite
+    "subject" -> this.subject
+    "encounter" -> this.encounter
+    "onset" -> this.onset
+    "abatement" -> this.abatement
+    "recordedDate" -> this.recordedDate
+    "recorder" -> this.recorder
+    "asserter" -> this.asserter
+    "stage" -> this.stage
+    "evidence" -> this.evidence
+    "note" -> this.note
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Condition.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "meta" -> true
-  "implicitRules" -> true
-  "language" -> true
-  "text" -> true
-  "contained" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "identifier" -> true
-  "clinicalStatus" -> true
-  "verificationStatus" -> true
-  "category" -> true
-  "severity" -> true
-  "code" -> true
-  "bodySite" -> true
-  "subject" -> true
-  "encounter" -> true
-  "onset" -> true
-  "abatement" -> true
-  "recordedDate" -> true
-  "recorder" -> true
-  "asserter" -> true
-  "stage" -> true
-  "evidence" -> true
-  "note" -> true
-  else -> false
-}
+internal fun Condition.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "meta" -> true
+    "implicitRules" -> true
+    "language" -> true
+    "text" -> true
+    "contained" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "identifier" -> true
+    "clinicalStatus" -> true
+    "verificationStatus" -> true
+    "category" -> true
+    "severity" -> true
+    "code" -> true
+    "bodySite" -> true
+    "subject" -> true
+    "encounter" -> true
+    "onset" -> true
+    "abatement" -> true
+    "recordedDate" -> true
+    "recorder" -> true
+    "asserter" -> true
+    "stage" -> true
+    "evidence" -> true
+    "note" -> true
+    else -> false
+  }
 
 internal fun Condition.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -92,25 +110,27 @@ internal fun Condition.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.note)
 }
 
-internal fun Condition.Stage.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "summary" -> this.summary
-  "assessment" -> this.assessment
-  "type" -> this.type
-  else -> error("$name is not a valid property name")
-}
+internal fun Condition.Stage.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "summary" -> this.summary
+    "assessment" -> this.assessment
+    "type" -> this.type
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Condition.Stage.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "summary" -> true
-  "assessment" -> true
-  "type" -> true
-  else -> false
-}
+internal fun Condition.Stage.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "summary" -> true
+    "assessment" -> true
+    "type" -> true
+    else -> false
+  }
 
 internal fun Condition.Stage.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -121,23 +141,25 @@ internal fun Condition.Stage.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.type?.let { add(it) }
 }
 
-internal fun Condition.Evidence.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "code" -> this.code
-  "detail" -> this.detail
-  else -> error("$name is not a valid property name")
-}
+internal fun Condition.Evidence.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "code" -> this.code
+    "detail" -> this.detail
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Condition.Evidence.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "code" -> true
-  "detail" -> true
-  else -> false
-}
+internal fun Condition.Evidence.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "code" -> true
+    "detail" -> true
+    else -> false
+  }
 
 internal fun Condition.Evidence.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }

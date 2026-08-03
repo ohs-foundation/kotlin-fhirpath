@@ -11,6 +11,7 @@ val generateR4BHelpers = tasks.register<FhirModelHelperGenerationTask>("generate
     )
     this.fhirVersion.set("r4b")
     outputDirectory.set(layout.projectDirectory.dir("src/commonMain/kotlin"))
+    finalizedBy(rootProject.tasks.named("spotlessApply"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {

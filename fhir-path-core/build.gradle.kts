@@ -23,6 +23,7 @@ val generateUcumHelpers = tasks.register<UcumHelperGenerationTask>("generateUcum
     )
     this.packageName.set("dev.ohs.fhir.fhirpath.ucum")
     outputDirectory.set(layout.projectDirectory.dir("src/commonMain/kotlin"))
+    finalizedBy(rootProject.tasks.named("spotlessApply"))
 }
 
 // Run `./gradlew generateKotlinGrammarSource` to generate parser in `fhirpath/src/commonMain/kotlin`
@@ -35,6 +36,7 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
 
     val outDir = "src/commonMain/kotlin/${packageName!!.replace(".", "/")}"
     outputDirectory = layout.projectDirectory.dir(outDir).asFile
+    finalizedBy(rootProject.tasks.named("spotlessApply"))
 }
 
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {

@@ -1,13 +1,26 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.ohs.fhir.fhirpath.ucum
 
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
 
-public enum class Prefix(
-  public val code: String,
-  public val power: Int,
-) {
+public enum class Prefix(public val code: String, public val power: Int) {
   YOTTA("Y", 24),
   ZETTA("Z", 21),
   EXA("E", 18),
@@ -27,25 +40,21 @@ public enum class Prefix(
   FEMTO("f", -15),
   ATTO("a", -18),
   ZEPTO("z", -21),
-  YOCTO("y", -24),
-  ;
+  YOCTO("y", -24);
 
   public companion object {
     public fun fromString(`value`: String): Prefix? = entries.find { it.code == value }
   }
 }
 
-public enum class BaseUnit(
-  public val code: String,
-) {
+public enum class BaseUnit(public val code: String) {
   METER("m"),
   SECOND("s"),
   GRAM("g"),
   RADIAN("rad"),
   KELVIN("K"),
   COULOMB("C"),
-  CANDELA("cd"),
-  ;
+  CANDELA("cd");
 
   public companion object {
     public fun fromString(`value`: String): BaseUnit? = entries.find { it.code == value }
@@ -361,8 +370,7 @@ public enum class Unit(
   BIT_1("bit_s", "", 1.0),
   BIT_2("bit", "", 1.0),
   BYTE("By", "", 8.0),
-  BAUD("Bd", "s-1", 1.0),
-  ;
+  BAUD("Bd", "s-1", 1.0);
 
   public companion object {
     public fun fromString(`value`: String): Unit? = entries.find { it.code == value }

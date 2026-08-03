@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.ohs.fhir.model.r5.ext
 
 import dev.ohs.fhir.model.r5.CommunicationRequest
@@ -6,73 +22,75 @@ import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
 
-internal fun CommunicationRequest.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "meta" -> this.meta
-  "implicitRules" -> this.implicitRules
-  "language" -> this.language
-  "text" -> this.text
-  "contained" -> this.contained
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "identifier" -> this.identifier
-  "basedOn" -> this.basedOn
-  "replaces" -> this.replaces
-  "groupIdentifier" -> this.groupIdentifier
-  "status" -> this.status
-  "statusReason" -> this.statusReason
-  "intent" -> this.intent
-  "category" -> this.category
-  "priority" -> this.priority
-  "doNotPerform" -> this.doNotPerform
-  "medium" -> this.medium
-  "subject" -> this.subject
-  "about" -> this.about
-  "encounter" -> this.encounter
-  "payload" -> this.payload
-  "occurrence" -> this.occurrence
-  "authoredOn" -> this.authoredOn
-  "requester" -> this.requester
-  "recipient" -> this.recipient
-  "informationProvider" -> this.informationProvider
-  "reason" -> this.reason
-  "note" -> this.note
-  else -> error("$name is not a valid property name")
-}
+internal fun CommunicationRequest.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "meta" -> this.meta
+    "implicitRules" -> this.implicitRules
+    "language" -> this.language
+    "text" -> this.text
+    "contained" -> this.contained
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "identifier" -> this.identifier
+    "basedOn" -> this.basedOn
+    "replaces" -> this.replaces
+    "groupIdentifier" -> this.groupIdentifier
+    "status" -> this.status
+    "statusReason" -> this.statusReason
+    "intent" -> this.intent
+    "category" -> this.category
+    "priority" -> this.priority
+    "doNotPerform" -> this.doNotPerform
+    "medium" -> this.medium
+    "subject" -> this.subject
+    "about" -> this.about
+    "encounter" -> this.encounter
+    "payload" -> this.payload
+    "occurrence" -> this.occurrence
+    "authoredOn" -> this.authoredOn
+    "requester" -> this.requester
+    "recipient" -> this.recipient
+    "informationProvider" -> this.informationProvider
+    "reason" -> this.reason
+    "note" -> this.note
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CommunicationRequest.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "meta" -> true
-  "implicitRules" -> true
-  "language" -> true
-  "text" -> true
-  "contained" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "identifier" -> true
-  "basedOn" -> true
-  "replaces" -> true
-  "groupIdentifier" -> true
-  "status" -> true
-  "statusReason" -> true
-  "intent" -> true
-  "category" -> true
-  "priority" -> true
-  "doNotPerform" -> true
-  "medium" -> true
-  "subject" -> true
-  "about" -> true
-  "encounter" -> true
-  "payload" -> true
-  "occurrence" -> true
-  "authoredOn" -> true
-  "requester" -> true
-  "recipient" -> true
-  "informationProvider" -> true
-  "reason" -> true
-  "note" -> true
-  else -> false
-}
+internal fun CommunicationRequest.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "meta" -> true
+    "implicitRules" -> true
+    "language" -> true
+    "text" -> true
+    "contained" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "identifier" -> true
+    "basedOn" -> true
+    "replaces" -> true
+    "groupIdentifier" -> true
+    "status" -> true
+    "statusReason" -> true
+    "intent" -> true
+    "category" -> true
+    "priority" -> true
+    "doNotPerform" -> true
+    "medium" -> true
+    "subject" -> true
+    "about" -> true
+    "encounter" -> true
+    "payload" -> true
+    "occurrence" -> true
+    "authoredOn" -> true
+    "requester" -> true
+    "recipient" -> true
+    "informationProvider" -> true
+    "reason" -> true
+    "note" -> true
+    else -> false
+  }
 
 internal fun CommunicationRequest.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -107,21 +125,23 @@ internal fun CommunicationRequest.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.note)
 }
 
-internal fun CommunicationRequest.Payload.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "content" -> this.content
-  else -> error("$name is not a valid property name")
-}
+internal fun CommunicationRequest.Payload.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "content" -> this.content
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CommunicationRequest.Payload.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "content" -> true
-  else -> false
-}
+internal fun CommunicationRequest.Payload.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "content" -> true
+    else -> false
+  }
 
 internal fun CommunicationRequest.Payload.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }

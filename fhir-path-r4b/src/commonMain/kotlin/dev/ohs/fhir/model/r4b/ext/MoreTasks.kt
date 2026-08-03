@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.ohs.fhir.model.r4b.ext
 
 import dev.ohs.fhir.model.r4b.Task
@@ -6,91 +22,93 @@ import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
 
-internal fun Task.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "meta" -> this.meta
-  "implicitRules" -> this.implicitRules
-  "language" -> this.language
-  "text" -> this.text
-  "contained" -> this.contained
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "identifier" -> this.identifier
-  "instantiatesCanonical" -> this.instantiatesCanonical
-  "instantiatesUri" -> this.instantiatesUri
-  "basedOn" -> this.basedOn
-  "groupIdentifier" -> this.groupIdentifier
-  "partOf" -> this.partOf
-  "status" -> this.status
-  "statusReason" -> this.statusReason
-  "businessStatus" -> this.businessStatus
-  "intent" -> this.intent
-  "priority" -> this.priority
-  "code" -> this.code
-  "description" -> this.description
-  "focus" -> this.focus
-  "for" -> this.`for`
-  "encounter" -> this.encounter
-  "executionPeriod" -> this.executionPeriod
-  "authoredOn" -> this.authoredOn
-  "lastModified" -> this.lastModified
-  "requester" -> this.requester
-  "performerType" -> this.performerType
-  "owner" -> this.owner
-  "location" -> this.location
-  "reasonCode" -> this.reasonCode
-  "reasonReference" -> this.reasonReference
-  "insurance" -> this.insurance
-  "note" -> this.note
-  "relevantHistory" -> this.relevantHistory
-  "restriction" -> this.restriction
-  "input" -> this.input
-  "output" -> this.output
-  else -> error("$name is not a valid property name")
-}
+internal fun Task.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "meta" -> this.meta
+    "implicitRules" -> this.implicitRules
+    "language" -> this.language
+    "text" -> this.text
+    "contained" -> this.contained
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "identifier" -> this.identifier
+    "instantiatesCanonical" -> this.instantiatesCanonical
+    "instantiatesUri" -> this.instantiatesUri
+    "basedOn" -> this.basedOn
+    "groupIdentifier" -> this.groupIdentifier
+    "partOf" -> this.partOf
+    "status" -> this.status
+    "statusReason" -> this.statusReason
+    "businessStatus" -> this.businessStatus
+    "intent" -> this.intent
+    "priority" -> this.priority
+    "code" -> this.code
+    "description" -> this.description
+    "focus" -> this.focus
+    "for" -> this.`for`
+    "encounter" -> this.encounter
+    "executionPeriod" -> this.executionPeriod
+    "authoredOn" -> this.authoredOn
+    "lastModified" -> this.lastModified
+    "requester" -> this.requester
+    "performerType" -> this.performerType
+    "owner" -> this.owner
+    "location" -> this.location
+    "reasonCode" -> this.reasonCode
+    "reasonReference" -> this.reasonReference
+    "insurance" -> this.insurance
+    "note" -> this.note
+    "relevantHistory" -> this.relevantHistory
+    "restriction" -> this.restriction
+    "input" -> this.input
+    "output" -> this.output
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Task.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "meta" -> true
-  "implicitRules" -> true
-  "language" -> true
-  "text" -> true
-  "contained" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "identifier" -> true
-  "instantiatesCanonical" -> true
-  "instantiatesUri" -> true
-  "basedOn" -> true
-  "groupIdentifier" -> true
-  "partOf" -> true
-  "status" -> true
-  "statusReason" -> true
-  "businessStatus" -> true
-  "intent" -> true
-  "priority" -> true
-  "code" -> true
-  "description" -> true
-  "focus" -> true
-  "for" -> true
-  "encounter" -> true
-  "executionPeriod" -> true
-  "authoredOn" -> true
-  "lastModified" -> true
-  "requester" -> true
-  "performerType" -> true
-  "owner" -> true
-  "location" -> true
-  "reasonCode" -> true
-  "reasonReference" -> true
-  "insurance" -> true
-  "note" -> true
-  "relevantHistory" -> true
-  "restriction" -> true
-  "input" -> true
-  "output" -> true
-  else -> false
-}
+internal fun Task.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "meta" -> true
+    "implicitRules" -> true
+    "language" -> true
+    "text" -> true
+    "contained" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "identifier" -> true
+    "instantiatesCanonical" -> true
+    "instantiatesUri" -> true
+    "basedOn" -> true
+    "groupIdentifier" -> true
+    "partOf" -> true
+    "status" -> true
+    "statusReason" -> true
+    "businessStatus" -> true
+    "intent" -> true
+    "priority" -> true
+    "code" -> true
+    "description" -> true
+    "focus" -> true
+    "for" -> true
+    "encounter" -> true
+    "executionPeriod" -> true
+    "authoredOn" -> true
+    "lastModified" -> true
+    "requester" -> true
+    "performerType" -> true
+    "owner" -> true
+    "location" -> true
+    "reasonCode" -> true
+    "reasonReference" -> true
+    "insurance" -> true
+    "note" -> true
+    "relevantHistory" -> true
+    "restriction" -> true
+    "input" -> true
+    "output" -> true
+    else -> false
+  }
 
 internal fun Task.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -134,25 +152,27 @@ internal fun Task.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.output)
 }
 
-internal fun Task.Restriction.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "repetitions" -> this.repetitions
-  "period" -> this.period
-  "recipient" -> this.recipient
-  else -> error("$name is not a valid property name")
-}
+internal fun Task.Restriction.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "repetitions" -> this.repetitions
+    "period" -> this.period
+    "recipient" -> this.recipient
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Task.Restriction.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "repetitions" -> true
-  "period" -> true
-  "recipient" -> true
-  else -> false
-}
+internal fun Task.Restriction.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "repetitions" -> true
+    "period" -> true
+    "recipient" -> true
+    else -> false
+  }
 
 internal fun Task.Restriction.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -163,23 +183,25 @@ internal fun Task.Restriction.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.recipient)
 }
 
-internal fun Task.Input.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "type" -> this.type
-  "value" -> this.`value`
-  else -> error("$name is not a valid property name")
-}
+internal fun Task.Input.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "type" -> this.type
+    "value" -> this.`value`
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Task.Input.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "type" -> true
-  "value" -> true
-  else -> false
-}
+internal fun Task.Input.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "type" -> true
+    "value" -> true
+    else -> false
+  }
 
 internal fun Task.Input.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -189,23 +211,25 @@ internal fun Task.Input.getAllChildren(): List<Any> = buildList {
   add(this@getAllChildren.`value`)
 }
 
-internal fun Task.Output.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "type" -> this.type
-  "value" -> this.`value`
-  else -> error("$name is not a valid property name")
-}
+internal fun Task.Output.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "type" -> this.type
+    "value" -> this.`value`
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Task.Output.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "type" -> true
-  "value" -> true
-  else -> false
-}
+internal fun Task.Output.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "type" -> true
+    "value" -> true
+    else -> false
+  }
 
 internal fun Task.Output.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.ohs.fhir.model.r5.ext
 
 import dev.ohs.fhir.model.r5.CapabilityStatement
@@ -6,89 +22,91 @@ import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
 
-internal fun CapabilityStatement.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "meta" -> this.meta
-  "implicitRules" -> this.implicitRules
-  "language" -> this.language
-  "text" -> this.text
-  "contained" -> this.contained
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "url" -> this.url
-  "identifier" -> this.identifier
-  "version" -> this.version
-  "versionAlgorithm" -> this.versionAlgorithm
-  "name" -> this.name
-  "title" -> this.title
-  "status" -> this.status
-  "experimental" -> this.experimental
-  "date" -> this.date
-  "publisher" -> this.publisher
-  "contact" -> this.contact
-  "description" -> this.description
-  "useContext" -> this.useContext
-  "jurisdiction" -> this.jurisdiction
-  "purpose" -> this.purpose
-  "copyright" -> this.copyright
-  "copyrightLabel" -> this.copyrightLabel
-  "kind" -> this.kind
-  "instantiates" -> this.instantiates
-  "imports" -> this.imports
-  "software" -> this.software
-  "implementation" -> this.implementation
-  "fhirVersion" -> this.fhirVersion
-  "format" -> this.format
-  "patchFormat" -> this.patchFormat
-  "acceptLanguage" -> this.acceptLanguage
-  "implementationGuide" -> this.implementationGuide
-  "rest" -> this.rest
-  "messaging" -> this.messaging
-  "document" -> this.document
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "meta" -> this.meta
+    "implicitRules" -> this.implicitRules
+    "language" -> this.language
+    "text" -> this.text
+    "contained" -> this.contained
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "url" -> this.url
+    "identifier" -> this.identifier
+    "version" -> this.version
+    "versionAlgorithm" -> this.versionAlgorithm
+    "name" -> this.name
+    "title" -> this.title
+    "status" -> this.status
+    "experimental" -> this.experimental
+    "date" -> this.date
+    "publisher" -> this.publisher
+    "contact" -> this.contact
+    "description" -> this.description
+    "useContext" -> this.useContext
+    "jurisdiction" -> this.jurisdiction
+    "purpose" -> this.purpose
+    "copyright" -> this.copyright
+    "copyrightLabel" -> this.copyrightLabel
+    "kind" -> this.kind
+    "instantiates" -> this.instantiates
+    "imports" -> this.imports
+    "software" -> this.software
+    "implementation" -> this.implementation
+    "fhirVersion" -> this.fhirVersion
+    "format" -> this.format
+    "patchFormat" -> this.patchFormat
+    "acceptLanguage" -> this.acceptLanguage
+    "implementationGuide" -> this.implementationGuide
+    "rest" -> this.rest
+    "messaging" -> this.messaging
+    "document" -> this.document
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "meta" -> true
-  "implicitRules" -> true
-  "language" -> true
-  "text" -> true
-  "contained" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "url" -> true
-  "identifier" -> true
-  "version" -> true
-  "versionAlgorithm" -> true
-  "name" -> true
-  "title" -> true
-  "status" -> true
-  "experimental" -> true
-  "date" -> true
-  "publisher" -> true
-  "contact" -> true
-  "description" -> true
-  "useContext" -> true
-  "jurisdiction" -> true
-  "purpose" -> true
-  "copyright" -> true
-  "copyrightLabel" -> true
-  "kind" -> true
-  "instantiates" -> true
-  "imports" -> true
-  "software" -> true
-  "implementation" -> true
-  "fhirVersion" -> true
-  "format" -> true
-  "patchFormat" -> true
-  "acceptLanguage" -> true
-  "implementationGuide" -> true
-  "rest" -> true
-  "messaging" -> true
-  "document" -> true
-  else -> false
-}
+internal fun CapabilityStatement.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "meta" -> true
+    "implicitRules" -> true
+    "language" -> true
+    "text" -> true
+    "contained" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "url" -> true
+    "identifier" -> true
+    "version" -> true
+    "versionAlgorithm" -> true
+    "name" -> true
+    "title" -> true
+    "status" -> true
+    "experimental" -> true
+    "date" -> true
+    "publisher" -> true
+    "contact" -> true
+    "description" -> true
+    "useContext" -> true
+    "jurisdiction" -> true
+    "purpose" -> true
+    "copyright" -> true
+    "copyrightLabel" -> true
+    "kind" -> true
+    "instantiates" -> true
+    "imports" -> true
+    "software" -> true
+    "implementation" -> true
+    "fhirVersion" -> true
+    "format" -> true
+    "patchFormat" -> true
+    "acceptLanguage" -> true
+    "implementationGuide" -> true
+    "rest" -> true
+    "messaging" -> true
+    "document" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -131,25 +149,27 @@ internal fun CapabilityStatement.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.document)
 }
 
-internal fun CapabilityStatement.Software.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "name" -> this.name
-  "version" -> this.version
-  "releaseDate" -> this.releaseDate
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Software.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "name" -> this.name
+    "version" -> this.version
+    "releaseDate" -> this.releaseDate
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Software.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "name" -> true
-  "version" -> true
-  "releaseDate" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Software.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "name" -> true
+    "version" -> true
+    "releaseDate" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Software.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -160,25 +180,27 @@ internal fun CapabilityStatement.Software.getAllChildren(): List<Any> = buildLis
   this@getAllChildren.releaseDate?.let { add(it) }
 }
 
-internal fun CapabilityStatement.Implementation.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "description" -> this.description
-  "url" -> this.url
-  "custodian" -> this.custodian
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Implementation.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "description" -> this.description
+    "url" -> this.url
+    "custodian" -> this.custodian
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Implementation.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "description" -> true
-  "url" -> true
-  "custodian" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Implementation.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "description" -> true
+    "url" -> true
+    "custodian" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Implementation.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -189,35 +211,37 @@ internal fun CapabilityStatement.Implementation.getAllChildren(): List<Any> = bu
   this@getAllChildren.custodian?.let { add(it) }
 }
 
-internal fun CapabilityStatement.Rest.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "mode" -> this.mode
-  "documentation" -> this.documentation
-  "security" -> this.security
-  "resource" -> this.resource
-  "interaction" -> this.interaction
-  "searchParam" -> this.searchParam
-  "operation" -> this.operation
-  "compartment" -> this.compartment
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Rest.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "mode" -> this.mode
+    "documentation" -> this.documentation
+    "security" -> this.security
+    "resource" -> this.resource
+    "interaction" -> this.interaction
+    "searchParam" -> this.searchParam
+    "operation" -> this.operation
+    "compartment" -> this.compartment
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Rest.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "mode" -> true
-  "documentation" -> true
-  "security" -> true
-  "resource" -> true
-  "interaction" -> true
-  "searchParam" -> true
-  "operation" -> true
-  "compartment" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Rest.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "mode" -> true
+    "documentation" -> true
+    "security" -> true
+    "resource" -> true
+    "interaction" -> true
+    "searchParam" -> true
+    "operation" -> true
+    "compartment" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Rest.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -233,25 +257,27 @@ internal fun CapabilityStatement.Rest.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.compartment)
 }
 
-internal fun CapabilityStatement.Rest.Security.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "cors" -> this.cors
-  "service" -> this.service
-  "description" -> this.description
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Rest.Security.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "cors" -> this.cors
+    "service" -> this.service
+    "description" -> this.description
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Rest.Security.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "cors" -> true
-  "service" -> true
-  "description" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Rest.Security.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "cors" -> true
+    "service" -> true
+    "description" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Rest.Security.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -262,55 +288,57 @@ internal fun CapabilityStatement.Rest.Security.getAllChildren(): List<Any> = bui
   this@getAllChildren.description?.let { add(it) }
 }
 
-internal fun CapabilityStatement.Rest.Resource.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "type" -> this.type
-  "profile" -> this.profile
-  "supportedProfile" -> this.supportedProfile
-  "documentation" -> this.documentation
-  "interaction" -> this.interaction
-  "versioning" -> this.versioning
-  "readHistory" -> this.readHistory
-  "updateCreate" -> this.updateCreate
-  "conditionalCreate" -> this.conditionalCreate
-  "conditionalRead" -> this.conditionalRead
-  "conditionalUpdate" -> this.conditionalUpdate
-  "conditionalPatch" -> this.conditionalPatch
-  "conditionalDelete" -> this.conditionalDelete
-  "referencePolicy" -> this.referencePolicy
-  "searchInclude" -> this.searchInclude
-  "searchRevInclude" -> this.searchRevInclude
-  "searchParam" -> this.searchParam
-  "operation" -> this.operation
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Rest.Resource.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "type" -> this.type
+    "profile" -> this.profile
+    "supportedProfile" -> this.supportedProfile
+    "documentation" -> this.documentation
+    "interaction" -> this.interaction
+    "versioning" -> this.versioning
+    "readHistory" -> this.readHistory
+    "updateCreate" -> this.updateCreate
+    "conditionalCreate" -> this.conditionalCreate
+    "conditionalRead" -> this.conditionalRead
+    "conditionalUpdate" -> this.conditionalUpdate
+    "conditionalPatch" -> this.conditionalPatch
+    "conditionalDelete" -> this.conditionalDelete
+    "referencePolicy" -> this.referencePolicy
+    "searchInclude" -> this.searchInclude
+    "searchRevInclude" -> this.searchRevInclude
+    "searchParam" -> this.searchParam
+    "operation" -> this.operation
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Rest.Resource.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "type" -> true
-  "profile" -> true
-  "supportedProfile" -> true
-  "documentation" -> true
-  "interaction" -> true
-  "versioning" -> true
-  "readHistory" -> true
-  "updateCreate" -> true
-  "conditionalCreate" -> true
-  "conditionalRead" -> true
-  "conditionalUpdate" -> true
-  "conditionalPatch" -> true
-  "conditionalDelete" -> true
-  "referencePolicy" -> true
-  "searchInclude" -> true
-  "searchRevInclude" -> true
-  "searchParam" -> true
-  "operation" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Rest.Resource.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "type" -> true
+    "profile" -> true
+    "supportedProfile" -> true
+    "documentation" -> true
+    "interaction" -> true
+    "versioning" -> true
+    "readHistory" -> true
+    "updateCreate" -> true
+    "conditionalCreate" -> true
+    "conditionalRead" -> true
+    "conditionalUpdate" -> true
+    "conditionalPatch" -> true
+    "conditionalDelete" -> true
+    "referencePolicy" -> true
+    "searchInclude" -> true
+    "searchRevInclude" -> true
+    "searchParam" -> true
+    "operation" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Rest.Resource.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -336,23 +364,25 @@ internal fun CapabilityStatement.Rest.Resource.getAllChildren(): List<Any> = bui
   addAll(this@getAllChildren.operation)
 }
 
-internal fun CapabilityStatement.Rest.Resource.Interaction.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "code" -> this.code
-  "documentation" -> this.documentation
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Rest.Resource.Interaction.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "code" -> this.code
+    "documentation" -> this.documentation
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Rest.Resource.Interaction.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "code" -> true
-  "documentation" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Rest.Resource.Interaction.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "code" -> true
+    "documentation" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Rest.Resource.Interaction.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -362,27 +392,29 @@ internal fun CapabilityStatement.Rest.Resource.Interaction.getAllChildren(): Lis
   this@getAllChildren.documentation?.let { add(it) }
 }
 
-internal fun CapabilityStatement.Rest.Resource.SearchParam.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "name" -> this.name
-  "definition" -> this.definition
-  "type" -> this.type
-  "documentation" -> this.documentation
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Rest.Resource.SearchParam.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "name" -> this.name
+    "definition" -> this.definition
+    "type" -> this.type
+    "documentation" -> this.documentation
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Rest.Resource.SearchParam.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "name" -> true
-  "definition" -> true
-  "type" -> true
-  "documentation" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Rest.Resource.SearchParam.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "name" -> true
+    "definition" -> true
+    "type" -> true
+    "documentation" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Rest.Resource.SearchParam.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -394,25 +426,27 @@ internal fun CapabilityStatement.Rest.Resource.SearchParam.getAllChildren(): Lis
   this@getAllChildren.documentation?.let { add(it) }
 }
 
-internal fun CapabilityStatement.Rest.Resource.Operation.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "name" -> this.name
-  "definition" -> this.definition
-  "documentation" -> this.documentation
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Rest.Resource.Operation.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "name" -> this.name
+    "definition" -> this.definition
+    "documentation" -> this.documentation
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Rest.Resource.Operation.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "name" -> true
-  "definition" -> true
-  "documentation" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Rest.Resource.Operation.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "name" -> true
+    "definition" -> true
+    "documentation" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Rest.Resource.Operation.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -423,23 +457,25 @@ internal fun CapabilityStatement.Rest.Resource.Operation.getAllChildren(): List<
   this@getAllChildren.documentation?.let { add(it) }
 }
 
-internal fun CapabilityStatement.Rest.Interaction.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "code" -> this.code
-  "documentation" -> this.documentation
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Rest.Interaction.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "code" -> this.code
+    "documentation" -> this.documentation
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Rest.Interaction.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "code" -> true
-  "documentation" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Rest.Interaction.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "code" -> true
+    "documentation" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Rest.Interaction.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -449,27 +485,29 @@ internal fun CapabilityStatement.Rest.Interaction.getAllChildren(): List<Any> = 
   this@getAllChildren.documentation?.let { add(it) }
 }
 
-internal fun CapabilityStatement.Messaging.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "endpoint" -> this.endpoint
-  "reliableCache" -> this.reliableCache
-  "documentation" -> this.documentation
-  "supportedMessage" -> this.supportedMessage
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Messaging.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "endpoint" -> this.endpoint
+    "reliableCache" -> this.reliableCache
+    "documentation" -> this.documentation
+    "supportedMessage" -> this.supportedMessage
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Messaging.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "endpoint" -> true
-  "reliableCache" -> true
-  "documentation" -> true
-  "supportedMessage" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Messaging.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "endpoint" -> true
+    "reliableCache" -> true
+    "documentation" -> true
+    "supportedMessage" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Messaging.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -481,23 +519,25 @@ internal fun CapabilityStatement.Messaging.getAllChildren(): List<Any> = buildLi
   addAll(this@getAllChildren.supportedMessage)
 }
 
-internal fun CapabilityStatement.Messaging.Endpoint.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "protocol" -> this.protocol
-  "address" -> this.address
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Messaging.Endpoint.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "protocol" -> this.protocol
+    "address" -> this.address
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Messaging.Endpoint.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "protocol" -> true
-  "address" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Messaging.Endpoint.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "protocol" -> true
+    "address" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Messaging.Endpoint.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -507,51 +547,56 @@ internal fun CapabilityStatement.Messaging.Endpoint.getAllChildren(): List<Any> 
   add(this@getAllChildren.address)
 }
 
-internal fun CapabilityStatement.Messaging.SupportedMessage.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "mode" -> this.mode
-  "definition" -> this.definition
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Messaging.SupportedMessage.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "mode" -> this.mode
+    "definition" -> this.definition
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Messaging.SupportedMessage.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "mode" -> true
-  "definition" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Messaging.SupportedMessage.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "mode" -> true
+    "definition" -> true
+    else -> false
+  }
 
-internal fun CapabilityStatement.Messaging.SupportedMessage.getAllChildren(): List<Any> = buildList {
-  this@getAllChildren.id?.let { add(it) }
-  addAll(this@getAllChildren.extension)
-  addAll(this@getAllChildren.modifierExtension)
-  add(this@getAllChildren.mode)
-  add(this@getAllChildren.definition)
-}
+internal fun CapabilityStatement.Messaging.SupportedMessage.getAllChildren(): List<Any> =
+  buildList {
+    this@getAllChildren.id?.let { add(it) }
+    addAll(this@getAllChildren.extension)
+    addAll(this@getAllChildren.modifierExtension)
+    add(this@getAllChildren.mode)
+    add(this@getAllChildren.definition)
+  }
 
-internal fun CapabilityStatement.Document.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "mode" -> this.mode
-  "documentation" -> this.documentation
-  "profile" -> this.profile
-  else -> error("$name is not a valid property name")
-}
+internal fun CapabilityStatement.Document.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "mode" -> this.mode
+    "documentation" -> this.documentation
+    "profile" -> this.profile
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun CapabilityStatement.Document.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "mode" -> true
-  "documentation" -> true
-  "profile" -> true
-  else -> false
-}
+internal fun CapabilityStatement.Document.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "mode" -> true
+    "documentation" -> true
+    "profile" -> true
+    else -> false
+  }
 
 internal fun CapabilityStatement.Document.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }

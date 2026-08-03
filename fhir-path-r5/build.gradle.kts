@@ -11,6 +11,7 @@ val generateR5Helpers = tasks.register<FhirModelHelperGenerationTask>("generateR
     )
     this.fhirVersion.set("r5")
     outputDirectory.set(layout.projectDirectory.dir("src/commonMain/kotlin"))
+    finalizedBy(rootProject.tasks.named("spotlessApply"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {

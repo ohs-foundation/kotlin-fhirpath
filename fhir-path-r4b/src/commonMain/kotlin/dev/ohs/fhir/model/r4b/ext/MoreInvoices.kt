@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.ohs.fhir.model.r4b.ext
 
 import dev.ohs.fhir.model.r4b.Invoice
@@ -6,61 +22,63 @@ import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
 
-internal fun Invoice.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "meta" -> this.meta
-  "implicitRules" -> this.implicitRules
-  "language" -> this.language
-  "text" -> this.text
-  "contained" -> this.contained
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "identifier" -> this.identifier
-  "status" -> this.status
-  "cancelledReason" -> this.cancelledReason
-  "type" -> this.type
-  "subject" -> this.subject
-  "recipient" -> this.recipient
-  "date" -> this.date
-  "participant" -> this.participant
-  "issuer" -> this.issuer
-  "account" -> this.account
-  "lineItem" -> this.lineItem
-  "totalPriceComponent" -> this.totalPriceComponent
-  "totalNet" -> this.totalNet
-  "totalGross" -> this.totalGross
-  "paymentTerms" -> this.paymentTerms
-  "note" -> this.note
-  else -> error("$name is not a valid property name")
-}
+internal fun Invoice.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "meta" -> this.meta
+    "implicitRules" -> this.implicitRules
+    "language" -> this.language
+    "text" -> this.text
+    "contained" -> this.contained
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "identifier" -> this.identifier
+    "status" -> this.status
+    "cancelledReason" -> this.cancelledReason
+    "type" -> this.type
+    "subject" -> this.subject
+    "recipient" -> this.recipient
+    "date" -> this.date
+    "participant" -> this.participant
+    "issuer" -> this.issuer
+    "account" -> this.account
+    "lineItem" -> this.lineItem
+    "totalPriceComponent" -> this.totalPriceComponent
+    "totalNet" -> this.totalNet
+    "totalGross" -> this.totalGross
+    "paymentTerms" -> this.paymentTerms
+    "note" -> this.note
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Invoice.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "meta" -> true
-  "implicitRules" -> true
-  "language" -> true
-  "text" -> true
-  "contained" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "identifier" -> true
-  "status" -> true
-  "cancelledReason" -> true
-  "type" -> true
-  "subject" -> true
-  "recipient" -> true
-  "date" -> true
-  "participant" -> true
-  "issuer" -> true
-  "account" -> true
-  "lineItem" -> true
-  "totalPriceComponent" -> true
-  "totalNet" -> true
-  "totalGross" -> true
-  "paymentTerms" -> true
-  "note" -> true
-  else -> false
-}
+internal fun Invoice.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "meta" -> true
+    "implicitRules" -> true
+    "language" -> true
+    "text" -> true
+    "contained" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "identifier" -> true
+    "status" -> true
+    "cancelledReason" -> true
+    "type" -> true
+    "subject" -> true
+    "recipient" -> true
+    "date" -> true
+    "participant" -> true
+    "issuer" -> true
+    "account" -> true
+    "lineItem" -> true
+    "totalPriceComponent" -> true
+    "totalNet" -> true
+    "totalGross" -> true
+    "paymentTerms" -> true
+    "note" -> true
+    else -> false
+  }
 
 internal fun Invoice.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -89,23 +107,25 @@ internal fun Invoice.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.note)
 }
 
-internal fun Invoice.Participant.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "role" -> this.role
-  "actor" -> this.actor
-  else -> error("$name is not a valid property name")
-}
+internal fun Invoice.Participant.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "role" -> this.role
+    "actor" -> this.actor
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Invoice.Participant.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "role" -> true
-  "actor" -> true
-  else -> false
-}
+internal fun Invoice.Participant.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "role" -> true
+    "actor" -> true
+    else -> false
+  }
 
 internal fun Invoice.Participant.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -115,25 +135,27 @@ internal fun Invoice.Participant.getAllChildren(): List<Any> = buildList {
   add(this@getAllChildren.actor)
 }
 
-internal fun Invoice.LineItem.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "sequence" -> this.sequence
-  "chargeItem" -> this.chargeItem
-  "priceComponent" -> this.priceComponent
-  else -> error("$name is not a valid property name")
-}
+internal fun Invoice.LineItem.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "sequence" -> this.sequence
+    "chargeItem" -> this.chargeItem
+    "priceComponent" -> this.priceComponent
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Invoice.LineItem.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "sequence" -> true
-  "chargeItem" -> true
-  "priceComponent" -> true
-  else -> false
-}
+internal fun Invoice.LineItem.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "sequence" -> true
+    "chargeItem" -> true
+    "priceComponent" -> true
+    else -> false
+  }
 
 internal fun Invoice.LineItem.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -144,27 +166,29 @@ internal fun Invoice.LineItem.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.priceComponent)
 }
 
-internal fun Invoice.LineItem.PriceComponent.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "type" -> this.type
-  "code" -> this.code
-  "factor" -> this.factor
-  "amount" -> this.amount
-  else -> error("$name is not a valid property name")
-}
+internal fun Invoice.LineItem.PriceComponent.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "type" -> this.type
+    "code" -> this.code
+    "factor" -> this.factor
+    "amount" -> this.amount
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun Invoice.LineItem.PriceComponent.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "type" -> true
-  "code" -> true
-  "factor" -> true
-  "amount" -> true
-  else -> false
-}
+internal fun Invoice.LineItem.PriceComponent.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "type" -> true
+    "code" -> true
+    "factor" -> true
+    "amount" -> true
+    else -> false
+  }
 
 internal fun Invoice.LineItem.PriceComponent.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }

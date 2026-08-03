@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.ohs.fhir.model.r4b.ext
 
 import dev.ohs.fhir.model.r4b.ElementDefinition
@@ -6,87 +22,89 @@ import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
 
-internal fun ElementDefinition.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "modifierExtension" -> this.modifierExtension
-  "path" -> this.path
-  "representation" -> this.representation
-  "sliceName" -> this.sliceName
-  "sliceIsConstraining" -> this.sliceIsConstraining
-  "label" -> this.label
-  "code" -> this.code
-  "slicing" -> this.slicing
-  "short" -> this.short
-  "definition" -> this.definition
-  "comment" -> this.comment
-  "requirements" -> this.requirements
-  "alias" -> this.alias
-  "min" -> this.min
-  "max" -> this.max
-  "base" -> this.base
-  "contentReference" -> this.contentReference
-  "type" -> this.type
-  "defaultValue" -> this.defaultValue
-  "meaningWhenMissing" -> this.meaningWhenMissing
-  "orderMeaning" -> this.orderMeaning
-  "fixed" -> this.fixed
-  "pattern" -> this.pattern
-  "example" -> this.example
-  "minValue" -> this.minValue
-  "maxValue" -> this.maxValue
-  "maxLength" -> this.maxLength
-  "condition" -> this.condition
-  "constraint" -> this.constraint
-  "mustSupport" -> this.mustSupport
-  "isModifier" -> this.isModifier
-  "isModifierReason" -> this.isModifierReason
-  "isSummary" -> this.isSummary
-  "binding" -> this.binding
-  "mapping" -> this.mapping
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "path" -> this.path
+    "representation" -> this.representation
+    "sliceName" -> this.sliceName
+    "sliceIsConstraining" -> this.sliceIsConstraining
+    "label" -> this.label
+    "code" -> this.code
+    "slicing" -> this.slicing
+    "short" -> this.short
+    "definition" -> this.definition
+    "comment" -> this.comment
+    "requirements" -> this.requirements
+    "alias" -> this.alias
+    "min" -> this.min
+    "max" -> this.max
+    "base" -> this.base
+    "contentReference" -> this.contentReference
+    "type" -> this.type
+    "defaultValue" -> this.defaultValue
+    "meaningWhenMissing" -> this.meaningWhenMissing
+    "orderMeaning" -> this.orderMeaning
+    "fixed" -> this.fixed
+    "pattern" -> this.pattern
+    "example" -> this.example
+    "minValue" -> this.minValue
+    "maxValue" -> this.maxValue
+    "maxLength" -> this.maxLength
+    "condition" -> this.condition
+    "constraint" -> this.constraint
+    "mustSupport" -> this.mustSupport
+    "isModifier" -> this.isModifier
+    "isModifierReason" -> this.isModifierReason
+    "isSummary" -> this.isSummary
+    "binding" -> this.binding
+    "mapping" -> this.mapping
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "modifierExtension" -> true
-  "path" -> true
-  "representation" -> true
-  "sliceName" -> true
-  "sliceIsConstraining" -> true
-  "label" -> true
-  "code" -> true
-  "slicing" -> true
-  "short" -> true
-  "definition" -> true
-  "comment" -> true
-  "requirements" -> true
-  "alias" -> true
-  "min" -> true
-  "max" -> true
-  "base" -> true
-  "contentReference" -> true
-  "type" -> true
-  "defaultValue" -> true
-  "meaningWhenMissing" -> true
-  "orderMeaning" -> true
-  "fixed" -> true
-  "pattern" -> true
-  "example" -> true
-  "minValue" -> true
-  "maxValue" -> true
-  "maxLength" -> true
-  "condition" -> true
-  "constraint" -> true
-  "mustSupport" -> true
-  "isModifier" -> true
-  "isModifierReason" -> true
-  "isSummary" -> true
-  "binding" -> true
-  "mapping" -> true
-  else -> false
-}
+internal fun ElementDefinition.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "path" -> true
+    "representation" -> true
+    "sliceName" -> true
+    "sliceIsConstraining" -> true
+    "label" -> true
+    "code" -> true
+    "slicing" -> true
+    "short" -> true
+    "definition" -> true
+    "comment" -> true
+    "requirements" -> true
+    "alias" -> true
+    "min" -> true
+    "max" -> true
+    "base" -> true
+    "contentReference" -> true
+    "type" -> true
+    "defaultValue" -> true
+    "meaningWhenMissing" -> true
+    "orderMeaning" -> true
+    "fixed" -> true
+    "pattern" -> true
+    "example" -> true
+    "minValue" -> true
+    "maxValue" -> true
+    "maxLength" -> true
+    "condition" -> true
+    "constraint" -> true
+    "mustSupport" -> true
+    "isModifier" -> true
+    "isModifierReason" -> true
+    "isSummary" -> true
+    "binding" -> true
+    "mapping" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -128,25 +146,27 @@ internal fun ElementDefinition.getAllChildren(): List<Any> = buildList {
   addAll(this@getAllChildren.mapping)
 }
 
-internal fun ElementDefinition.Slicing.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "discriminator" -> this.discriminator
-  "description" -> this.description
-  "ordered" -> this.ordered
-  "rules" -> this.rules
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.Slicing.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "discriminator" -> this.discriminator
+    "description" -> this.description
+    "ordered" -> this.ordered
+    "rules" -> this.rules
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.Slicing.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "discriminator" -> true
-  "description" -> true
-  "ordered" -> true
-  "rules" -> true
-  else -> false
-}
+internal fun ElementDefinition.Slicing.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "discriminator" -> true
+    "description" -> true
+    "ordered" -> true
+    "rules" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.Slicing.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -157,21 +177,23 @@ internal fun ElementDefinition.Slicing.getAllChildren(): List<Any> = buildList {
   add(this@getAllChildren.rules)
 }
 
-internal fun ElementDefinition.Slicing.Discriminator.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "type" -> this.type
-  "path" -> this.path
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.Slicing.Discriminator.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "type" -> this.type
+    "path" -> this.path
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.Slicing.Discriminator.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "type" -> true
-  "path" -> true
-  else -> false
-}
+internal fun ElementDefinition.Slicing.Discriminator.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "type" -> true
+    "path" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.Slicing.Discriminator.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -180,23 +202,25 @@ internal fun ElementDefinition.Slicing.Discriminator.getAllChildren(): List<Any>
   add(this@getAllChildren.path)
 }
 
-internal fun ElementDefinition.Base.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "path" -> this.path
-  "min" -> this.min
-  "max" -> this.max
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.Base.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "path" -> this.path
+    "min" -> this.min
+    "max" -> this.max
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.Base.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "path" -> true
-  "min" -> true
-  "max" -> true
-  else -> false
-}
+internal fun ElementDefinition.Base.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "path" -> true
+    "min" -> true
+    "max" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.Base.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -206,27 +230,29 @@ internal fun ElementDefinition.Base.getAllChildren(): List<Any> = buildList {
   add(this@getAllChildren.max)
 }
 
-internal fun ElementDefinition.Type.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "code" -> this.code
-  "profile" -> this.profile
-  "targetProfile" -> this.targetProfile
-  "aggregation" -> this.aggregation
-  "versioning" -> this.versioning
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.Type.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "code" -> this.code
+    "profile" -> this.profile
+    "targetProfile" -> this.targetProfile
+    "aggregation" -> this.aggregation
+    "versioning" -> this.versioning
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.Type.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "code" -> true
-  "profile" -> true
-  "targetProfile" -> true
-  "aggregation" -> true
-  "versioning" -> true
-  else -> false
-}
+internal fun ElementDefinition.Type.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "code" -> true
+    "profile" -> true
+    "targetProfile" -> true
+    "aggregation" -> true
+    "versioning" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.Type.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -238,21 +264,23 @@ internal fun ElementDefinition.Type.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.versioning?.let { add(it) }
 }
 
-internal fun ElementDefinition.Example.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "label" -> this.label
-  "value" -> this.`value`
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.Example.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "label" -> this.label
+    "value" -> this.`value`
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.Example.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "label" -> true
-  "value" -> true
-  else -> false
-}
+internal fun ElementDefinition.Example.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "label" -> true
+    "value" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.Example.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -261,31 +289,33 @@ internal fun ElementDefinition.Example.getAllChildren(): List<Any> = buildList {
   add(this@getAllChildren.`value`)
 }
 
-internal fun ElementDefinition.Constraint.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "key" -> this.key
-  "requirements" -> this.requirements
-  "severity" -> this.severity
-  "human" -> this.human
-  "expression" -> this.expression
-  "xpath" -> this.xpath
-  "source" -> this.source
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.Constraint.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "key" -> this.key
+    "requirements" -> this.requirements
+    "severity" -> this.severity
+    "human" -> this.human
+    "expression" -> this.expression
+    "xpath" -> this.xpath
+    "source" -> this.source
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.Constraint.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "key" -> true
-  "requirements" -> true
-  "severity" -> true
-  "human" -> true
-  "expression" -> true
-  "xpath" -> true
-  "source" -> true
-  else -> false
-}
+internal fun ElementDefinition.Constraint.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "key" -> true
+    "requirements" -> true
+    "severity" -> true
+    "human" -> true
+    "expression" -> true
+    "xpath" -> true
+    "source" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.Constraint.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -299,23 +329,25 @@ internal fun ElementDefinition.Constraint.getAllChildren(): List<Any> = buildLis
   this@getAllChildren.source?.let { add(it) }
 }
 
-internal fun ElementDefinition.Binding.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "strength" -> this.strength
-  "description" -> this.description
-  "valueSet" -> this.valueSet
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.Binding.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "strength" -> this.strength
+    "description" -> this.description
+    "valueSet" -> this.valueSet
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.Binding.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "strength" -> true
-  "description" -> true
-  "valueSet" -> true
-  else -> false
-}
+internal fun ElementDefinition.Binding.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "strength" -> true
+    "description" -> true
+    "valueSet" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.Binding.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
@@ -325,25 +357,27 @@ internal fun ElementDefinition.Binding.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.valueSet?.let { add(it) }
 }
 
-internal fun ElementDefinition.Mapping.getProperty(name: String): Any? = when(name) {
-  "id" -> this.id
-  "extension" -> this.extension
-  "identity" -> this.identity
-  "language" -> this.language
-  "map" -> this.map
-  "comment" -> this.comment
-  else -> error("$name is not a valid property name")
-}
+internal fun ElementDefinition.Mapping.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "identity" -> this.identity
+    "language" -> this.language
+    "map" -> this.map
+    "comment" -> this.comment
+    else -> error("$name is not a valid property name")
+  }
 
-internal fun ElementDefinition.Mapping.hasProperty(name: String): Boolean = when(name) {
-  "id" -> true
-  "extension" -> true
-  "identity" -> true
-  "language" -> true
-  "map" -> true
-  "comment" -> true
-  else -> false
-}
+internal fun ElementDefinition.Mapping.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "identity" -> true
+    "language" -> true
+    "map" -> true
+    "comment" -> true
+    else -> false
+  }
 
 internal fun ElementDefinition.Mapping.getAllChildren(): List<Any> = buildList {
   this@getAllChildren.id?.let { add(it) }
