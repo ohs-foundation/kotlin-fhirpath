@@ -161,10 +161,10 @@ new implementations are needed.
 
 The `conformsTo()` function supports the base FHIR profiles
 (`http://hl7.org/fhir/StructureDefinition/<Type>`): the input element's type is compared to the
-type named by the structure. Custom profiles (e.g. US Core) would require profile validation,
-which is not implemented. Passing a custom profile URL results in an error, consistent with the
-specification's requirement to error when a structure cannot be resolved
-(https://hl7.org/fhir/fhirpath.html#functions).
+type named by the structure. Other profiles, such as those defined in implementation guides (e.g.
+the US Core Patient profile), would require profile validation, which is not implemented. Passing
+such a profile URL results in an error, consistent with the specification's requirement to error
+when a structure cannot be resolved (https://hl7.org/fhir/fhirpath.html#functions).
 
 ### Timezone offset in date time values
 

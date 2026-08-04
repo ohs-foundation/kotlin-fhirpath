@@ -52,8 +52,8 @@ private const val BASE_STRUCTURE_DEFINITION_PREFIX = "http://hl7.org/fhir/Struct
  *
  * Only the base FHIR profiles (`http://hl7.org/fhir/StructureDefinition/<Type>`) are supported: the
  * input's type is compared to `<Type>`. An error is thrown if the structure cannot be resolved, as
- * the specification requires. Custom profiles would need profile validation, which is not
- * implemented.
+ * the specification requires. Other profiles, such as those defined in implementation guides, would
+ * need profile validation, which is not implemented.
  *
  * See [specification](https://hl7.org/fhir/fhirpath.html#functions).
  */
