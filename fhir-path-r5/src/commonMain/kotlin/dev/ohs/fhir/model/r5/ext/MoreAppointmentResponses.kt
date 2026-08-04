@@ -1,0 +1,96 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package dev.ohs.fhir.model.r5.ext
+
+import dev.ohs.fhir.model.r5.AppointmentResponse
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.String
+import kotlin.collections.List
+
+internal fun AppointmentResponse.getProperty(name: String): Any? =
+  when (name) {
+    "id" -> this.id
+    "meta" -> this.meta
+    "implicitRules" -> this.implicitRules
+    "language" -> this.language
+    "text" -> this.text
+    "contained" -> this.contained
+    "extension" -> this.extension
+    "modifierExtension" -> this.modifierExtension
+    "identifier" -> this.identifier
+    "appointment" -> this.appointment
+    "proposedNewTime" -> this.proposedNewTime
+    "start" -> this.start
+    "end" -> this.end
+    "participantType" -> this.participantType
+    "actor" -> this.actor
+    "participantStatus" -> this.participantStatus
+    "comment" -> this.comment
+    "recurring" -> this.recurring
+    "occurrenceDate" -> this.occurrenceDate
+    "recurrenceId" -> this.recurrenceId
+    else -> error("$name is not a valid property name")
+  }
+
+internal fun AppointmentResponse.hasProperty(name: String): Boolean =
+  when (name) {
+    "id" -> true
+    "meta" -> true
+    "implicitRules" -> true
+    "language" -> true
+    "text" -> true
+    "contained" -> true
+    "extension" -> true
+    "modifierExtension" -> true
+    "identifier" -> true
+    "appointment" -> true
+    "proposedNewTime" -> true
+    "start" -> true
+    "end" -> true
+    "participantType" -> true
+    "actor" -> true
+    "participantStatus" -> true
+    "comment" -> true
+    "recurring" -> true
+    "occurrenceDate" -> true
+    "recurrenceId" -> true
+    else -> false
+  }
+
+internal fun AppointmentResponse.getAllChildren(): List<Any> = buildList {
+  this@getAllChildren.id?.let { add(it) }
+  this@getAllChildren.meta?.let { add(it) }
+  this@getAllChildren.implicitRules?.let { add(it) }
+  this@getAllChildren.language?.let { add(it) }
+  this@getAllChildren.text?.let { add(it) }
+  addAll(this@getAllChildren.contained)
+  addAll(this@getAllChildren.extension)
+  addAll(this@getAllChildren.modifierExtension)
+  addAll(this@getAllChildren.identifier)
+  add(this@getAllChildren.appointment)
+  this@getAllChildren.proposedNewTime?.let { add(it) }
+  this@getAllChildren.start?.let { add(it) }
+  this@getAllChildren.end?.let { add(it) }
+  addAll(this@getAllChildren.participantType)
+  this@getAllChildren.actor?.let { add(it) }
+  add(this@getAllChildren.participantStatus)
+  this@getAllChildren.comment?.let { add(it) }
+  this@getAllChildren.recurring?.let { add(it) }
+  this@getAllChildren.occurrenceDate?.let { add(it) }
+  this@getAllChildren.recurrenceId?.let { add(it) }
+}

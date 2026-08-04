@@ -157,6 +157,21 @@ specification across different FHIR versions. In particular, DateTime and Time i
 include partial time (e.g. missing minutes and seconds), which is not allowed in FHIR. Therefore,
 new implementations are needed.
 
+### FHIR data type conversion
+
+To preserve metadata properties such as `id` and `extension`, FHIR primitive types are kept intact
+during expression evaluation for as long as possible, rather than being converted to their
+corresponding FHIRPath system types.
+
+However, certain operations require this conversion so that elements can be compared by their
+underlying values. For example, when comparing a FHIR string (`FHIR.string`) with a FHIRPath string
+literal (`System.string`), the primitive string value must be extracted from the FHIR object.
+
+To balance these two requirements, such conversions are performed last-minute only. The operations
+that trigger conversion include equality (`=`), comparison (`<`, `<=`, `>`, `>=`), membership (`in`,
+`contains`), and set functions (`union`, `distinct`, `intersect`, `exclude`, `subsetOf`,
+`supersetOf`).
+
 ### Profile validation
 
 The `conformsTo()` function supports the base FHIR profiles
@@ -256,13 +271,13 @@ Any other values are invalid precision values and will throw an error if passed 
 
 ### Error handling
 
-The FHIRPath specification
-[does not specify](https://hl7.org/fhirpath/N1/#type-safety-and-strict-evaluation) the desired
-behavior when type checking errors occur, allowing the implementation to adopt a strict (e.g. throws
-an exception) or a lenient (e.g. returns an empty collection) approach. However, the
-[official test suite](https://github.com/FHIR/fhir-test-cases) include test cases that require
-lenient type checking. To accommodate such cases, this implementation returns an empty collection
-when the FHIRPath expression attempts to access a data element that does not exist.
+Whilst this library does not perform compile-time type checking discussed in the
+[specification](https://hl7.org/fhirpath/N1/#type-safety-and-strict-evaluation), it supports two
+run-time property access modes:
+
+* **Lenient mode (default):** Returns an empty collection (`{}`) when accessing an undefined
+  property.
+* **Strict mode:** Throws an `IllegalStateException` when accessing an undefined property.
 
 ## Conformance
 
@@ -289,27 +304,14 @@ documented in the table below.
 | `testPlusDate21`                   | Specification/Test |     |                                                        | As `testPlusDate13`.                                                                                                                                                                                   |
 | `testPlusDate22`                   | Specification/Test |     |                                                        | As `testPlusDate13`.                                                                                                                                                                                   |
 | `testMinus5`                       | Specification/Test |     |                                                        | As `testPlusDate13`.                                                                                                                                                                                   |
-| `testVariables*`                   | Implementation     |     |                                                        | Variables are not implemented.                                                                                                                                                                         |
-| `testType1`                        | Implementation     |     |                                                        | Function `type` is not implemented.                                                                                                                                                                    |
-| `testType1a`                       | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType2`                        | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType2a`                       | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType3`                        | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType4`                        | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType9`                        | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType10`                       | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType15`                       | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType16`                       | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
-| `testType20`                       | Implementation     |     |                                                        | Function `type` is not implemented; the `ofType` part of the expression works.                                                                                                                         |
-| `testType21`                       | Implementation     |     |                                                        | As `testType20`.                                                                                                                                                                                       |
+| `testDollarOrderNotAllowed`        | Implementation     |     |                                                        | Ordered function validation not implemented. Test expects error when using `skip()` on unordered collection (`children()`), but engine does not track collection ordering.                             |
+| `testPolymorphicsB`                | Test               |     |                                                        | Test case expects output in lenient mode for invalid property navigation.                                                                                                                              |
 | `testType22`                       | Implementation     |     |                                                        | `is` with an unknown `System` type should evaluate to false, but the type resolver throws.                                                                                                             |
-| `testType23`                       | Implementation     |     |                                                        | As `testType20`.                                                                                                                                                                                       |
 | `testTypeA*`                       | Implementation     |     |                                                        | Evaluating `Parameters.parameter[x].value` crashes with `NoSuchElementException`.                                                                                                                      |
 | `LowBoundaryDateTimeMillisecond1`  | Specification/Test |     |                                                        | Diverges from FHIRPath specification. See [Discussion](https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639). |
 | `HighBoundaryDateTimeMillisecond1` | Specification/Test |     | As above.                                              | As above.                                                                                                                                                                                              |
 | `HighBoundaryDateTimeMillisecond3` | Specification/Test |     | As above.                                              | As above.                                                                                                                                                                                              |
 | `Comparable*`                      | Implementation     |     |                                                        | Function `comparable` is not implemented.                                                                                                                                                              |
-| `Precision*`                       | Implementation     |     |                                                        | Function `precision` is not implemented.                                                                                                                                                               |
 | `testIndex`                        | Implementation     |     |                                                        | `$index` is not implemented.                                                                                                                                                                           |
 | `testPeriodInvariantOld`           | Implementation     |     |                                                        | Function `hasValue` is not implemented.                                                                                                                                                                |
 | `testPeriodInvariantNew`           | Implementation     |     |                                                        | Function `lowBoundary` and function `highBoundary` are not implemented.                                                                                                                                |
@@ -318,8 +320,6 @@ documented in the table below.
 | `testFHIRPathIsFunction9`          | Test               |     |                                                        | As above. Once the input is updated, this test also needs subtype-aware `is` (`Age` specializes `Quantity`).                                                                                           |
 | `testFHIRPathIsFunction10`         | Test               |     |                                                        | As above.                                                                                                                                                                                              |
 | `testContainedId`                  | Implementation     |     |                                                        |                                                                                                                                                                                                        |
-| `testCombine2`                     | Implementation     |     |                                                        | FHIR String and Kotlin String comparison issue in `exclude()` function.                                                                                                                                |
-| `testCombine3`                     | Implementation     |     |                                                        | As above.                                                                                                                                                                                              |
 | `testPrimitiveExtensions`          | Implementation     |     |                                                        | Function `hasValue` is not implemented.                                                                                                                                                                |
 
 The root cause column documents if the test failure is caused by implementation issues in this
@@ -388,10 +388,21 @@ dependencies {
 }
 ```
 
+### Creating FHIRPath engine
+
+Create a `FhirPathEngine` for the FHIR version you are working with (R4, R4B, or R5):
+
+```kotlin
+// Create an engine for FHIR R4
+val fhirPathEngine = FhirPathEngine.forR4()
+
+// Create an engine with strict mode enabled (throws on invalid property access)
+val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
+```
+
 ### Evaluating FHIRPath expressions
 
-To evaluate a FHIRPath expression, create a `FhirPathEngine` for the FHIR version you are working
-with and use the `evaluateExpression` function. Here is an example targeting FHIR R4:
+Use `evaluateExpression` API to evaluate FHIRPath expressions against a FHIR resource:
 
 ```kotlin
 import dev.ohs.fhir.fhirpath.FhirPathEngine
@@ -402,12 +413,13 @@ val patientExampleJson = ... // Load "patient-example.json"
 val json = Json { ignoreUnknownKeys = true }
 val patient = json.decodeFromString<Patient>(patientExampleJson)
 
-// Create the R4 evaluator engine
 val fhirPathEngine = FhirPathEngine.forR4()
-
-// Evaluate expressions
 val results = fhirPathEngine.evaluateExpression("name.given", patient)
 // ["Peter", "James", "Jim", "Peter", "James"]
+
+// In strict mode, accessing an unrecognized property throws an IllegalStateException
+val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
+strictEngine.evaluateExpression("name.given1", patient) // Throws IllegalStateException
 ```
 
 ## Developer Guide

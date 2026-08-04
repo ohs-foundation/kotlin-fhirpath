@@ -65,6 +65,7 @@ data class TraceEntry(val value: Any, val path: String)
 internal class FhirPathEvaluator(
   val fhirPathTypeResolver: FhirPathTypeResolver,
   val fhirModelNavigator: FhirModelNavigator,
+  val strictMode: Boolean = false,
 ) : fhirpathBaseVisitor<Collection<Any>>() {
   private var resource: Any? = null
   private val contextStack = ArrayDeque<Collection<Any>>()
@@ -191,7 +192,7 @@ internal class FhirPathEvaluator(
   override fun visitUnionExpression(ctx: fhirpathParser.UnionExpressionContext): Collection<Any> {
     val left = visit(ctx.expression(0)!!)
     val right = visit(ctx.expression(1)!!)
-    return left.union(right)
+    return left.union(right, fhirPathTypeResolver)
   }
 
   override fun visitInequalityExpression(
@@ -385,7 +386,10 @@ internal class FhirPathEvaluator(
       }
 
     return context.flatMap { item ->
-      when (val fieldValue = fhirModelNavigator.accessProperty(item, memberName)) {
+      when (
+        val fieldValue =
+          fhirModelNavigator.accessProperty(item, memberName, strictMode = strictMode)
+      ) {
         null -> emptyList()
         is List<*> -> fieldValue as Collection<Any>
         else -> listOf(fieldValue)

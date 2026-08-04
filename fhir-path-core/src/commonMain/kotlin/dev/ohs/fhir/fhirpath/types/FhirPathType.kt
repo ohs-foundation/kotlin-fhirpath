@@ -19,33 +19,31 @@ package dev.ohs.fhir.fhirpath.types
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 
 /**
- * A FHIRPath type. The taxonomy of FHIRPath types is as follows:
- * - `FhirPathType`: all valid types in FHIRPath
- *     - `FhirType`: sealed interface below representing FHIR types used in FHIRPath
- *         - `FhirR4Type`
- *             - `FhirR4PrimitiveType`: generated enum class
- *             - `FhirR4ComplexType`: generated enum class
- *             - `FhirR4ResourceType`: wrapper around `dev.ohs.fhir.model.r4.terminologies.ResourceType`
- *         - `FhirR4BType`
- *             - `FhirR4BPrimitiveType`: generated enum class
- *             - `FhirR4BComplexType`: generated enum class
- *             - `FhirR4BResourceType`: wrapper around `dev.ohs.fhir.model.r4b.terminologies.ResourceType`
- *         - `FhirR5Type`
- *             - `FhirR5PrimitiveType`: generated enum class
- *             - `FhirR5ComplexType`: generated enum class
- *             - `FhirR5ResourceType`: wrapper around `dev.ohs.fhir.model.r5.terminologies.ResourceType`
- *     - `FhirPathSystemType`: enum class below representing system types used in FHIRPath
+ * Engine-internal representation of a type in the FHIRPath type system.
  *
- * In FHIR, primitive types are defined using FHIRPath system types as underlying types. For
- * example, FHIR String might have data elements such as `id` and `extension`, but uses a FHIRPath
- * system string type for its actual value. In our implementation, FHIR types are preserved as long
- * as possible to preserve type information and data elements, but are unwrapped as FHIRPath system
- * types when necessary (e.g. for mathematical calculations).
+ * Used internally for type resolution, type checking, and dispatch (e.g. evaluating operators and
+ * functions like `is`, `as`, and `ofType()`). It represents a resolved `typeSpecifier` grammar
+ * symbol like `System.Integer` or `FHIR.Patient`.
  *
- * See [specification](https://hl7.org/fhirpath/N1/#types-and-reflection).
+ * Distinct from [TypeInfo]:
+ * - [FhirPathType] is an engine-internal descriptor and is never part of a FHIRPath collection.
+ * - [TypeInfo] is a runtime reflection object returned by `type()` as part of a FHIRPath collection
+ *   and exposes properties (`.namespace`, `.name`, `.baseType`).
  *
- * For using FHIR types in FHIRPath, see
- * [specification](https://fhir.hl7.org/fhir/fhirpath.html#types).
+ * Taxonomy:
+ * - [FhirPathType]: all valid types in FHIRPath
+ *     - [FhirType]: sealed interface representing FHIR model types
+ *         - `FhirR4Type` (`FhirR4PrimitiveType`, `FhirR4ComplexType`, `FhirR4ResourceType`)
+ *         - `FhirR4BType` (`FhirR4BPrimitiveType`, `FhirR4BComplexType`, `FhirR4BResourceType`)
+ *         - `FhirR5Type` (`FhirR5PrimitiveType`, `FhirR5ComplexType`, `FhirR5ResourceType`)
+ *     - [FhirPathSystemType]: enum class representing FHIRPath system types
+ *
+ * In FHIR, primitive types (e.g. FHIR `string`) are defined with underlying FHIRPath system types
+ * (e.g. `System.String`). In our implementation, FHIR types are preserved as long as possible to
+ * retain metadata (`id`, `extension`), but unwrapped to system types when needed for calculations.
+ *
+ * See [FHIRPath Specification](https://hl7.org/fhirpath/N1/#types-and-reflection) and
+ * [FHIR Types in FHIRPath](https://fhir.hl7.org/fhir/fhirpath.html#types).
  */
 interface FhirPathType {
   val namespace: String
@@ -69,7 +67,13 @@ enum class FhirPathSystemType(override val typeName: String) : FhirPathType {
   DATE("Date"),
   DATETIME("DateTime"),
   TIME("Time"),
-  QUANTITY("Quantity");
+  QUANTITY("Quantity"),
+
+  /**
+   * While not defined as a system type in the FHIRPath specification, this addition gives
+   * [TypeInfo] values a resolvable type, allowing expressions such as `(1.type()).type()` to work.
+   */
+  TYPE_INFO("TypeInfo");
 
   override val namespace = "System"
 
@@ -80,6 +84,7 @@ enum class FhirPathSystemType(override val typeName: String) : FhirPathType {
 
     fun fromObject(value: Any): FhirPathSystemType? {
       return when (value) {
+        is TypeInfo -> TYPE_INFO
         is Boolean -> BOOLEAN
         is String -> STRING
         is Int -> INTEGER

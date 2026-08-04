@@ -15,27 +15,28 @@ val mavenGroupId: String by project
 val mavenVersion: String by project
 val androidNamespace: String by project
 
-// Run `./gradlew generateUcumHelpers` to generate helper functions for UCUM in `fhirpath/build/generated`
+// Run `./gradlew generateUcumHelpers` to generate helper functions for UCUM in `fhirpath/src/commonMain/kotlin`
 val generateUcumHelpers = tasks.register<UcumHelperGenerationTask>("generateUcumHelpers") {
     description = "Generate FHIR model extensions for R4"
     this.ucumFile.set(
         File(project.rootDir, "third_party/ucum/ucum-essence.xml")
     )
     this.packageName.set("dev.ohs.fhir.fhirpath.ucum")
-    outputDirectory.set(layout.buildDirectory.dir("generated/ucum/kotlin"))
+    outputDirectory.set(layout.projectDirectory.dir("src/commonMain/kotlin"))
+    finalizedBy(rootProject.tasks.named("spotlessApply"))
 }
 
-// Run `./gradlew generateKotlinGrammarSource` to generate parser in `fhirpath/build/generatedAntlr`
+// Run `./gradlew generateKotlinGrammarSource` to generate parser in `fhirpath/src/commonMain/kotlin`
 val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
-    dependsOn("cleanGenerateKotlinGrammarSource")
     source = fileTree(rootProject.file("third_party/fhirpath-2.0.0")) {
         include("**/*.g4")
     }
     packageName = "dev.ohs.fhir.fhirpath.parsers"
     arguments = listOf("-visitor")  // Generate visitors alongside listeners
 
-    val outDir = "generated/grammar/kotlin/${packageName!!.replace(".", "/")}"
-    outputDirectory = layout.buildDirectory.dir(outDir).get().asFile
+    val outDir = "src/commonMain/kotlin/${packageName!!.replace(".", "/")}"
+    outputDirectory = layout.projectDirectory.dir(outDir).asFile
+    finalizedBy(rootProject.tasks.named("spotlessApply"))
 }
 
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
@@ -82,10 +83,6 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
 
     sourceSets {
         commonMain {
-            kotlin {
-                srcDir(generateUcumHelpers)
-                srcDir(generateKotlinGrammarSource)
-            }
             dependencies {
                 api(libs.bignum)
                 api(libs.kotlinx.datetime)
@@ -97,7 +94,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
 }
 
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
     dependsOn(generateUcumHelpers)
     dependsOn(generateKotlinGrammarSource)
 }

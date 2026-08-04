@@ -36,6 +36,7 @@ private const val TEST_INPUT_DIR = "${TEST_RESOURCE_DIR}/resources"
 private val jsonR4 = Json { ignoreUnknownKeys = true }
 
 private val fhirPathEngine = FhirPathEngine.forR4()
+private val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
 
 /**
  * A map from the test group name to the reason why the test group is skipped.
@@ -45,9 +46,7 @@ private val fhirPathEngine = FhirPathEngine.forR4()
 val skippedTestGroupToReasonMap =
   mapOf(
     "testEscapeUnescape" to "Unimplemented",
-    "testVariables" to "Unimplemented",
     "Comparable" to "Unimplemented",
-    "Precision" to "Unimplemented",
   )
 
 /**
@@ -57,7 +56,6 @@ val skippedTestGroupToReasonMap =
  */
 val skippedTestCaseToReasonMap =
   mapOf(
-    "testPolymorphismB" to "Strict mode is not implemented yet",
     "testPolymorphismAsB" to
       "No error should be thrown according to https://hl7.org/fhirpath/#as-type-specifier",
     "testDateTimeGreaterThanDate1" to
@@ -86,35 +84,17 @@ val skippedTestCaseToReasonMap =
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/Definite.20durations.20above.20seconds.20in.20date.20time.20arithmetic/with/564095766",
     "testDollarOrderNotAllowed" to
       "Ordered function validation not implemented. Test expects error when using skip() on unordered collection (children()), but engine does not track collection ordering.",
-    "testSimpleFail" to "Strict mode is not implemented yet",
-    "testSimpleWithWrongContext" to "Strict mode is not implemented yet",
     "testPolymorphicsB" to "Allow invalid test where it's not strict mode but expects output",
     "testIndex" to "TBD",
     "testPeriodInvariantOld" to "hasValue() is not implemented.",
     "testPeriodInvariantNew" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
-    "testCombine2" to "FHIR String and Kotlin String comparison issue in exclude()",
-    "testCombine3" to "As above",
     "testContainedId" to "TBD",
     "testPrimitiveExtensions" to "Function `hasValue` is not implemented.",
     "testSort8" to "Test uses `-\$this` for descending string sort, but spec uses asc/desc.",
     "testSort10" to "Test uses `-` prefix for descending sort, but spec uses asc/desc.",
-    "testType1" to "Function `type` is not implemented.",
-    "testType1a" to "As `testType1`.",
-    "testType2" to "As `testType1`.",
-    "testType2a" to "As `testType1`.",
-    "testType3" to "As `testType1`.",
-    "testType4" to "As `testType1`.",
-    "testType9" to "As `testType1`.",
-    "testType10" to "As `testType1`.",
-    "testType15" to "As `testType1`.",
-    "testType16" to "As `testType1`.",
-    "testType20" to
-      "Function `type` is not implemented; the `ofType` part of the expression works.",
-    "testType21" to "As `testType20`.",
     "testType22" to
       "`is` with an unknown `System` type should evaluate to false, but the type resolver throws `Unknown System type Patient`.",
-    "testType23" to "As `testType20`.",
     "testTypeA" to
       "Evaluating `Parameters.parameter[x].value` crashes with `NoSuchElementException: ArrayDeque is empty`.",
     "testTypeA1" to "As `testTypeA`.",
@@ -159,16 +139,21 @@ class FhirPathEngineTest :
                 ?: Enabled.enabled
             }
           ) {
+            val engine =
+              if (testCase.mode == "strict" || testCase.expression.mode == "strict")
+                fhirPathEngineStrict
+              else fhirPathEngine
+
             if (testCase.expression.invalid != null) {
               assertFailsWith<Exception> {
-                fhirPathEngine.evaluateExpression(
+                engine.evaluateExpression(
                   testCase.expression.value,
                   testCase.inputfile?.let { inputMap[it] },
                 )
               }
             } else {
               val results =
-                fhirPathEngine.evaluateExpression(
+                engine.evaluateExpression(
                   testCase.expression.value,
                   testCase.inputfile?.let { inputMap[it] },
                 )
