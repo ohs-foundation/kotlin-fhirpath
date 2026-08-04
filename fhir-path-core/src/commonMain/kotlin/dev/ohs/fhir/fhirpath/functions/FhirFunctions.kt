@@ -55,7 +55,7 @@ private const val BASE_STRUCTURE_DEFINITION_PREFIX = "http://hl7.org/fhir/Struct
  * the specification requires. Other profiles, such as those defined in implementation guides, would
  * need profile validation, which is not implemented.
  *
- * See [specification](https://hl7.org/fhir/fhirpath.html#functions).
+ * See [specification](https://hl7.org/fhir/R4/fhirpath.html#functions).
  */
 internal fun Collection<Any>.conformsTo(
   params: List<Any>,
