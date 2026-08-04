@@ -41,6 +41,10 @@ class ConformsToTest {
         )
         .toList(),
     )
+  }
+
+  @Test
+  fun `element does not conform to a different data type profile`() {
     assertEquals(
       listOf(false),
       fhirPathEngine
