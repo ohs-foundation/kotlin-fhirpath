@@ -54,7 +54,6 @@
       "text": "Clinical Review"
     }
   ],
-  "priority": 5,
   "description": "Discussion on the results of your recent MRI",
   "minutesDuration": 15,
   "slot": [
