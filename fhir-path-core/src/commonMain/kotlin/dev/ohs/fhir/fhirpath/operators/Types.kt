@@ -41,7 +41,7 @@ internal fun Collection<Any>.ofType(
   val targetType = params.single() as? FhirPathType ?: return emptyList()
   return filter { item ->
     val type = fhirPathTypeResolver.resolveFromObject(item)
-    type != null && type.isSubtypeOf(targetType)
+    type != null && (type == targetType || type.typeName == targetType.typeName)
   }
 }
 
@@ -56,13 +56,16 @@ internal fun Collection<Any>.`as`(
   val type = fhirPathTypeResolver.resolveFromObject(item)
   val targetType = params.single() as? FhirPathType ?: return emptyList()
 
-  if (type != null && type.isSubtypeOf(targetType)) {
+  if (type != null && (type == targetType || type.typeName == targetType.typeName)) {
     return this
   }
 
   val converted = item.toFhirPathType(fhirPathTypeResolver)
   val convertedType = fhirPathTypeResolver.resolveFromObject(converted)
-  if (convertedType != null && convertedType.isSubtypeOf(targetType)) {
+  if (
+    convertedType != null &&
+      (convertedType == targetType || convertedType.typeName == targetType.typeName)
+  ) {
     return listOf(converted)
   }
 

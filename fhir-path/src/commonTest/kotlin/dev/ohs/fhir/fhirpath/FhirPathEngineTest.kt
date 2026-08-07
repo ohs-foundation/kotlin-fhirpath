@@ -96,16 +96,12 @@ val skippedTestCaseToReasonMap =
     "testSort10" to "Test uses `-` prefix for descending sort, but spec uses asc/desc.",
     "testType22" to
       "`is` with an unknown `System` type should evaluate to false, but the type resolver throws `Unknown System type Patient`.",
-    "testTypeA3" to "`uuid` / `uri` subtype semantics. As `testFHIRPathIsFunction2`.",
-    "testTypeA4" to "As `testTypeA3`.",
     "HighBoundaryDateTimeMillisecond1" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "HighBoundaryDateTimeMillisecond3" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "LowBoundaryDateTimeMillisecond1" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
-    "testFHIRPathIsFunction2" to
-      "`code` specializes `string` in FHIR, but type checks use exact equality with no subtype semantics.",
   )
 
 @OptIn(ExperimentalKotest::class)

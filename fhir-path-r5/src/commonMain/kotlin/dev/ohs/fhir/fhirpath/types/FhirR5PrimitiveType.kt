@@ -49,26 +49,26 @@ public enum class FhirR5PrimitiveType(override val typeName: kotlin.String) : Fh
     public fun fromObject(`value`: Any): FhirR5PrimitiveType? =
       when (value) {
         is dev.ohs.fhir.model.r5.Oid -> Oid
+        is dev.ohs.fhir.model.r5.Uuid -> Uuid
+        is dev.ohs.fhir.model.r5.Url -> Url
+        is dev.ohs.fhir.model.r5.Canonical -> Canonical
         is dev.ohs.fhir.model.r5.Uri -> Uri
         is dev.ohs.fhir.model.r5.Id -> Id
         is dev.ohs.fhir.model.r5.Time -> Time
         is dev.ohs.fhir.model.r5.Base64Binary -> Base64Binary
-        is dev.ohs.fhir.model.r5.String -> String
         is dev.ohs.fhir.model.r5.Markdown -> Markdown
+        is dev.ohs.fhir.model.r5.Code -> Code
+        is dev.ohs.fhir.model.r5.String -> String
         is dev.ohs.fhir.model.r5.DateTime -> DateTime
         is dev.ohs.fhir.model.r5.Boolean -> Boolean
         is dev.ohs.fhir.model.r5.PositiveInt -> PositiveInt
-        is dev.ohs.fhir.model.r5.Uuid -> Uuid
-        is dev.ohs.fhir.model.r5.Code -> Code
+        is dev.ohs.fhir.model.r5.UnsignedInt -> UnsignedInt
         is dev.ohs.fhir.model.r5.Integer -> Integer
         is dev.ohs.fhir.model.r5.Xhtml -> Xhtml
         is dev.ohs.fhir.model.r5.Date -> Date
         is dev.ohs.fhir.model.r5.Integer64 -> Integer64
-        is dev.ohs.fhir.model.r5.Url -> Url
         is dev.ohs.fhir.model.r5.Instant -> Instant
         is dev.ohs.fhir.model.r5.Decimal -> Decimal
-        is dev.ohs.fhir.model.r5.Canonical -> Canonical
-        is dev.ohs.fhir.model.r5.UnsignedInt -> UnsignedInt
         is Enumeration<*> -> Code
         else -> null
       }
