@@ -44,11 +44,7 @@ private val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
  * N.B. This should be kept in sync with the conformance table in the `README.md` file.
  */
 val skippedTestGroupToReasonMap =
-  mapOf(
-    "testEscapeUnescape" to "Unimplemented",
-    "testConformsTo" to "Unimplemented",
-    "Comparable" to "Unimplemented",
-  )
+  mapOf("testConformsTo" to "Unimplemented", "Comparable" to "Unimplemented")
 
 /**
  * A map from the test case name to the reason why the test case is skipped.

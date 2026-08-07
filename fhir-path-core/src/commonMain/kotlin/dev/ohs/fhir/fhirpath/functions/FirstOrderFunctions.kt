@@ -108,6 +108,8 @@ internal fun Collection<Any>.invoke(
     // https://build.fhir.org/ig/HL7/FHIRPath/#additional-string-functions
     "encode" -> this.encode(params, fhirPathTypeResolver)
     "decode" -> this.decode(params, fhirPathTypeResolver)
+    "escape" -> this.escape(params, fhirPathTypeResolver)
+    "unescape" -> this.unescape(params, fhirPathTypeResolver)
     "trim" -> this.trim(fhirPathTypeResolver)
     "split" -> this.split(params, fhirPathTypeResolver)
     "join" -> this.join(params, fhirPathTypeResolver)
