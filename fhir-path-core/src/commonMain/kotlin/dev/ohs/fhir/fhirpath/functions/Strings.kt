@@ -536,10 +536,14 @@ private fun jsonUnescape(input: String): String = buildString {
         'b' -> append('\b')
         'f' -> append('\u000C')
         'u' -> {
-          // `\uXXXX` is a UTF-16 code unit, so a code point above 0xFFFF arrives as two escapes,
-          // a surrogate pair, and appending each unit as a Char combines them.
-          append(Char(input.substring(i + 2, i + 6).toInt(16)))
-          i += 6
+          // The 6 character `\uXXXX` escape carries one UTF-16 code unit, so appending each
+          // unit as a Char lets a surrogate pair, arriving as two escapes, combine naturally.
+          // The bound is checked up front because on Kotlin/JS substring clamps instead of
+          // throwing, and a truncated escape like `a\u12` would silently decode garbage.
+          val escapeEnd = i + 6
+          require(escapeEnd <= input.length) { "Truncated unicode escape" }
+          append(Char(input.substring(i + 2, escapeEnd).toInt(16)))
+          i = escapeEnd
           continue
         }
         // An escape JSON does not define, like FHIRPath's `\'`, keeps the escaped character.
