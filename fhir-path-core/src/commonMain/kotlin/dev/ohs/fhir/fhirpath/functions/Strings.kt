@@ -418,7 +418,7 @@ internal fun Collection<Any>.unescape(
       "json" -> listOf(jsonUnescape(input))
       else -> emptyList()
     }
-  } catch (_: Exception) {
+  } catch (_: IllegalArgumentException) {
     emptyList()
   }
 }
