@@ -51,35 +51,41 @@ private const val BASE_STRUCTURE_DEFINITION_PREFIX = "http://hl7.org/fhir/Struct
  * argument.
  *
  * Only the base FHIR profiles (`http://hl7.org/fhir/StructureDefinition/<Type>`) are supported: the
- * input's type is compared to `<Type>`. An error is thrown if the structure cannot be resolved, as
- * the specification requires. Other profiles, such as those defined in implementation guides, would
- * need profile validation, which is not implemented.
+ * input's type is compared to `<Type>`. If the input is not a single item, the structure is empty,
+ * or the structure cannot be resolved to a valid profile, the result is empty. Other profiles, such
+ * as those defined in implementation guides, would need profile validation, which is not
+ * implemented, so they are unresolvable and yield empty.
  *
- * See [specification](https://hl7.org/fhir/R4/fhirpath.html#functions).
+ * This follows the current specification (https://hl7.org/fhir/fhirpath.html#functions). R4 and R4B
+ * require an error for an unresolvable structure instead; `testConformsTo3` in the R4 conformance
+ * suite is skipped for this reason.
  */
 internal fun Collection<Any>.conformsTo(
   params: List<Any>,
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Boolean> {
-  check(size <= 1) { "conformsTo() cannot be called on a collection with more than 1 item" }
   val item = singleOrNull() ?: return emptyList()
   // The structure argument can be a FHIR string (e.g. from a resource element), so it is
   // converted before use like any other string parameter.
   val structure =
-    params.singleOrNull()?.toFhirPathType(fhirPathTypeResolver) as? String
-      ?: error("conformsTo() requires a structure argument")
+    params.singleOrNull()?.toFhirPathType(fhirPathTypeResolver) as? String ?: return emptyList()
 
   if (!structure.startsWith(BASE_STRUCTURE_DEFINITION_PREFIX)) {
-    error("Cannot resolve structure definition: $structure")
+    return emptyList()
   }
-  // resolveFromString throws for an unknown type name, satisfying the specification's
-  // requirement to error when the structure cannot be resolved. It falls back to System types
-  // for names that are not FHIR types (e.g. `String` rather than `string`), which are not valid
-  // structure definitions either, so those must error as well.
+  // resolveFromString throws for an unknown type name; an unresolvable structure yields empty.
   val targetType =
-    fhirPathTypeResolver.resolveFromString(structure.removePrefix(BASE_STRUCTURE_DEFINITION_PREFIX))
+    try {
+      fhirPathTypeResolver.resolveFromString(
+        structure.removePrefix(BASE_STRUCTURE_DEFINITION_PREFIX)
+      )
+    } catch (_: IllegalStateException) {
+      return emptyList()
+    }
+  // The resolver falls back to System types for names that are not FHIR types (e.g. `String`
+  // rather than `string`); those are not valid structure definitions, so they yield empty too.
   if (targetType !is FhirType) {
-    error("Cannot resolve structure definition: $structure")
+    return emptyList()
   }
   return listOf(fhirPathTypeResolver.resolveFromObject(item) == targetType)
 }

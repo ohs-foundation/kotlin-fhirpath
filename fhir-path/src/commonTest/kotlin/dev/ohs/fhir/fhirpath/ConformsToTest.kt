@@ -19,7 +19,6 @@ package dev.ohs.fhir.fhirpath
 import dev.ohs.fhir.model.r4.Resource
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.Json
 
 private val fhirPathEngine = FhirPathEngine.forR4()
@@ -57,27 +56,55 @@ class ConformsToTest {
   }
 
   @Test
-  fun `unresolvable structure throws`() {
-    assertFailsWith<Exception> {
-      fhirPathEngine.evaluateExpression(
-        "conformsTo('http://hl7.org/fhir/StructureDefinition/NotARealType')",
-        patient,
-      )
-    }
+  fun `unresolvable structure returns empty`() {
+    // R4 requires an error here, but the current spec revised this to empty; see the kdoc.
+    assertEquals(
+      emptyList(),
+      fhirPathEngine
+        .evaluateExpression(
+          "conformsTo('http://hl7.org/fhir/StructureDefinition/NotARealType')",
+          patient,
+        )
+        .toList(),
+    )
   }
 
   @Test
-  fun `structure resolving only to a System type throws`() {
-    // `String` is not a FHIR structure definition (FHIR's is lowercase `string`), so it must
-    // error rather than fall back to the System type and return false. The input element is a
-    // FHIR string, so with the lowercase URL this would return true; the error is about the
-    // structure being unresolvable, not about the input.
-    assertFailsWith<Exception> {
-      fhirPathEngine.evaluateExpression(
-        "name.first().family.conformsTo('http://hl7.org/fhir/StructureDefinition/String')",
-        patient,
-      )
-    }
+  fun `structure resolving only to a System type returns empty`() {
+    // `String` is not a FHIR structure definition (FHIR's is lowercase `string`), so it is
+    // unresolvable rather than falling back to the System type and returning false. The input
+    // element is a FHIR string, so with the lowercase URL this would return true; the empty
+    // result is about the structure, not the input.
+    assertEquals(
+      emptyList(),
+      fhirPathEngine
+        .evaluateExpression(
+          "name.first().family.conformsTo('http://hl7.org/fhir/StructureDefinition/String')",
+          patient,
+        )
+        .toList(),
+    )
+  }
+
+  @Test
+  fun `multiple input items returns empty`() {
+    assertEquals(
+      emptyList(),
+      fhirPathEngine
+        .evaluateExpression(
+          "('a' | 'b').conformsTo('http://hl7.org/fhir/StructureDefinition/string')",
+          patient,
+        )
+        .toList(),
+    )
+  }
+
+  @Test
+  fun `empty structure returns empty`() {
+    assertEquals(
+      emptyList(),
+      fhirPathEngine.evaluateExpression("name.first().conformsTo({})", patient).toList(),
+    )
   }
 
   @Test

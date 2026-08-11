@@ -178,8 +178,18 @@ The `conformsTo()` function supports the base FHIR profiles
 (`http://hl7.org/fhir/StructureDefinition/<Type>`): the input element's type is compared to the
 type named by the structure. Other profiles, such as those defined in implementation guides (e.g.
 the US Core Patient profile), would require profile validation, which is not implemented. Passing
-such a profile URL results in an error, consistent with the specification's requirement to error
-when a structure cannot be resolved (https://hl7.org/fhir/R4/fhirpath.html#functions).
+such a profile URL yields an empty result.
+
+#### FHIR version differences
+
+The FHIR specification can differ between versions on how a FHIRPath function behaves. This
+implementation follows the current specification uniformly across R4, R4B and R5, rather than
+implementing each version's behavior separately, maintaining per version behavior would multiply
+the code and tests to maintain, and later specification text is usually a correction or
+clarification of the earlier versions.
+
+One example is `conformsTo()`, R4 and R4B require an error for an unresolvable structure
+(https://hl7.org/fhir/R4/fhirpath.html#functions), while the current specification returns empty (https://hl7.org/fhir/fhirpath.html#functions). Therefore `testConformsTo3` is skipped in the conformance suite.
 
 ### Timezone offset in date time values
 
@@ -291,6 +301,7 @@ documented in the table below.
 | `testQuantity4`                    | Test               |     | [PR](https://github.com/FHIR/fhir-test-cases/pull/243) |                                                                                                                                                                                                        |
 | `testSubSetOf3`                    | Specification/Test |     |                                                        | The test resource is invalid and missing (https://github.com/FHIR/fhir-test-cases/issues/247); the scope of "$this" is unclear (https://jira.hl7.org/browse/FHIR-44601)                                |
 | `testIif11`                        | Implementation     |     |                                                        | https://jira.hl7.org/browse/FHIR-44774; https://jira.hl7.org/browse/FHIR-44601                                                                                                                         |
+| `testConformsTo3`                  | Specification      |     |                                                        | Intentional deviation: unresolvable structure returns empty per the current spec (https://hl7.org/fhir/fhirpath.html#functions); R4 requires an error, revised in R5.                                  |
 | `testEscape*`                      | Implementation     | STU |                                                        | Function `escape` is not implemented.                                                                                                                                                                  |
 | `testUnescape*`                    | Implementation     | STU |                                                        | Function `unescape` is not implemented.                                                                                                                                                                |
 | `testNow1`                         | Specification/Test |     |                                                        | As `testDateTimeGreaterThanDate1`.                                                                                                                                                                     |
