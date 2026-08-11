@@ -483,7 +483,7 @@ internal fun Collection<Any>.comparable(
     params.singleOrNull()?.toFhirPathType(fhirPathTypeResolver) as? FhirPathQuantity
       ?: return emptyList()
 
-  val leftUnit = left.toEqualCanonicalized().unit ?: return emptyList()
-  val rightUnit = right.toEqualCanonicalized().unit ?: return emptyList()
+  val leftUnit = left.toEqualCanonicalized().unit ?: return listOf(false)
+  val rightUnit = right.toEqualCanonicalized().unit ?: return listOf(false)
   return listOf(leftUnit == rightUnit)
 }

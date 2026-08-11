@@ -31,6 +31,13 @@ private val observation: Resource =
          "code": "kg"}}"""
     )
 
+private val unitlessObservation: Resource =
+  Json { ignoreUnknownKeys = true }
+    .decodeFromString(
+      """{"resourceType": "Observation", "status": "final", "code": {"text": "score"},
+         "valueQuantity": {"value": 5}}"""
+    )
+
 class ComparableTest {
 
   @Test
@@ -69,6 +76,18 @@ class ComparableTest {
     assertEquals(
       listOf(false),
       fhirPathEngine.evaluateExpression("(1 year).comparable(1 'a')", null).toList(),
+    )
+  }
+
+  @Test
+  fun `fhir quantity without a code returns empty`() {
+    // A FHIR Quantity without a code cannot be converted to a FHIRPath Quantity, so the input is
+    // not a single Quantity and the result is empty, per the specification's input rule.
+    assertEquals(
+      emptyList(),
+      fhirPathEngine
+        .evaluateExpression("valueQuantity.comparable(1 'kg')", unitlessObservation)
+        .toList(),
     )
   }
 
