@@ -18,6 +18,7 @@ package dev.ohs.fhir.model.r4.ext
 
 import dev.ohs.fhir.model.r4.ActivityDefinition
 import dev.ohs.fhir.model.r4.AllergyIntolerance
+import dev.ohs.fhir.model.r4.Annotation
 import dev.ohs.fhir.model.r4.AuditEvent
 import dev.ohs.fhir.model.r4.BiologicallyDerivedProduct
 import dev.ohs.fhir.model.r4.CarePlan
@@ -36,14 +37,18 @@ import dev.ohs.fhir.model.r4.Contract
 import dev.ohs.fhir.model.r4.Coverage
 import dev.ohs.fhir.model.r4.CoverageEligibilityRequest
 import dev.ohs.fhir.model.r4.CoverageEligibilityResponse
+import dev.ohs.fhir.model.r4.DataRequirement
 import dev.ohs.fhir.model.r4.DetectedIssue
 import dev.ohs.fhir.model.r4.DeviceDefinition
 import dev.ohs.fhir.model.r4.DeviceRequest
 import dev.ohs.fhir.model.r4.DeviceUseStatement
 import dev.ohs.fhir.model.r4.DiagnosticReport
+import dev.ohs.fhir.model.r4.Dosage
+import dev.ohs.fhir.model.r4.ElementDefinition
 import dev.ohs.fhir.model.r4.EventDefinition
 import dev.ohs.fhir.model.r4.EvidenceVariable
 import dev.ohs.fhir.model.r4.ExplanationOfBenefit
+import dev.ohs.fhir.model.r4.Extension
 import dev.ohs.fhir.model.r4.FamilyMemberHistory
 import dev.ohs.fhir.model.r4.Goal
 import dev.ohs.fhir.model.r4.Group
@@ -74,6 +79,7 @@ import dev.ohs.fhir.model.r4.Observation
 import dev.ohs.fhir.model.r4.Parameters
 import dev.ohs.fhir.model.r4.Patient
 import dev.ohs.fhir.model.r4.PlanDefinition
+import dev.ohs.fhir.model.r4.Population
 import dev.ohs.fhir.model.r4.Procedure
 import dev.ohs.fhir.model.r4.Provenance
 import dev.ohs.fhir.model.r4.Questionnaire
@@ -87,11 +93,15 @@ import dev.ohs.fhir.model.r4.Specimen
 import dev.ohs.fhir.model.r4.SpecimenDefinition
 import dev.ohs.fhir.model.r4.StructureMap
 import dev.ohs.fhir.model.r4.Substance
+import dev.ohs.fhir.model.r4.SubstanceAmount
 import dev.ohs.fhir.model.r4.SubstanceReferenceInformation
 import dev.ohs.fhir.model.r4.SubstanceSpecification
 import dev.ohs.fhir.model.r4.SupplyDelivery
 import dev.ohs.fhir.model.r4.SupplyRequest
 import dev.ohs.fhir.model.r4.Task
+import dev.ohs.fhir.model.r4.Timing
+import dev.ohs.fhir.model.r4.TriggerDefinition
+import dev.ohs.fhir.model.r4.UsageContext
 import dev.ohs.fhir.model.r4.ValueSet
 import kotlin.Any
 import kotlin.Boolean
@@ -163,6 +173,233 @@ private fun Any.getPropertyInChoiceValue0(name: String): Any? =
     is Claim.Item.Location.CodeableConcept -> this.value.getProperty(name)
     is Claim.Item.Location.Address -> this.value.getProperty(name)
     is Claim.Item.Location.Reference -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Base64Binary -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Boolean -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Canonical -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Code -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Date -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.DateTime -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Decimal -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Id -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Instant -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Integer -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Markdown -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Oid -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.PositiveInt -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.String -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Time -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.UnsignedInt -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Uri -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Url -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Uuid -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Address -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Age -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Annotation -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Attachment -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.CodeableConcept -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Coding -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.ContactPoint -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Count -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Distance -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Duration -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.HumanName -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Identifier -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Money -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Period -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Quantity -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Range -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Ratio -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Reference -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.SampledData -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Signature -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Timing -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.ContactDetail -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Contributor -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.DataRequirement -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Expression -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.ParameterDefinition -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.RelatedArtifact -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.TriggerDefinition -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.UsageContext -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Dosage -> this.value.getProperty(name)
+    is ElementDefinition.DefaultValue.Meta -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Base64Binary -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Boolean -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Canonical -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Code -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Date -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.DateTime -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Decimal -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Id -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Instant -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Integer -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Markdown -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Oid -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.PositiveInt -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.String -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Time -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.UnsignedInt -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Uri -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Url -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Uuid -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Address -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Age -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Annotation -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Attachment -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.CodeableConcept -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Coding -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.ContactPoint -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Count -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Distance -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Duration -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.HumanName -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Identifier -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Money -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Period -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Quantity -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Range -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Ratio -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Reference -> this.value.getProperty(name)
+    else -> null
+  }
+
+private fun Any.getPropertyInChoiceValue1(name: String): Any? =
+  when (this) {
+    is ElementDefinition.Fixed.SampledData -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Signature -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Timing -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.ContactDetail -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Contributor -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.DataRequirement -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Expression -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.ParameterDefinition -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.RelatedArtifact -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.TriggerDefinition -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.UsageContext -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Dosage -> this.value.getProperty(name)
+    is ElementDefinition.Fixed.Meta -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Base64Binary -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Boolean -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Canonical -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Code -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Date -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.DateTime -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Decimal -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Id -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Instant -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Integer -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Markdown -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Oid -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.PositiveInt -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.String -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Time -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.UnsignedInt -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Uri -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Url -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Uuid -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Address -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Age -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Annotation -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Attachment -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.CodeableConcept -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Coding -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.ContactPoint -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Count -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Distance -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Duration -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.HumanName -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Identifier -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Money -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Period -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Quantity -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Range -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Ratio -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Reference -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.SampledData -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Signature -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Timing -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.ContactDetail -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Contributor -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.DataRequirement -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Expression -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.ParameterDefinition -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.RelatedArtifact -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.TriggerDefinition -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.UsageContext -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Dosage -> this.value.getProperty(name)
+    is ElementDefinition.Pattern.Meta -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Base64Binary -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Boolean -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Canonical -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Code -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Date -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.DateTime -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Decimal -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Id -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Instant -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Integer -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Markdown -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Oid -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.PositiveInt -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.String -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Time -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.UnsignedInt -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Uri -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Url -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Uuid -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Address -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Age -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Annotation -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Attachment -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.CodeableConcept -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Coding -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.ContactPoint -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Count -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Distance -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Duration -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.HumanName -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Identifier -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Money -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Period -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Quantity -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Range -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Ratio -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Reference -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.SampledData -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Signature -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Timing -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.ContactDetail -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Contributor -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.DataRequirement -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Expression -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.ParameterDefinition -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.RelatedArtifact -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.TriggerDefinition -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.UsageContext -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Dosage -> this.value.getProperty(name)
+    is ElementDefinition.Example.Value.Meta -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.Date -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.DateTime -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.Instant -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.Time -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.Decimal -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.Integer -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.PositiveInt -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.UnsignedInt -> this.value.getProperty(name)
+    is ElementDefinition.MinValue.Quantity -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.Date -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.DateTime -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.Instant -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.Time -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.Decimal -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.Integer -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.PositiveInt -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.UnsignedInt -> this.value.getProperty(name)
+    is ElementDefinition.MaxValue.Quantity -> this.value.getProperty(name)
+    is TriggerDefinition.Timing.Timing -> this.value.getProperty(name)
+    is TriggerDefinition.Timing.Reference -> this.value.getProperty(name)
+    is TriggerDefinition.Timing.Date -> this.value.getProperty(name)
+    is TriggerDefinition.Timing.DateTime -> this.value.getProperty(name)
     is AuditEvent.Entity.Detail.Value.String -> this.value.getProperty(name)
     is AuditEvent.Entity.Detail.Value.Base64Binary -> this.value.getProperty(name)
     is ServiceRequest.Quantity.Quantity -> this.value.getProperty(name)
@@ -178,6 +415,11 @@ private fun Any.getPropertyInChoiceValue0(name: String): Any? =
     is CarePlan.Activity.Detail.Scheduled.Timing -> this.value.getProperty(name)
     is CarePlan.Activity.Detail.Scheduled.Period -> this.value.getProperty(name)
     is CarePlan.Activity.Detail.Scheduled.String -> this.value.getProperty(name)
+    else -> null
+  }
+
+private fun Any.getPropertyInChoiceValue2(name: String): Any? =
+  when (this) {
     is CarePlan.Activity.Detail.Product.CodeableConcept -> this.value.getProperty(name)
     is CarePlan.Activity.Detail.Product.Reference -> this.value.getProperty(name)
     is CoverageEligibilityResponse.Serviced.Date -> this.value.getProperty(name)
@@ -226,6 +468,8 @@ private fun Any.getPropertyInChoiceValue0(name: String): Any? =
     is DeviceRequest.Occurrence.DateTime -> this.value.getProperty(name)
     is DeviceRequest.Occurrence.Period -> this.value.getProperty(name)
     is DeviceRequest.Occurrence.Timing -> this.value.getProperty(name)
+    is Annotation.Author.Reference -> this.value.getProperty(name)
+    is Annotation.Author.String -> this.value.getProperty(name)
     is Substance.Ingredient.Substance.CodeableConcept -> this.value.getProperty(name)
     is Substance.Ingredient.Substance.Reference -> this.value.getProperty(name)
     is Group.Characteristic.Value.CodeableConcept -> this.value.getProperty(name)
@@ -233,6 +477,11 @@ private fun Any.getPropertyInChoiceValue0(name: String): Any? =
     is Group.Characteristic.Value.Quantity -> this.value.getProperty(name)
     is Group.Characteristic.Value.Range -> this.value.getProperty(name)
     is Group.Characteristic.Value.Reference -> this.value.getProperty(name)
+    is SubstanceAmount.Amount.Quantity -> this.value.getProperty(name)
+    is SubstanceAmount.Amount.Range -> this.value.getProperty(name)
+    is SubstanceAmount.Amount.String -> this.value.getProperty(name)
+    is Population.Age.Range -> this.value.getProperty(name)
+    is Population.Age.CodeableConcept -> this.value.getProperty(name)
     is Questionnaire.Item.EnableWhen.Answer.Boolean -> this.value.getProperty(name)
     is Questionnaire.Item.EnableWhen.Answer.Decimal -> this.value.getProperty(name)
     is Questionnaire.Item.EnableWhen.Answer.Integer -> this.value.getProperty(name)
@@ -255,17 +504,19 @@ private fun Any.getPropertyInChoiceValue0(name: String): Any? =
     is Questionnaire.Item.Initial.Value.Date -> this.value.getProperty(name)
     is Questionnaire.Item.Initial.Value.DateTime -> this.value.getProperty(name)
     is Questionnaire.Item.Initial.Value.Time -> this.value.getProperty(name)
-    else -> null
-  }
-
-private fun Any.getPropertyInChoiceValue1(name: String): Any? =
-  when (this) {
     is Questionnaire.Item.Initial.Value.String -> this.value.getProperty(name)
     is Questionnaire.Item.Initial.Value.Uri -> this.value.getProperty(name)
     is Questionnaire.Item.Initial.Value.Attachment -> this.value.getProperty(name)
     is Questionnaire.Item.Initial.Value.Coding -> this.value.getProperty(name)
     is Questionnaire.Item.Initial.Value.Quantity -> this.value.getProperty(name)
     is Questionnaire.Item.Initial.Value.Reference -> this.value.getProperty(name)
+    is Dosage.AsNeeded.Boolean -> this.value.getProperty(name)
+    is Dosage.AsNeeded.CodeableConcept -> this.value.getProperty(name)
+    is Dosage.DoseAndRate.Dose.Range -> this.value.getProperty(name)
+    is Dosage.DoseAndRate.Dose.Quantity -> this.value.getProperty(name)
+    is Dosage.DoseAndRate.Rate.Ratio -> this.value.getProperty(name)
+    is Dosage.DoseAndRate.Rate.Range -> this.value.getProperty(name)
+    is Dosage.DoseAndRate.Rate.Quantity -> this.value.getProperty(name)
     is SupplyRequest.Item.CodeableConcept -> this.value.getProperty(name)
     is SupplyRequest.Item.Reference -> this.value.getProperty(name)
     is SupplyRequest.Parameter.Value.CodeableConcept -> this.value.getProperty(name)
@@ -275,6 +526,11 @@ private fun Any.getPropertyInChoiceValue1(name: String): Any? =
     is SupplyRequest.Occurrence.DateTime -> this.value.getProperty(name)
     is SupplyRequest.Occurrence.Period -> this.value.getProperty(name)
     is SupplyRequest.Occurrence.Timing -> this.value.getProperty(name)
+    is DataRequirement.Subject.CodeableConcept -> this.value.getProperty(name)
+    is DataRequirement.Subject.Reference -> this.value.getProperty(name)
+    is DataRequirement.DateFilter.Value.DateTime -> this.value.getProperty(name)
+    is DataRequirement.DateFilter.Value.Period -> this.value.getProperty(name)
+    is DataRequirement.DateFilter.Value.Duration -> this.value.getProperty(name)
     is Provenance.Occurred.Period -> this.value.getProperty(name)
     is Provenance.Occurred.DateTime -> this.value.getProperty(name)
     is RiskAssessment.Occurrence.DateTime -> this.value.getProperty(name)
@@ -319,6 +575,11 @@ private fun Any.getPropertyInChoiceValue1(name: String): Any? =
     is Parameters.Parameter.Value.Quantity -> this.value.getProperty(name)
     is Parameters.Parameter.Value.Range -> this.value.getProperty(name)
     is Parameters.Parameter.Value.Ratio -> this.value.getProperty(name)
+    else -> null
+  }
+
+private fun Any.getPropertyInChoiceValue3(name: String): Any? =
+  when (this) {
     is Parameters.Parameter.Value.Reference -> this.value.getProperty(name)
     is Parameters.Parameter.Value.SampledData -> this.value.getProperty(name)
     is Parameters.Parameter.Value.Signature -> this.value.getProperty(name)
@@ -425,11 +686,6 @@ private fun Any.getPropertyInChoiceValue1(name: String): Any? =
     is Medication.Ingredient.Item.Reference -> this.value.getProperty(name)
     is DiagnosticReport.Effective.DateTime -> this.value.getProperty(name)
     is DiagnosticReport.Effective.Period -> this.value.getProperty(name)
-    else -> null
-  }
-
-private fun Any.getPropertyInChoiceValue2(name: String): Any? =
-  when (this) {
     is RequestGroup.Action.RelatedAction.Offset.Duration -> this.value.getProperty(name)
     is RequestGroup.Action.RelatedAction.Offset.Range -> this.value.getProperty(name)
     is RequestGroup.Action.Timing.DateTime -> this.value.getProperty(name)
@@ -453,6 +709,9 @@ private fun Any.getPropertyInChoiceValue2(name: String): Any? =
     is Goal.Target.Detail.Ratio -> this.value.getProperty(name)
     is Goal.Target.Due.Date -> this.value.getProperty(name)
     is Goal.Target.Due.Duration -> this.value.getProperty(name)
+    is Timing.Repeat.Bounds.Duration -> this.value.getProperty(name)
+    is Timing.Repeat.Bounds.Range -> this.value.getProperty(name)
+    is Timing.Repeat.Bounds.Period -> this.value.getProperty(name)
     is Immunization.Occurrence.DateTime -> this.value.getProperty(name)
     is Immunization.Occurrence.String -> this.value.getProperty(name)
     is Immunization.ProtocolApplied.DoseNumber.PositiveInt -> this.value.getProperty(name)
@@ -486,6 +745,11 @@ private fun Any.getPropertyInChoiceValue2(name: String): Any? =
     is Contract.Term.Offer.Answer.Value.Attachment -> this.value.getProperty(name)
     is Contract.Term.Offer.Answer.Value.Coding -> this.value.getProperty(name)
     is Contract.Term.Offer.Answer.Value.Quantity -> this.value.getProperty(name)
+    else -> null
+  }
+
+private fun Any.getPropertyInChoiceValue4(name: String): Any? =
+  when (this) {
     is Contract.Term.Offer.Answer.Value.Reference -> this.value.getProperty(name)
     is Contract.Term.Asset.ValuedItem.Entity.CodeableConcept -> this.value.getProperty(name)
     is Contract.Term.Asset.ValuedItem.Entity.Reference -> this.value.getProperty(name)
@@ -506,6 +770,56 @@ private fun Any.getPropertyInChoiceValue2(name: String): Any? =
     is BiologicallyDerivedProduct.Processing.Time.Period -> this.value.getProperty(name)
     is BiologicallyDerivedProduct.Manipulation.Time.DateTime -> this.value.getProperty(name)
     is BiologicallyDerivedProduct.Manipulation.Time.Period -> this.value.getProperty(name)
+    is Extension.Value.Base64Binary -> this.value.getProperty(name)
+    is Extension.Value.Boolean -> this.value.getProperty(name)
+    is Extension.Value.Canonical -> this.value.getProperty(name)
+    is Extension.Value.Code -> this.value.getProperty(name)
+    is Extension.Value.Date -> this.value.getProperty(name)
+    is Extension.Value.DateTime -> this.value.getProperty(name)
+    is Extension.Value.Decimal -> this.value.getProperty(name)
+    is Extension.Value.Id -> this.value.getProperty(name)
+    is Extension.Value.Instant -> this.value.getProperty(name)
+    is Extension.Value.Integer -> this.value.getProperty(name)
+    is Extension.Value.Markdown -> this.value.getProperty(name)
+    is Extension.Value.Oid -> this.value.getProperty(name)
+    is Extension.Value.PositiveInt -> this.value.getProperty(name)
+    is Extension.Value.String -> this.value.getProperty(name)
+    is Extension.Value.Time -> this.value.getProperty(name)
+    is Extension.Value.UnsignedInt -> this.value.getProperty(name)
+    is Extension.Value.Uri -> this.value.getProperty(name)
+    is Extension.Value.Url -> this.value.getProperty(name)
+    is Extension.Value.Uuid -> this.value.getProperty(name)
+    is Extension.Value.Address -> this.value.getProperty(name)
+    is Extension.Value.Age -> this.value.getProperty(name)
+    is Extension.Value.Annotation -> this.value.getProperty(name)
+    is Extension.Value.Attachment -> this.value.getProperty(name)
+    is Extension.Value.CodeableConcept -> this.value.getProperty(name)
+    is Extension.Value.Coding -> this.value.getProperty(name)
+    is Extension.Value.ContactPoint -> this.value.getProperty(name)
+    is Extension.Value.Count -> this.value.getProperty(name)
+    is Extension.Value.Distance -> this.value.getProperty(name)
+    is Extension.Value.Duration -> this.value.getProperty(name)
+    is Extension.Value.HumanName -> this.value.getProperty(name)
+    is Extension.Value.Identifier -> this.value.getProperty(name)
+    is Extension.Value.Money -> this.value.getProperty(name)
+    is Extension.Value.Period -> this.value.getProperty(name)
+    is Extension.Value.Quantity -> this.value.getProperty(name)
+    is Extension.Value.Range -> this.value.getProperty(name)
+    is Extension.Value.Ratio -> this.value.getProperty(name)
+    is Extension.Value.Reference -> this.value.getProperty(name)
+    is Extension.Value.SampledData -> this.value.getProperty(name)
+    is Extension.Value.Signature -> this.value.getProperty(name)
+    is Extension.Value.Timing -> this.value.getProperty(name)
+    is Extension.Value.ContactDetail -> this.value.getProperty(name)
+    is Extension.Value.Contributor -> this.value.getProperty(name)
+    is Extension.Value.DataRequirement -> this.value.getProperty(name)
+    is Extension.Value.Expression -> this.value.getProperty(name)
+    is Extension.Value.ParameterDefinition -> this.value.getProperty(name)
+    is Extension.Value.RelatedArtifact -> this.value.getProperty(name)
+    is Extension.Value.TriggerDefinition -> this.value.getProperty(name)
+    is Extension.Value.UsageContext -> this.value.getProperty(name)
+    is Extension.Value.Dosage -> this.value.getProperty(name)
+    is Extension.Value.Meta -> this.value.getProperty(name)
     is SpecimenDefinition.TypeTested.Container.MinimumVolume.Quantity ->
       this.value.getProperty(name)
     is SpecimenDefinition.TypeTested.Container.MinimumVolume.String -> this.value.getProperty(name)
@@ -590,17 +904,17 @@ private fun Any.getPropertyInChoiceValue2(name: String): Any? =
     is MedicationKnowledge.AdministrationGuidelines.PatientCharacteristics.Characteristic.Quantity ->
       this.value.getProperty(name)
     is MedicationKnowledge.DrugCharacteristic.Value.CodeableConcept -> this.value.getProperty(name)
-    else -> null
-  }
-
-private fun Any.getPropertyInChoiceValue3(name: String): Any? =
-  when (this) {
     is MedicationKnowledge.DrugCharacteristic.Value.String -> this.value.getProperty(name)
     is MedicationKnowledge.DrugCharacteristic.Value.Quantity -> this.value.getProperty(name)
     is MedicationKnowledge.DrugCharacteristic.Value.Base64Binary -> this.value.getProperty(name)
     is SubstanceReferenceInformation.Target.Amount.Quantity -> this.value.getProperty(name)
     is SubstanceReferenceInformation.Target.Amount.Range -> this.value.getProperty(name)
     is SubstanceReferenceInformation.Target.Amount.String -> this.value.getProperty(name)
+    else -> null
+  }
+
+private fun Any.getPropertyInChoiceValue5(name: String): Any? =
+  when (this) {
     is ImmunizationEvaluation.DoseNumber.PositiveInt -> this.value.getProperty(name)
     is ImmunizationEvaluation.DoseNumber.String -> this.value.getProperty(name)
     is ImmunizationEvaluation.SeriesDoses.PositiveInt -> this.value.getProperty(name)
@@ -746,17 +1060,17 @@ private fun Any.getPropertyInChoiceValue3(name: String): Any? =
     is Task.Input.Value.UsageContext -> this.value.getProperty(name)
     is Task.Input.Value.Dosage -> this.value.getProperty(name)
     is Task.Input.Value.Meta -> this.value.getProperty(name)
-    else -> null
-  }
-
-private fun Any.getPropertyInChoiceValue4(name: String): Any? =
-  when (this) {
     is Task.Output.Value.Base64Binary -> this.value.getProperty(name)
     is Task.Output.Value.Boolean -> this.value.getProperty(name)
     is Task.Output.Value.Canonical -> this.value.getProperty(name)
     is Task.Output.Value.Code -> this.value.getProperty(name)
     is Task.Output.Value.Date -> this.value.getProperty(name)
     is Task.Output.Value.DateTime -> this.value.getProperty(name)
+    else -> null
+  }
+
+private fun Any.getPropertyInChoiceValue6(name: String): Any? =
+  when (this) {
     is Task.Output.Value.Decimal -> this.value.getProperty(name)
     is Task.Output.Value.Id -> this.value.getProperty(name)
     is Task.Output.Value.Instant -> this.value.getProperty(name)
@@ -840,6 +1154,10 @@ private fun Any.getPropertyInChoiceValue4(name: String): Any? =
     is Procedure.Performed.String -> this.value.getProperty(name)
     is Procedure.Performed.Age -> this.value.getProperty(name)
     is Procedure.Performed.Range -> this.value.getProperty(name)
+    is UsageContext.Value.CodeableConcept -> this.value.getProperty(name)
+    is UsageContext.Value.Quantity -> this.value.getProperty(name)
+    is UsageContext.Value.Range -> this.value.getProperty(name)
+    is UsageContext.Value.Reference -> this.value.getProperty(name)
     is MedicinalProductAuthorization.Procedure.Date.Period -> this.value.getProperty(name)
     is MedicinalProductAuthorization.Procedure.Date.DateTime -> this.value.getProperty(name)
     else -> null
@@ -859,6 +1177,12 @@ internal fun Any.getPropertyInChoiceValue(name: String): Any? {
     return it
   }
   getPropertyInChoiceValue4(name)?.let {
+    return it
+  }
+  getPropertyInChoiceValue5(name)?.let {
+    return it
+  }
+  getPropertyInChoiceValue6(name)?.let {
     return it
   }
   return null
@@ -930,6 +1254,233 @@ private fun Any.hasPropertyInChoiceValue0(name: String): Boolean =
     is Claim.Item.Location.CodeableConcept -> this.value.hasProperty(name)
     is Claim.Item.Location.Address -> this.value.hasProperty(name)
     is Claim.Item.Location.Reference -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Base64Binary -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Boolean -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Canonical -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Code -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Date -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.DateTime -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Decimal -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Id -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Instant -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Integer -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Markdown -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Oid -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.PositiveInt -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.String -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Time -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.UnsignedInt -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Uri -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Url -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Uuid -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Address -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Age -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Annotation -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Attachment -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.CodeableConcept -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Coding -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.ContactPoint -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Count -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Distance -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Duration -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.HumanName -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Identifier -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Money -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Period -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Quantity -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Range -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Ratio -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Reference -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.SampledData -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Signature -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Timing -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.ContactDetail -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Contributor -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.DataRequirement -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Expression -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.ParameterDefinition -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.RelatedArtifact -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.TriggerDefinition -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.UsageContext -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Dosage -> this.value.hasProperty(name)
+    is ElementDefinition.DefaultValue.Meta -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Base64Binary -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Boolean -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Canonical -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Code -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Date -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.DateTime -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Decimal -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Id -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Instant -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Integer -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Markdown -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Oid -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.PositiveInt -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.String -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Time -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.UnsignedInt -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Uri -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Url -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Uuid -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Address -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Age -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Annotation -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Attachment -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.CodeableConcept -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Coding -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.ContactPoint -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Count -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Distance -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Duration -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.HumanName -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Identifier -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Money -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Period -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Quantity -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Range -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Ratio -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Reference -> this.value.hasProperty(name)
+    else -> false
+  }
+
+private fun Any.hasPropertyInChoiceValue1(name: String): Boolean =
+  when (this) {
+    is ElementDefinition.Fixed.SampledData -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Signature -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Timing -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.ContactDetail -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Contributor -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.DataRequirement -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Expression -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.ParameterDefinition -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.RelatedArtifact -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.TriggerDefinition -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.UsageContext -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Dosage -> this.value.hasProperty(name)
+    is ElementDefinition.Fixed.Meta -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Base64Binary -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Boolean -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Canonical -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Code -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Date -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.DateTime -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Decimal -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Id -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Instant -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Integer -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Markdown -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Oid -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.PositiveInt -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.String -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Time -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.UnsignedInt -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Uri -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Url -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Uuid -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Address -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Age -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Annotation -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Attachment -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.CodeableConcept -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Coding -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.ContactPoint -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Count -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Distance -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Duration -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.HumanName -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Identifier -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Money -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Period -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Quantity -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Range -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Ratio -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Reference -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.SampledData -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Signature -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Timing -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.ContactDetail -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Contributor -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.DataRequirement -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Expression -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.ParameterDefinition -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.RelatedArtifact -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.TriggerDefinition -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.UsageContext -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Dosage -> this.value.hasProperty(name)
+    is ElementDefinition.Pattern.Meta -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Base64Binary -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Boolean -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Canonical -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Code -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Date -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.DateTime -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Decimal -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Id -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Instant -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Integer -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Markdown -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Oid -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.PositiveInt -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.String -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Time -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.UnsignedInt -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Uri -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Url -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Uuid -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Address -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Age -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Annotation -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Attachment -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.CodeableConcept -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Coding -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.ContactPoint -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Count -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Distance -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Duration -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.HumanName -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Identifier -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Money -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Period -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Quantity -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Range -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Ratio -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Reference -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.SampledData -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Signature -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Timing -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.ContactDetail -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Contributor -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.DataRequirement -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Expression -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.ParameterDefinition -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.RelatedArtifact -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.TriggerDefinition -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.UsageContext -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Dosage -> this.value.hasProperty(name)
+    is ElementDefinition.Example.Value.Meta -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.Date -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.DateTime -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.Instant -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.Time -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.Decimal -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.Integer -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.PositiveInt -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.UnsignedInt -> this.value.hasProperty(name)
+    is ElementDefinition.MinValue.Quantity -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.Date -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.DateTime -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.Instant -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.Time -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.Decimal -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.Integer -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.PositiveInt -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.UnsignedInt -> this.value.hasProperty(name)
+    is ElementDefinition.MaxValue.Quantity -> this.value.hasProperty(name)
+    is TriggerDefinition.Timing.Timing -> this.value.hasProperty(name)
+    is TriggerDefinition.Timing.Reference -> this.value.hasProperty(name)
+    is TriggerDefinition.Timing.Date -> this.value.hasProperty(name)
+    is TriggerDefinition.Timing.DateTime -> this.value.hasProperty(name)
     is AuditEvent.Entity.Detail.Value.String -> this.value.hasProperty(name)
     is AuditEvent.Entity.Detail.Value.Base64Binary -> this.value.hasProperty(name)
     is ServiceRequest.Quantity.Quantity -> this.value.hasProperty(name)
@@ -945,6 +1496,11 @@ private fun Any.hasPropertyInChoiceValue0(name: String): Boolean =
     is CarePlan.Activity.Detail.Scheduled.Timing -> this.value.hasProperty(name)
     is CarePlan.Activity.Detail.Scheduled.Period -> this.value.hasProperty(name)
     is CarePlan.Activity.Detail.Scheduled.String -> this.value.hasProperty(name)
+    else -> false
+  }
+
+private fun Any.hasPropertyInChoiceValue2(name: String): Boolean =
+  when (this) {
     is CarePlan.Activity.Detail.Product.CodeableConcept -> this.value.hasProperty(name)
     is CarePlan.Activity.Detail.Product.Reference -> this.value.hasProperty(name)
     is CoverageEligibilityResponse.Serviced.Date -> this.value.hasProperty(name)
@@ -993,6 +1549,8 @@ private fun Any.hasPropertyInChoiceValue0(name: String): Boolean =
     is DeviceRequest.Occurrence.DateTime -> this.value.hasProperty(name)
     is DeviceRequest.Occurrence.Period -> this.value.hasProperty(name)
     is DeviceRequest.Occurrence.Timing -> this.value.hasProperty(name)
+    is Annotation.Author.Reference -> this.value.hasProperty(name)
+    is Annotation.Author.String -> this.value.hasProperty(name)
     is Substance.Ingredient.Substance.CodeableConcept -> this.value.hasProperty(name)
     is Substance.Ingredient.Substance.Reference -> this.value.hasProperty(name)
     is Group.Characteristic.Value.CodeableConcept -> this.value.hasProperty(name)
@@ -1000,6 +1558,11 @@ private fun Any.hasPropertyInChoiceValue0(name: String): Boolean =
     is Group.Characteristic.Value.Quantity -> this.value.hasProperty(name)
     is Group.Characteristic.Value.Range -> this.value.hasProperty(name)
     is Group.Characteristic.Value.Reference -> this.value.hasProperty(name)
+    is SubstanceAmount.Amount.Quantity -> this.value.hasProperty(name)
+    is SubstanceAmount.Amount.Range -> this.value.hasProperty(name)
+    is SubstanceAmount.Amount.String -> this.value.hasProperty(name)
+    is Population.Age.Range -> this.value.hasProperty(name)
+    is Population.Age.CodeableConcept -> this.value.hasProperty(name)
     is Questionnaire.Item.EnableWhen.Answer.Boolean -> this.value.hasProperty(name)
     is Questionnaire.Item.EnableWhen.Answer.Decimal -> this.value.hasProperty(name)
     is Questionnaire.Item.EnableWhen.Answer.Integer -> this.value.hasProperty(name)
@@ -1022,17 +1585,19 @@ private fun Any.hasPropertyInChoiceValue0(name: String): Boolean =
     is Questionnaire.Item.Initial.Value.Date -> this.value.hasProperty(name)
     is Questionnaire.Item.Initial.Value.DateTime -> this.value.hasProperty(name)
     is Questionnaire.Item.Initial.Value.Time -> this.value.hasProperty(name)
-    else -> false
-  }
-
-private fun Any.hasPropertyInChoiceValue1(name: String): Boolean =
-  when (this) {
     is Questionnaire.Item.Initial.Value.String -> this.value.hasProperty(name)
     is Questionnaire.Item.Initial.Value.Uri -> this.value.hasProperty(name)
     is Questionnaire.Item.Initial.Value.Attachment -> this.value.hasProperty(name)
     is Questionnaire.Item.Initial.Value.Coding -> this.value.hasProperty(name)
     is Questionnaire.Item.Initial.Value.Quantity -> this.value.hasProperty(name)
     is Questionnaire.Item.Initial.Value.Reference -> this.value.hasProperty(name)
+    is Dosage.AsNeeded.Boolean -> this.value.hasProperty(name)
+    is Dosage.AsNeeded.CodeableConcept -> this.value.hasProperty(name)
+    is Dosage.DoseAndRate.Dose.Range -> this.value.hasProperty(name)
+    is Dosage.DoseAndRate.Dose.Quantity -> this.value.hasProperty(name)
+    is Dosage.DoseAndRate.Rate.Ratio -> this.value.hasProperty(name)
+    is Dosage.DoseAndRate.Rate.Range -> this.value.hasProperty(name)
+    is Dosage.DoseAndRate.Rate.Quantity -> this.value.hasProperty(name)
     is SupplyRequest.Item.CodeableConcept -> this.value.hasProperty(name)
     is SupplyRequest.Item.Reference -> this.value.hasProperty(name)
     is SupplyRequest.Parameter.Value.CodeableConcept -> this.value.hasProperty(name)
@@ -1042,6 +1607,11 @@ private fun Any.hasPropertyInChoiceValue1(name: String): Boolean =
     is SupplyRequest.Occurrence.DateTime -> this.value.hasProperty(name)
     is SupplyRequest.Occurrence.Period -> this.value.hasProperty(name)
     is SupplyRequest.Occurrence.Timing -> this.value.hasProperty(name)
+    is DataRequirement.Subject.CodeableConcept -> this.value.hasProperty(name)
+    is DataRequirement.Subject.Reference -> this.value.hasProperty(name)
+    is DataRequirement.DateFilter.Value.DateTime -> this.value.hasProperty(name)
+    is DataRequirement.DateFilter.Value.Period -> this.value.hasProperty(name)
+    is DataRequirement.DateFilter.Value.Duration -> this.value.hasProperty(name)
     is Provenance.Occurred.Period -> this.value.hasProperty(name)
     is Provenance.Occurred.DateTime -> this.value.hasProperty(name)
     is RiskAssessment.Occurrence.DateTime -> this.value.hasProperty(name)
@@ -1086,6 +1656,11 @@ private fun Any.hasPropertyInChoiceValue1(name: String): Boolean =
     is Parameters.Parameter.Value.Quantity -> this.value.hasProperty(name)
     is Parameters.Parameter.Value.Range -> this.value.hasProperty(name)
     is Parameters.Parameter.Value.Ratio -> this.value.hasProperty(name)
+    else -> false
+  }
+
+private fun Any.hasPropertyInChoiceValue3(name: String): Boolean =
+  when (this) {
     is Parameters.Parameter.Value.Reference -> this.value.hasProperty(name)
     is Parameters.Parameter.Value.SampledData -> this.value.hasProperty(name)
     is Parameters.Parameter.Value.Signature -> this.value.hasProperty(name)
@@ -1192,11 +1767,6 @@ private fun Any.hasPropertyInChoiceValue1(name: String): Boolean =
     is Medication.Ingredient.Item.Reference -> this.value.hasProperty(name)
     is DiagnosticReport.Effective.DateTime -> this.value.hasProperty(name)
     is DiagnosticReport.Effective.Period -> this.value.hasProperty(name)
-    else -> false
-  }
-
-private fun Any.hasPropertyInChoiceValue2(name: String): Boolean =
-  when (this) {
     is RequestGroup.Action.RelatedAction.Offset.Duration -> this.value.hasProperty(name)
     is RequestGroup.Action.RelatedAction.Offset.Range -> this.value.hasProperty(name)
     is RequestGroup.Action.Timing.DateTime -> this.value.hasProperty(name)
@@ -1220,6 +1790,9 @@ private fun Any.hasPropertyInChoiceValue2(name: String): Boolean =
     is Goal.Target.Detail.Ratio -> this.value.hasProperty(name)
     is Goal.Target.Due.Date -> this.value.hasProperty(name)
     is Goal.Target.Due.Duration -> this.value.hasProperty(name)
+    is Timing.Repeat.Bounds.Duration -> this.value.hasProperty(name)
+    is Timing.Repeat.Bounds.Range -> this.value.hasProperty(name)
+    is Timing.Repeat.Bounds.Period -> this.value.hasProperty(name)
     is Immunization.Occurrence.DateTime -> this.value.hasProperty(name)
     is Immunization.Occurrence.String -> this.value.hasProperty(name)
     is Immunization.ProtocolApplied.DoseNumber.PositiveInt -> this.value.hasProperty(name)
@@ -1253,6 +1826,11 @@ private fun Any.hasPropertyInChoiceValue2(name: String): Boolean =
     is Contract.Term.Offer.Answer.Value.Attachment -> this.value.hasProperty(name)
     is Contract.Term.Offer.Answer.Value.Coding -> this.value.hasProperty(name)
     is Contract.Term.Offer.Answer.Value.Quantity -> this.value.hasProperty(name)
+    else -> false
+  }
+
+private fun Any.hasPropertyInChoiceValue4(name: String): Boolean =
+  when (this) {
     is Contract.Term.Offer.Answer.Value.Reference -> this.value.hasProperty(name)
     is Contract.Term.Asset.ValuedItem.Entity.CodeableConcept -> this.value.hasProperty(name)
     is Contract.Term.Asset.ValuedItem.Entity.Reference -> this.value.hasProperty(name)
@@ -1273,6 +1851,56 @@ private fun Any.hasPropertyInChoiceValue2(name: String): Boolean =
     is BiologicallyDerivedProduct.Processing.Time.Period -> this.value.hasProperty(name)
     is BiologicallyDerivedProduct.Manipulation.Time.DateTime -> this.value.hasProperty(name)
     is BiologicallyDerivedProduct.Manipulation.Time.Period -> this.value.hasProperty(name)
+    is Extension.Value.Base64Binary -> this.value.hasProperty(name)
+    is Extension.Value.Boolean -> this.value.hasProperty(name)
+    is Extension.Value.Canonical -> this.value.hasProperty(name)
+    is Extension.Value.Code -> this.value.hasProperty(name)
+    is Extension.Value.Date -> this.value.hasProperty(name)
+    is Extension.Value.DateTime -> this.value.hasProperty(name)
+    is Extension.Value.Decimal -> this.value.hasProperty(name)
+    is Extension.Value.Id -> this.value.hasProperty(name)
+    is Extension.Value.Instant -> this.value.hasProperty(name)
+    is Extension.Value.Integer -> this.value.hasProperty(name)
+    is Extension.Value.Markdown -> this.value.hasProperty(name)
+    is Extension.Value.Oid -> this.value.hasProperty(name)
+    is Extension.Value.PositiveInt -> this.value.hasProperty(name)
+    is Extension.Value.String -> this.value.hasProperty(name)
+    is Extension.Value.Time -> this.value.hasProperty(name)
+    is Extension.Value.UnsignedInt -> this.value.hasProperty(name)
+    is Extension.Value.Uri -> this.value.hasProperty(name)
+    is Extension.Value.Url -> this.value.hasProperty(name)
+    is Extension.Value.Uuid -> this.value.hasProperty(name)
+    is Extension.Value.Address -> this.value.hasProperty(name)
+    is Extension.Value.Age -> this.value.hasProperty(name)
+    is Extension.Value.Annotation -> this.value.hasProperty(name)
+    is Extension.Value.Attachment -> this.value.hasProperty(name)
+    is Extension.Value.CodeableConcept -> this.value.hasProperty(name)
+    is Extension.Value.Coding -> this.value.hasProperty(name)
+    is Extension.Value.ContactPoint -> this.value.hasProperty(name)
+    is Extension.Value.Count -> this.value.hasProperty(name)
+    is Extension.Value.Distance -> this.value.hasProperty(name)
+    is Extension.Value.Duration -> this.value.hasProperty(name)
+    is Extension.Value.HumanName -> this.value.hasProperty(name)
+    is Extension.Value.Identifier -> this.value.hasProperty(name)
+    is Extension.Value.Money -> this.value.hasProperty(name)
+    is Extension.Value.Period -> this.value.hasProperty(name)
+    is Extension.Value.Quantity -> this.value.hasProperty(name)
+    is Extension.Value.Range -> this.value.hasProperty(name)
+    is Extension.Value.Ratio -> this.value.hasProperty(name)
+    is Extension.Value.Reference -> this.value.hasProperty(name)
+    is Extension.Value.SampledData -> this.value.hasProperty(name)
+    is Extension.Value.Signature -> this.value.hasProperty(name)
+    is Extension.Value.Timing -> this.value.hasProperty(name)
+    is Extension.Value.ContactDetail -> this.value.hasProperty(name)
+    is Extension.Value.Contributor -> this.value.hasProperty(name)
+    is Extension.Value.DataRequirement -> this.value.hasProperty(name)
+    is Extension.Value.Expression -> this.value.hasProperty(name)
+    is Extension.Value.ParameterDefinition -> this.value.hasProperty(name)
+    is Extension.Value.RelatedArtifact -> this.value.hasProperty(name)
+    is Extension.Value.TriggerDefinition -> this.value.hasProperty(name)
+    is Extension.Value.UsageContext -> this.value.hasProperty(name)
+    is Extension.Value.Dosage -> this.value.hasProperty(name)
+    is Extension.Value.Meta -> this.value.hasProperty(name)
     is SpecimenDefinition.TypeTested.Container.MinimumVolume.Quantity ->
       this.value.hasProperty(name)
     is SpecimenDefinition.TypeTested.Container.MinimumVolume.String -> this.value.hasProperty(name)
@@ -1357,17 +1985,17 @@ private fun Any.hasPropertyInChoiceValue2(name: String): Boolean =
     is MedicationKnowledge.AdministrationGuidelines.PatientCharacteristics.Characteristic.Quantity ->
       this.value.hasProperty(name)
     is MedicationKnowledge.DrugCharacteristic.Value.CodeableConcept -> this.value.hasProperty(name)
-    else -> false
-  }
-
-private fun Any.hasPropertyInChoiceValue3(name: String): Boolean =
-  when (this) {
     is MedicationKnowledge.DrugCharacteristic.Value.String -> this.value.hasProperty(name)
     is MedicationKnowledge.DrugCharacteristic.Value.Quantity -> this.value.hasProperty(name)
     is MedicationKnowledge.DrugCharacteristic.Value.Base64Binary -> this.value.hasProperty(name)
     is SubstanceReferenceInformation.Target.Amount.Quantity -> this.value.hasProperty(name)
     is SubstanceReferenceInformation.Target.Amount.Range -> this.value.hasProperty(name)
     is SubstanceReferenceInformation.Target.Amount.String -> this.value.hasProperty(name)
+    else -> false
+  }
+
+private fun Any.hasPropertyInChoiceValue5(name: String): Boolean =
+  when (this) {
     is ImmunizationEvaluation.DoseNumber.PositiveInt -> this.value.hasProperty(name)
     is ImmunizationEvaluation.DoseNumber.String -> this.value.hasProperty(name)
     is ImmunizationEvaluation.SeriesDoses.PositiveInt -> this.value.hasProperty(name)
@@ -1513,17 +2141,17 @@ private fun Any.hasPropertyInChoiceValue3(name: String): Boolean =
     is Task.Input.Value.UsageContext -> this.value.hasProperty(name)
     is Task.Input.Value.Dosage -> this.value.hasProperty(name)
     is Task.Input.Value.Meta -> this.value.hasProperty(name)
-    else -> false
-  }
-
-private fun Any.hasPropertyInChoiceValue4(name: String): Boolean =
-  when (this) {
     is Task.Output.Value.Base64Binary -> this.value.hasProperty(name)
     is Task.Output.Value.Boolean -> this.value.hasProperty(name)
     is Task.Output.Value.Canonical -> this.value.hasProperty(name)
     is Task.Output.Value.Code -> this.value.hasProperty(name)
     is Task.Output.Value.Date -> this.value.hasProperty(name)
     is Task.Output.Value.DateTime -> this.value.hasProperty(name)
+    else -> false
+  }
+
+private fun Any.hasPropertyInChoiceValue6(name: String): Boolean =
+  when (this) {
     is Task.Output.Value.Decimal -> this.value.hasProperty(name)
     is Task.Output.Value.Id -> this.value.hasProperty(name)
     is Task.Output.Value.Instant -> this.value.hasProperty(name)
@@ -1607,6 +2235,10 @@ private fun Any.hasPropertyInChoiceValue4(name: String): Boolean =
     is Procedure.Performed.String -> this.value.hasProperty(name)
     is Procedure.Performed.Age -> this.value.hasProperty(name)
     is Procedure.Performed.Range -> this.value.hasProperty(name)
+    is UsageContext.Value.CodeableConcept -> this.value.hasProperty(name)
+    is UsageContext.Value.Quantity -> this.value.hasProperty(name)
+    is UsageContext.Value.Range -> this.value.hasProperty(name)
+    is UsageContext.Value.Reference -> this.value.hasProperty(name)
     is MedicinalProductAuthorization.Procedure.Date.Period -> this.value.hasProperty(name)
     is MedicinalProductAuthorization.Procedure.Date.DateTime -> this.value.hasProperty(name)
     else -> false
@@ -1618,6 +2250,8 @@ internal fun Any.hasPropertyInChoiceValue(name: String): Boolean {
   if (hasPropertyInChoiceValue2(name)) return true
   if (hasPropertyInChoiceValue3(name)) return true
   if (hasPropertyInChoiceValue4(name)) return true
+  if (hasPropertyInChoiceValue5(name)) return true
+  if (hasPropertyInChoiceValue6(name)) return true
   return false
 }
 
@@ -1686,6 +2320,233 @@ private fun Any.unwrapChoiceValue0(): Any? =
     is Claim.Item.Location.CodeableConcept -> this.value
     is Claim.Item.Location.Address -> this.value
     is Claim.Item.Location.Reference -> this.value
+    is ElementDefinition.DefaultValue.Base64Binary -> this.value
+    is ElementDefinition.DefaultValue.Boolean -> this.value
+    is ElementDefinition.DefaultValue.Canonical -> this.value
+    is ElementDefinition.DefaultValue.Code -> this.value
+    is ElementDefinition.DefaultValue.Date -> this.value
+    is ElementDefinition.DefaultValue.DateTime -> this.value
+    is ElementDefinition.DefaultValue.Decimal -> this.value
+    is ElementDefinition.DefaultValue.Id -> this.value
+    is ElementDefinition.DefaultValue.Instant -> this.value
+    is ElementDefinition.DefaultValue.Integer -> this.value
+    is ElementDefinition.DefaultValue.Markdown -> this.value
+    is ElementDefinition.DefaultValue.Oid -> this.value
+    is ElementDefinition.DefaultValue.PositiveInt -> this.value
+    is ElementDefinition.DefaultValue.String -> this.value
+    is ElementDefinition.DefaultValue.Time -> this.value
+    is ElementDefinition.DefaultValue.UnsignedInt -> this.value
+    is ElementDefinition.DefaultValue.Uri -> this.value
+    is ElementDefinition.DefaultValue.Url -> this.value
+    is ElementDefinition.DefaultValue.Uuid -> this.value
+    is ElementDefinition.DefaultValue.Address -> this.value
+    is ElementDefinition.DefaultValue.Age -> this.value
+    is ElementDefinition.DefaultValue.Annotation -> this.value
+    is ElementDefinition.DefaultValue.Attachment -> this.value
+    is ElementDefinition.DefaultValue.CodeableConcept -> this.value
+    is ElementDefinition.DefaultValue.Coding -> this.value
+    is ElementDefinition.DefaultValue.ContactPoint -> this.value
+    is ElementDefinition.DefaultValue.Count -> this.value
+    is ElementDefinition.DefaultValue.Distance -> this.value
+    is ElementDefinition.DefaultValue.Duration -> this.value
+    is ElementDefinition.DefaultValue.HumanName -> this.value
+    is ElementDefinition.DefaultValue.Identifier -> this.value
+    is ElementDefinition.DefaultValue.Money -> this.value
+    is ElementDefinition.DefaultValue.Period -> this.value
+    is ElementDefinition.DefaultValue.Quantity -> this.value
+    is ElementDefinition.DefaultValue.Range -> this.value
+    is ElementDefinition.DefaultValue.Ratio -> this.value
+    is ElementDefinition.DefaultValue.Reference -> this.value
+    is ElementDefinition.DefaultValue.SampledData -> this.value
+    is ElementDefinition.DefaultValue.Signature -> this.value
+    is ElementDefinition.DefaultValue.Timing -> this.value
+    is ElementDefinition.DefaultValue.ContactDetail -> this.value
+    is ElementDefinition.DefaultValue.Contributor -> this.value
+    is ElementDefinition.DefaultValue.DataRequirement -> this.value
+    is ElementDefinition.DefaultValue.Expression -> this.value
+    is ElementDefinition.DefaultValue.ParameterDefinition -> this.value
+    is ElementDefinition.DefaultValue.RelatedArtifact -> this.value
+    is ElementDefinition.DefaultValue.TriggerDefinition -> this.value
+    is ElementDefinition.DefaultValue.UsageContext -> this.value
+    is ElementDefinition.DefaultValue.Dosage -> this.value
+    is ElementDefinition.DefaultValue.Meta -> this.value
+    is ElementDefinition.Fixed.Base64Binary -> this.value
+    is ElementDefinition.Fixed.Boolean -> this.value
+    is ElementDefinition.Fixed.Canonical -> this.value
+    is ElementDefinition.Fixed.Code -> this.value
+    is ElementDefinition.Fixed.Date -> this.value
+    is ElementDefinition.Fixed.DateTime -> this.value
+    is ElementDefinition.Fixed.Decimal -> this.value
+    is ElementDefinition.Fixed.Id -> this.value
+    is ElementDefinition.Fixed.Instant -> this.value
+    is ElementDefinition.Fixed.Integer -> this.value
+    is ElementDefinition.Fixed.Markdown -> this.value
+    is ElementDefinition.Fixed.Oid -> this.value
+    is ElementDefinition.Fixed.PositiveInt -> this.value
+    is ElementDefinition.Fixed.String -> this.value
+    is ElementDefinition.Fixed.Time -> this.value
+    is ElementDefinition.Fixed.UnsignedInt -> this.value
+    is ElementDefinition.Fixed.Uri -> this.value
+    is ElementDefinition.Fixed.Url -> this.value
+    is ElementDefinition.Fixed.Uuid -> this.value
+    is ElementDefinition.Fixed.Address -> this.value
+    is ElementDefinition.Fixed.Age -> this.value
+    is ElementDefinition.Fixed.Annotation -> this.value
+    is ElementDefinition.Fixed.Attachment -> this.value
+    is ElementDefinition.Fixed.CodeableConcept -> this.value
+    is ElementDefinition.Fixed.Coding -> this.value
+    is ElementDefinition.Fixed.ContactPoint -> this.value
+    is ElementDefinition.Fixed.Count -> this.value
+    is ElementDefinition.Fixed.Distance -> this.value
+    is ElementDefinition.Fixed.Duration -> this.value
+    is ElementDefinition.Fixed.HumanName -> this.value
+    is ElementDefinition.Fixed.Identifier -> this.value
+    is ElementDefinition.Fixed.Money -> this.value
+    is ElementDefinition.Fixed.Period -> this.value
+    is ElementDefinition.Fixed.Quantity -> this.value
+    is ElementDefinition.Fixed.Range -> this.value
+    is ElementDefinition.Fixed.Ratio -> this.value
+    is ElementDefinition.Fixed.Reference -> this.value
+    else -> null
+  }
+
+private fun Any.unwrapChoiceValue1(): Any? =
+  when (this) {
+    is ElementDefinition.Fixed.SampledData -> this.value
+    is ElementDefinition.Fixed.Signature -> this.value
+    is ElementDefinition.Fixed.Timing -> this.value
+    is ElementDefinition.Fixed.ContactDetail -> this.value
+    is ElementDefinition.Fixed.Contributor -> this.value
+    is ElementDefinition.Fixed.DataRequirement -> this.value
+    is ElementDefinition.Fixed.Expression -> this.value
+    is ElementDefinition.Fixed.ParameterDefinition -> this.value
+    is ElementDefinition.Fixed.RelatedArtifact -> this.value
+    is ElementDefinition.Fixed.TriggerDefinition -> this.value
+    is ElementDefinition.Fixed.UsageContext -> this.value
+    is ElementDefinition.Fixed.Dosage -> this.value
+    is ElementDefinition.Fixed.Meta -> this.value
+    is ElementDefinition.Pattern.Base64Binary -> this.value
+    is ElementDefinition.Pattern.Boolean -> this.value
+    is ElementDefinition.Pattern.Canonical -> this.value
+    is ElementDefinition.Pattern.Code -> this.value
+    is ElementDefinition.Pattern.Date -> this.value
+    is ElementDefinition.Pattern.DateTime -> this.value
+    is ElementDefinition.Pattern.Decimal -> this.value
+    is ElementDefinition.Pattern.Id -> this.value
+    is ElementDefinition.Pattern.Instant -> this.value
+    is ElementDefinition.Pattern.Integer -> this.value
+    is ElementDefinition.Pattern.Markdown -> this.value
+    is ElementDefinition.Pattern.Oid -> this.value
+    is ElementDefinition.Pattern.PositiveInt -> this.value
+    is ElementDefinition.Pattern.String -> this.value
+    is ElementDefinition.Pattern.Time -> this.value
+    is ElementDefinition.Pattern.UnsignedInt -> this.value
+    is ElementDefinition.Pattern.Uri -> this.value
+    is ElementDefinition.Pattern.Url -> this.value
+    is ElementDefinition.Pattern.Uuid -> this.value
+    is ElementDefinition.Pattern.Address -> this.value
+    is ElementDefinition.Pattern.Age -> this.value
+    is ElementDefinition.Pattern.Annotation -> this.value
+    is ElementDefinition.Pattern.Attachment -> this.value
+    is ElementDefinition.Pattern.CodeableConcept -> this.value
+    is ElementDefinition.Pattern.Coding -> this.value
+    is ElementDefinition.Pattern.ContactPoint -> this.value
+    is ElementDefinition.Pattern.Count -> this.value
+    is ElementDefinition.Pattern.Distance -> this.value
+    is ElementDefinition.Pattern.Duration -> this.value
+    is ElementDefinition.Pattern.HumanName -> this.value
+    is ElementDefinition.Pattern.Identifier -> this.value
+    is ElementDefinition.Pattern.Money -> this.value
+    is ElementDefinition.Pattern.Period -> this.value
+    is ElementDefinition.Pattern.Quantity -> this.value
+    is ElementDefinition.Pattern.Range -> this.value
+    is ElementDefinition.Pattern.Ratio -> this.value
+    is ElementDefinition.Pattern.Reference -> this.value
+    is ElementDefinition.Pattern.SampledData -> this.value
+    is ElementDefinition.Pattern.Signature -> this.value
+    is ElementDefinition.Pattern.Timing -> this.value
+    is ElementDefinition.Pattern.ContactDetail -> this.value
+    is ElementDefinition.Pattern.Contributor -> this.value
+    is ElementDefinition.Pattern.DataRequirement -> this.value
+    is ElementDefinition.Pattern.Expression -> this.value
+    is ElementDefinition.Pattern.ParameterDefinition -> this.value
+    is ElementDefinition.Pattern.RelatedArtifact -> this.value
+    is ElementDefinition.Pattern.TriggerDefinition -> this.value
+    is ElementDefinition.Pattern.UsageContext -> this.value
+    is ElementDefinition.Pattern.Dosage -> this.value
+    is ElementDefinition.Pattern.Meta -> this.value
+    is ElementDefinition.Example.Value.Base64Binary -> this.value
+    is ElementDefinition.Example.Value.Boolean -> this.value
+    is ElementDefinition.Example.Value.Canonical -> this.value
+    is ElementDefinition.Example.Value.Code -> this.value
+    is ElementDefinition.Example.Value.Date -> this.value
+    is ElementDefinition.Example.Value.DateTime -> this.value
+    is ElementDefinition.Example.Value.Decimal -> this.value
+    is ElementDefinition.Example.Value.Id -> this.value
+    is ElementDefinition.Example.Value.Instant -> this.value
+    is ElementDefinition.Example.Value.Integer -> this.value
+    is ElementDefinition.Example.Value.Markdown -> this.value
+    is ElementDefinition.Example.Value.Oid -> this.value
+    is ElementDefinition.Example.Value.PositiveInt -> this.value
+    is ElementDefinition.Example.Value.String -> this.value
+    is ElementDefinition.Example.Value.Time -> this.value
+    is ElementDefinition.Example.Value.UnsignedInt -> this.value
+    is ElementDefinition.Example.Value.Uri -> this.value
+    is ElementDefinition.Example.Value.Url -> this.value
+    is ElementDefinition.Example.Value.Uuid -> this.value
+    is ElementDefinition.Example.Value.Address -> this.value
+    is ElementDefinition.Example.Value.Age -> this.value
+    is ElementDefinition.Example.Value.Annotation -> this.value
+    is ElementDefinition.Example.Value.Attachment -> this.value
+    is ElementDefinition.Example.Value.CodeableConcept -> this.value
+    is ElementDefinition.Example.Value.Coding -> this.value
+    is ElementDefinition.Example.Value.ContactPoint -> this.value
+    is ElementDefinition.Example.Value.Count -> this.value
+    is ElementDefinition.Example.Value.Distance -> this.value
+    is ElementDefinition.Example.Value.Duration -> this.value
+    is ElementDefinition.Example.Value.HumanName -> this.value
+    is ElementDefinition.Example.Value.Identifier -> this.value
+    is ElementDefinition.Example.Value.Money -> this.value
+    is ElementDefinition.Example.Value.Period -> this.value
+    is ElementDefinition.Example.Value.Quantity -> this.value
+    is ElementDefinition.Example.Value.Range -> this.value
+    is ElementDefinition.Example.Value.Ratio -> this.value
+    is ElementDefinition.Example.Value.Reference -> this.value
+    is ElementDefinition.Example.Value.SampledData -> this.value
+    is ElementDefinition.Example.Value.Signature -> this.value
+    is ElementDefinition.Example.Value.Timing -> this.value
+    is ElementDefinition.Example.Value.ContactDetail -> this.value
+    is ElementDefinition.Example.Value.Contributor -> this.value
+    is ElementDefinition.Example.Value.DataRequirement -> this.value
+    is ElementDefinition.Example.Value.Expression -> this.value
+    is ElementDefinition.Example.Value.ParameterDefinition -> this.value
+    is ElementDefinition.Example.Value.RelatedArtifact -> this.value
+    is ElementDefinition.Example.Value.TriggerDefinition -> this.value
+    is ElementDefinition.Example.Value.UsageContext -> this.value
+    is ElementDefinition.Example.Value.Dosage -> this.value
+    is ElementDefinition.Example.Value.Meta -> this.value
+    is ElementDefinition.MinValue.Date -> this.value
+    is ElementDefinition.MinValue.DateTime -> this.value
+    is ElementDefinition.MinValue.Instant -> this.value
+    is ElementDefinition.MinValue.Time -> this.value
+    is ElementDefinition.MinValue.Decimal -> this.value
+    is ElementDefinition.MinValue.Integer -> this.value
+    is ElementDefinition.MinValue.PositiveInt -> this.value
+    is ElementDefinition.MinValue.UnsignedInt -> this.value
+    is ElementDefinition.MinValue.Quantity -> this.value
+    is ElementDefinition.MaxValue.Date -> this.value
+    is ElementDefinition.MaxValue.DateTime -> this.value
+    is ElementDefinition.MaxValue.Instant -> this.value
+    is ElementDefinition.MaxValue.Time -> this.value
+    is ElementDefinition.MaxValue.Decimal -> this.value
+    is ElementDefinition.MaxValue.Integer -> this.value
+    is ElementDefinition.MaxValue.PositiveInt -> this.value
+    is ElementDefinition.MaxValue.UnsignedInt -> this.value
+    is ElementDefinition.MaxValue.Quantity -> this.value
+    is TriggerDefinition.Timing.Timing -> this.value
+    is TriggerDefinition.Timing.Reference -> this.value
+    is TriggerDefinition.Timing.Date -> this.value
+    is TriggerDefinition.Timing.DateTime -> this.value
     is AuditEvent.Entity.Detail.Value.String -> this.value
     is AuditEvent.Entity.Detail.Value.Base64Binary -> this.value
     is ServiceRequest.Quantity.Quantity -> this.value
@@ -1701,6 +2562,11 @@ private fun Any.unwrapChoiceValue0(): Any? =
     is CarePlan.Activity.Detail.Scheduled.Timing -> this.value
     is CarePlan.Activity.Detail.Scheduled.Period -> this.value
     is CarePlan.Activity.Detail.Scheduled.String -> this.value
+    else -> null
+  }
+
+private fun Any.unwrapChoiceValue2(): Any? =
+  when (this) {
     is CarePlan.Activity.Detail.Product.CodeableConcept -> this.value
     is CarePlan.Activity.Detail.Product.Reference -> this.value
     is CoverageEligibilityResponse.Serviced.Date -> this.value
@@ -1744,6 +2610,8 @@ private fun Any.unwrapChoiceValue0(): Any? =
     is DeviceRequest.Occurrence.DateTime -> this.value
     is DeviceRequest.Occurrence.Period -> this.value
     is DeviceRequest.Occurrence.Timing -> this.value
+    is Annotation.Author.Reference -> this.value
+    is Annotation.Author.String -> this.value
     is Substance.Ingredient.Substance.CodeableConcept -> this.value
     is Substance.Ingredient.Substance.Reference -> this.value
     is Group.Characteristic.Value.CodeableConcept -> this.value
@@ -1751,6 +2619,11 @@ private fun Any.unwrapChoiceValue0(): Any? =
     is Group.Characteristic.Value.Quantity -> this.value
     is Group.Characteristic.Value.Range -> this.value
     is Group.Characteristic.Value.Reference -> this.value
+    is SubstanceAmount.Amount.Quantity -> this.value
+    is SubstanceAmount.Amount.Range -> this.value
+    is SubstanceAmount.Amount.String -> this.value
+    is Population.Age.Range -> this.value
+    is Population.Age.CodeableConcept -> this.value
     is Questionnaire.Item.EnableWhen.Answer.Boolean -> this.value
     is Questionnaire.Item.EnableWhen.Answer.Decimal -> this.value
     is Questionnaire.Item.EnableWhen.Answer.Integer -> this.value
@@ -1773,17 +2646,19 @@ private fun Any.unwrapChoiceValue0(): Any? =
     is Questionnaire.Item.Initial.Value.Date -> this.value
     is Questionnaire.Item.Initial.Value.DateTime -> this.value
     is Questionnaire.Item.Initial.Value.Time -> this.value
-    else -> null
-  }
-
-private fun Any.unwrapChoiceValue1(): Any? =
-  when (this) {
     is Questionnaire.Item.Initial.Value.String -> this.value
     is Questionnaire.Item.Initial.Value.Uri -> this.value
     is Questionnaire.Item.Initial.Value.Attachment -> this.value
     is Questionnaire.Item.Initial.Value.Coding -> this.value
     is Questionnaire.Item.Initial.Value.Quantity -> this.value
     is Questionnaire.Item.Initial.Value.Reference -> this.value
+    is Dosage.AsNeeded.Boolean -> this.value
+    is Dosage.AsNeeded.CodeableConcept -> this.value
+    is Dosage.DoseAndRate.Dose.Range -> this.value
+    is Dosage.DoseAndRate.Dose.Quantity -> this.value
+    is Dosage.DoseAndRate.Rate.Ratio -> this.value
+    is Dosage.DoseAndRate.Rate.Range -> this.value
+    is Dosage.DoseAndRate.Rate.Quantity -> this.value
     is SupplyRequest.Item.CodeableConcept -> this.value
     is SupplyRequest.Item.Reference -> this.value
     is SupplyRequest.Parameter.Value.CodeableConcept -> this.value
@@ -1793,6 +2668,11 @@ private fun Any.unwrapChoiceValue1(): Any? =
     is SupplyRequest.Occurrence.DateTime -> this.value
     is SupplyRequest.Occurrence.Period -> this.value
     is SupplyRequest.Occurrence.Timing -> this.value
+    is DataRequirement.Subject.CodeableConcept -> this.value
+    is DataRequirement.Subject.Reference -> this.value
+    is DataRequirement.DateFilter.Value.DateTime -> this.value
+    is DataRequirement.DateFilter.Value.Period -> this.value
+    is DataRequirement.DateFilter.Value.Duration -> this.value
     is Provenance.Occurred.Period -> this.value
     is Provenance.Occurred.DateTime -> this.value
     is RiskAssessment.Occurrence.DateTime -> this.value
@@ -1837,6 +2717,11 @@ private fun Any.unwrapChoiceValue1(): Any? =
     is Parameters.Parameter.Value.Quantity -> this.value
     is Parameters.Parameter.Value.Range -> this.value
     is Parameters.Parameter.Value.Ratio -> this.value
+    else -> null
+  }
+
+private fun Any.unwrapChoiceValue3(): Any? =
+  when (this) {
     is Parameters.Parameter.Value.Reference -> this.value
     is Parameters.Parameter.Value.SampledData -> this.value
     is Parameters.Parameter.Value.Signature -> this.value
@@ -1928,11 +2813,6 @@ private fun Any.unwrapChoiceValue1(): Any? =
     is Medication.Ingredient.Item.Reference -> this.value
     is DiagnosticReport.Effective.DateTime -> this.value
     is DiagnosticReport.Effective.Period -> this.value
-    else -> null
-  }
-
-private fun Any.unwrapChoiceValue2(): Any? =
-  when (this) {
     is RequestGroup.Action.RelatedAction.Offset.Duration -> this.value
     is RequestGroup.Action.RelatedAction.Offset.Range -> this.value
     is RequestGroup.Action.Timing.DateTime -> this.value
@@ -1956,6 +2836,9 @@ private fun Any.unwrapChoiceValue2(): Any? =
     is Goal.Target.Detail.Ratio -> this.value
     is Goal.Target.Due.Date -> this.value
     is Goal.Target.Due.Duration -> this.value
+    is Timing.Repeat.Bounds.Duration -> this.value
+    is Timing.Repeat.Bounds.Range -> this.value
+    is Timing.Repeat.Bounds.Period -> this.value
     is Immunization.Occurrence.DateTime -> this.value
     is Immunization.Occurrence.String -> this.value
     is Immunization.ProtocolApplied.DoseNumber.PositiveInt -> this.value
@@ -1989,6 +2872,11 @@ private fun Any.unwrapChoiceValue2(): Any? =
     is Contract.Term.Offer.Answer.Value.Attachment -> this.value
     is Contract.Term.Offer.Answer.Value.Coding -> this.value
     is Contract.Term.Offer.Answer.Value.Quantity -> this.value
+    else -> null
+  }
+
+private fun Any.unwrapChoiceValue4(): Any? =
+  when (this) {
     is Contract.Term.Offer.Answer.Value.Reference -> this.value
     is Contract.Term.Asset.ValuedItem.Entity.CodeableConcept -> this.value
     is Contract.Term.Asset.ValuedItem.Entity.Reference -> this.value
@@ -2009,6 +2897,56 @@ private fun Any.unwrapChoiceValue2(): Any? =
     is BiologicallyDerivedProduct.Processing.Time.Period -> this.value
     is BiologicallyDerivedProduct.Manipulation.Time.DateTime -> this.value
     is BiologicallyDerivedProduct.Manipulation.Time.Period -> this.value
+    is Extension.Value.Base64Binary -> this.value
+    is Extension.Value.Boolean -> this.value
+    is Extension.Value.Canonical -> this.value
+    is Extension.Value.Code -> this.value
+    is Extension.Value.Date -> this.value
+    is Extension.Value.DateTime -> this.value
+    is Extension.Value.Decimal -> this.value
+    is Extension.Value.Id -> this.value
+    is Extension.Value.Instant -> this.value
+    is Extension.Value.Integer -> this.value
+    is Extension.Value.Markdown -> this.value
+    is Extension.Value.Oid -> this.value
+    is Extension.Value.PositiveInt -> this.value
+    is Extension.Value.String -> this.value
+    is Extension.Value.Time -> this.value
+    is Extension.Value.UnsignedInt -> this.value
+    is Extension.Value.Uri -> this.value
+    is Extension.Value.Url -> this.value
+    is Extension.Value.Uuid -> this.value
+    is Extension.Value.Address -> this.value
+    is Extension.Value.Age -> this.value
+    is Extension.Value.Annotation -> this.value
+    is Extension.Value.Attachment -> this.value
+    is Extension.Value.CodeableConcept -> this.value
+    is Extension.Value.Coding -> this.value
+    is Extension.Value.ContactPoint -> this.value
+    is Extension.Value.Count -> this.value
+    is Extension.Value.Distance -> this.value
+    is Extension.Value.Duration -> this.value
+    is Extension.Value.HumanName -> this.value
+    is Extension.Value.Identifier -> this.value
+    is Extension.Value.Money -> this.value
+    is Extension.Value.Period -> this.value
+    is Extension.Value.Quantity -> this.value
+    is Extension.Value.Range -> this.value
+    is Extension.Value.Ratio -> this.value
+    is Extension.Value.Reference -> this.value
+    is Extension.Value.SampledData -> this.value
+    is Extension.Value.Signature -> this.value
+    is Extension.Value.Timing -> this.value
+    is Extension.Value.ContactDetail -> this.value
+    is Extension.Value.Contributor -> this.value
+    is Extension.Value.DataRequirement -> this.value
+    is Extension.Value.Expression -> this.value
+    is Extension.Value.ParameterDefinition -> this.value
+    is Extension.Value.RelatedArtifact -> this.value
+    is Extension.Value.TriggerDefinition -> this.value
+    is Extension.Value.UsageContext -> this.value
+    is Extension.Value.Dosage -> this.value
+    is Extension.Value.Meta -> this.value
     is SpecimenDefinition.TypeTested.Container.MinimumVolume.Quantity -> this.value
     is SpecimenDefinition.TypeTested.Container.MinimumVolume.String -> this.value
     is SpecimenDefinition.TypeTested.Container.Additive.Additive.CodeableConcept -> this.value
@@ -2085,17 +3023,17 @@ private fun Any.unwrapChoiceValue2(): Any? =
     is MedicationKnowledge.AdministrationGuidelines.PatientCharacteristics.Characteristic.Quantity ->
       this.value
     is MedicationKnowledge.DrugCharacteristic.Value.CodeableConcept -> this.value
-    else -> null
-  }
-
-private fun Any.unwrapChoiceValue3(): Any? =
-  when (this) {
     is MedicationKnowledge.DrugCharacteristic.Value.String -> this.value
     is MedicationKnowledge.DrugCharacteristic.Value.Quantity -> this.value
     is MedicationKnowledge.DrugCharacteristic.Value.Base64Binary -> this.value
     is SubstanceReferenceInformation.Target.Amount.Quantity -> this.value
     is SubstanceReferenceInformation.Target.Amount.Range -> this.value
     is SubstanceReferenceInformation.Target.Amount.String -> this.value
+    else -> null
+  }
+
+private fun Any.unwrapChoiceValue5(): Any? =
+  when (this) {
     is ImmunizationEvaluation.DoseNumber.PositiveInt -> this.value
     is ImmunizationEvaluation.DoseNumber.String -> this.value
     is ImmunizationEvaluation.SeriesDoses.PositiveInt -> this.value
@@ -2240,17 +3178,17 @@ private fun Any.unwrapChoiceValue3(): Any? =
     is Task.Input.Value.UsageContext -> this.value
     is Task.Input.Value.Dosage -> this.value
     is Task.Input.Value.Meta -> this.value
-    else -> null
-  }
-
-private fun Any.unwrapChoiceValue4(): Any? =
-  when (this) {
     is Task.Output.Value.Base64Binary -> this.value
     is Task.Output.Value.Boolean -> this.value
     is Task.Output.Value.Canonical -> this.value
     is Task.Output.Value.Code -> this.value
     is Task.Output.Value.Date -> this.value
     is Task.Output.Value.DateTime -> this.value
+    else -> null
+  }
+
+private fun Any.unwrapChoiceValue6(): Any? =
+  when (this) {
     is Task.Output.Value.Decimal -> this.value
     is Task.Output.Value.Id -> this.value
     is Task.Output.Value.Instant -> this.value
@@ -2332,6 +3270,10 @@ private fun Any.unwrapChoiceValue4(): Any? =
     is Procedure.Performed.String -> this.value
     is Procedure.Performed.Age -> this.value
     is Procedure.Performed.Range -> this.value
+    is UsageContext.Value.CodeableConcept -> this.value
+    is UsageContext.Value.Quantity -> this.value
+    is UsageContext.Value.Range -> this.value
+    is UsageContext.Value.Reference -> this.value
     is MedicinalProductAuthorization.Procedure.Date.Period -> this.value
     is MedicinalProductAuthorization.Procedure.Date.DateTime -> this.value
     else -> null
@@ -2351,6 +3293,12 @@ internal fun Any.unwrapChoiceValue(): Any? {
     return it
   }
   unwrapChoiceValue4()?.let {
+    return it
+  }
+  unwrapChoiceValue5()?.let {
+    return it
+  }
+  unwrapChoiceValue6()?.let {
     return it
   }
   return null

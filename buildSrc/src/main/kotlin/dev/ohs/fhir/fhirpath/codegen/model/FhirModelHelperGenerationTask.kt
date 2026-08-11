@@ -130,9 +130,10 @@ abstract class FhirModelHelperGenerationTask : DefaultTask() {
         modelExtensionPackageName = modelExtPackageName,
         structureDefinitions =
           structureDefinitions
-            .filter { it.kind == Kind.RESOURCE }
+            .filter { it.kind == Kind.RESOURCE || it.kind == Kind.COMPLEX_TYPE }
             .filterNot { it.name == "Resource" }
-            .filterNot { it.name == "DomainResource" },
+            .filterNot { it.name == "DomainResource" }
+            .filterNot { it.name == "Element" },
       )
       .writeTo(outputDir)
 

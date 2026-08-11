@@ -302,8 +302,6 @@ documented in the table below.
 | `testSubSetOf3`                    | Specification/Test |     |                                                        | The test resource is invalid and missing (https://github.com/FHIR/fhir-test-cases/issues/247); the scope of "$this" is unclear (https://jira.hl7.org/browse/FHIR-44601)                                |
 | `testIif11`                        | Implementation     |     |                                                        | https://jira.hl7.org/browse/FHIR-44774; https://jira.hl7.org/browse/FHIR-44601                                                                                                                         |
 | `testConformsTo3`                  | Specification      |     |                                                        | Intentional deviation: unresolvable structure returns empty per the current spec (https://hl7.org/fhir/fhirpath.html#functions); R4 requires an error, revised in R5.                                  |
-| `testEscape*`                      | Implementation     | STU |                                                        | Function `escape` is not implemented.                                                                                                                                                                  |
-| `testUnescape*`                    | Implementation     | STU |                                                        | Function `unescape` is not implemented.                                                                                                                                                                |
 | `testNow1`                         | Specification/Test |     |                                                        | As `testDateTimeGreaterThanDate1`.                                                                                                                                                                     |
 | `testSort8`                        | Specification/Test |     |                                                        | Test uses `-$this` for descending string sort, but spec uses `asc`/`desc`, https://github.com/FHIR/fhir-test-cases/issues/253.                                                                         |
 | `testSort10`                       | Specification/Test |     |                                                        | Test uses `-` prefix for descending sort, but spec uses `asc`/`desc`, https://github.com/FHIR/fhir-test-cases/issues/253.                                                                              |
@@ -318,7 +316,6 @@ documented in the table below.
 | `testDollarOrderNotAllowed`        | Implementation     |     |                                                        | Ordered function validation not implemented. Test expects error when using `skip()` on unordered collection (`children()`), but engine does not track collection ordering.                             |
 | `testPolymorphicsB`                | Test               |     |                                                        | Test case expects output in lenient mode for invalid property navigation.                                                                                                                              |
 | `testType22`                       | Implementation     |     |                                                        | `is` with an unknown `System` type should evaluate to false, but the type resolver throws.                                                                                                             |
-| `testTypeA*`                       | Implementation     |     |                                                        | Evaluating `Parameters.parameter[x].value` crashes with `NoSuchElementException`.                                                                                                                      |
 | `LowBoundaryDateTimeMillisecond1`  | Specification/Test |     |                                                        | Diverges from FHIRPath specification. See [Discussion](https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639). |
 | `HighBoundaryDateTimeMillisecond1` | Specification/Test |     | As above.                                              | As above.                                                                                                                                                                                              |
 | `HighBoundaryDateTimeMillisecond3` | Specification/Test |     | As above.                                              | As above.                                                                                                                                                                                              |
@@ -326,10 +323,6 @@ documented in the table below.
 | `testIndex`                        | Implementation     |     |                                                        | `$index` is not implemented.                                                                                                                                                                           |
 | `testPeriodInvariantOld`           | Implementation     |     |                                                        | Function `hasValue` is not implemented.                                                                                                                                                                |
 | `testPeriodInvariantNew`           | Implementation     |     |                                                        | Function `lowBoundary` and function `highBoundary` are not implemented.                                                                                                                                |
-| `testFHIRPathIsFunction2`          | Implementation     |     |                                                        | `code` specializes `string` in FHIR, but type checks use exact equality with no subtype semantics.                                                                                                     |
-| `testFHIRPathIsFunction8`          | Test               |     |                                                        | The vendored `observation-example` input is missing the `patient-age` extension these tests query; it exists upstream in fhir-test-cases.                                                              |
-| `testFHIRPathIsFunction9`          | Test               |     |                                                        | As above. Once the input is updated, this test also needs subtype-aware `is` (`Age` specializes `Quantity`).                                                                                           |
-| `testFHIRPathIsFunction10`         | Test               |     |                                                        | As above.                                                                                                                                                                                              |
 | `testContainedId`                  | Implementation     |     |                                                        |                                                                                                                                                                                                        |
 | `testPrimitiveExtensions`          | Implementation     |     |                                                        | Function `hasValue` is not implemented.                                                                                                                                                                |
 
@@ -374,10 +367,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // Use only the FHIR version(s) you need:
-            implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta04")
+            implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta05")
 
             // Or include all versions at once:
-            // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta04")
+            // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta05")
         }
     }
 }
@@ -392,10 +385,10 @@ For Android projects, add the dependency to the `dependencies` block in the modu
 // e.g., app/build.gradle.kts
 dependencies {
     // Use only the FHIR version(s) you need:
-    implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta04")
+    implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta05")
 
     // Or include all versions at once:
-    // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta04")
+    // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta05")
 }
 ```
 

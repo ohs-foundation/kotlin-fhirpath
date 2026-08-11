@@ -44,7 +44,7 @@ private val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
  * N.B. This should be kept in sync with the conformance table in the `README.md` file.
  */
 val skippedTestGroupToReasonMap =
-  mapOf("testEscapeUnescape" to "Unimplemented", "Comparable" to "Unimplemented")
+  mapOf("Comparable" to "Unimplemented")
 
 /**
  * A map from the test case name to the reason why the test case is skipped.
@@ -94,25 +94,12 @@ val skippedTestCaseToReasonMap =
     "testSort10" to "Test uses `-` prefix for descending sort, but spec uses asc/desc.",
     "testType22" to
       "`is` with an unknown `System` type should evaluate to false, but the type resolver throws `Unknown System type Patient`.",
-    "testTypeA" to
-      "Evaluating `Parameters.parameter[x].value` crashes with `NoSuchElementException: ArrayDeque is empty`.",
-    "testTypeA1" to "As `testTypeA`.",
-    "testTypeA2" to "As `testTypeA`.",
-    "testTypeA3" to "As `testTypeA`.",
-    "testTypeA4" to "As `testTypeA`.",
     "HighBoundaryDateTimeMillisecond1" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "HighBoundaryDateTimeMillisecond3" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "LowBoundaryDateTimeMillisecond1" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
-    "testFHIRPathIsFunction2" to
-      "`code` specializes `string` in FHIR, but type checks use exact equality with no subtype semantics.",
-    "testFHIRPathIsFunction8" to
-      "The vendored copy of the input resource `observation-example` is missing the `patient-age` extension these tests query; the extension exists upstream in fhir-test-cases.",
-    "testFHIRPathIsFunction9" to
-      "As `testFHIRPathIsFunction8`. Once the input is updated, this test also needs subtype-aware `is`: the extension value is an `Age`, which specializes `Quantity`.",
-    "testFHIRPathIsFunction10" to "As `testFHIRPathIsFunction8`.",
   )
 
 @OptIn(ExperimentalKotest::class)
@@ -120,8 +107,11 @@ class FhirPathEngineTest :
   FunSpec({
     val inputMap: Map<String, Resource> =
       listJsonFiles(TEST_INPUT_DIR)
-        .mapKeys { it.key.replace(".json$".toRegex(), ".xml") }
-        .mapValues { jsonR4.decodeFromString(it.value) }
+        .flatMap { entry ->
+          val resource = jsonR4.decodeFromString<Resource>(entry.value)
+          listOf(entry.key to resource, entry.key.replace(".json$".toRegex(), ".xml") to resource)
+        }
+        .toMap()
     val xmlContent = loadFile("${TEST_RESOURCE_DIR}/tests-fhir-r4.xml")
     val testSuite = XML.decodeFromString<Tests>(xmlContent)
 
