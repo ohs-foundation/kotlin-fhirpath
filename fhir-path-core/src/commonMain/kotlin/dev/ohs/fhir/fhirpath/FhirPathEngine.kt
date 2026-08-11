@@ -27,11 +27,13 @@ import org.antlr.v4.kotlinruntime.Token
 
 class FhirPathEngine(
   private val fhirPathTypeResolver: FhirPathTypeResolver,
-  fhirModelNavigator: FhirModelNavigator,
+  val fhirModelNavigator: FhirModelNavigator,
+  val strictMode: Boolean = false,
 ) {
-  private val evaluator = FhirPathEvaluator(fhirPathTypeResolver, fhirModelNavigator)
+  private val evaluator = FhirPathEvaluator(fhirPathTypeResolver, fhirModelNavigator, strictMode)
 
-  val traces: Map<String, List<TraceEntry>> get() = evaluator.traces
+  val traces: Map<String, List<TraceEntry>>
+    get() = evaluator.traces
 
   /**
    * Evaluates a FHIRPath expression against a single FHIR resource.

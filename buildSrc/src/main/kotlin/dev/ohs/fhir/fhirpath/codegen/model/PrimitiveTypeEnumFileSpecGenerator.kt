@@ -37,6 +37,18 @@ object PrimitiveTypeEnumFileSpecGenerator {
     structureDefinitions: List<StructureDefinition>,
   ): FileSpec {
     val className = ClassName(fhirPathPackageName, "Fhir${fhirVersion.uppercase()}PrimitiveType")
+    // Subtypes must precede supertypes in order for `fromObject` to return the concrete type.
+    val sortedPrimitiveDefinitions = mutableListOf<StructureDefinition>()
+    for (structureDefinition in structureDefinitions) {
+      val superTypeIndex =
+        sortedPrimitiveDefinitions.indexOfFirst { it.url == structureDefinition.baseDefinition }
+      if (superTypeIndex != -1) {
+        sortedPrimitiveDefinitions.add(superTypeIndex, structureDefinition)
+      } else {
+        sortedPrimitiveDefinitions.add(structureDefinition)
+      }
+    }
+
     return FileSpec.builder(className)
       .addType(
         TypeSpec.enumBuilder(className)
@@ -86,7 +98,7 @@ object PrimitiveTypeEnumFileSpecGenerator {
                     CodeBlock.builder()
                       .beginControlFlow("when (value)")
                       .apply {
-                        for (structureDefinition in structureDefinitions) {
+                        for (structureDefinition in sortedPrimitiveDefinitions) {
                           when (structureDefinition.kind) {
                             Kind.PRIMITIVE_TYPE -> {
                               val typeName = structureDefinition.name

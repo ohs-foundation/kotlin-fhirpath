@@ -65,6 +65,7 @@ data class TraceEntry(val value: Any, val path: String)
 internal class FhirPathEvaluator(
   val fhirPathTypeResolver: FhirPathTypeResolver,
   val fhirModelNavigator: FhirModelNavigator,
+  val strictMode: Boolean = false,
 ) : fhirpathBaseVisitor<Collection<Any>>() {
   private var resource: Any? = null
   private val contextStack = ArrayDeque<Collection<Any>>()
@@ -191,7 +192,7 @@ internal class FhirPathEvaluator(
   override fun visitUnionExpression(ctx: fhirpathParser.UnionExpressionContext): Collection<Any> {
     val left = visit(ctx.expression(0)!!)
     val right = visit(ctx.expression(1)!!)
-    return left.union(right)
+    return left.union(right, fhirPathTypeResolver)
   }
 
   override fun visitInequalityExpression(
@@ -370,22 +371,25 @@ internal class FhirPathEvaluator(
     val memberName = visit(ctx.identifier()).first() as String
 
     // Evaluate to the initial context if it matches the resource type
-    with(contextStack.first().single()) {
-      if (this::class.simpleName == memberName) {
-        return listOf(this)
+    contextStack.firstOrNull()?.singleOrNull()?.let { initialContext ->
+      if (initialContext::class.simpleName == memberName) {
+        return listOf(initialContext)
       }
     }
 
     // Use $this context if the member invocation is implicit, otherwise use the evaluation context
     val context =
       if (ctx.getParent() is fhirpathParser.InvocationExpressionContext) {
-        contextStack.last()
+        contextStack.lastOrNull() ?: emptyList()
       } else {
-        listOf(thisStack.last())
+        thisStack.lastOrNull()?.let { listOf(it) } ?: emptyList()
       }
 
     return context.flatMap { item ->
-      when (val fieldValue = fhirModelNavigator.accessProperty(item, memberName)) {
+      when (
+        val fieldValue =
+          fhirModelNavigator.accessProperty(item, memberName, strictMode = strictMode)
+      ) {
         null -> emptyList()
         is List<*> -> fieldValue as Collection<Any>
         else -> listOf(fieldValue)

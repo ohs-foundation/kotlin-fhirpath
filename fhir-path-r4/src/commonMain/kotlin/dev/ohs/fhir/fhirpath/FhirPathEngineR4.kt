@@ -19,9 +19,10 @@ package dev.ohs.fhir.fhirpath
 import dev.ohs.fhir.fhirpath.model.FhirR4ModelNavigator
 import dev.ohs.fhir.fhirpath.types.FhirR4TypeResolver
 
-fun FhirPathEngine.Companion.forR4(): FhirPathEngine {
+fun FhirPathEngine.Companion.forR4(strictMode: Boolean = false): FhirPathEngine {
   return FhirPathEngine(
     fhirPathTypeResolver = FhirR4TypeResolver,
     fhirModelNavigator = FhirR4ModelNavigator,
+    strictMode = strictMode,
   )
 }

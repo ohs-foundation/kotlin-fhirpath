@@ -43,11 +43,11 @@ internal fun Collection<Any>.invoke(
     "anyTrue" -> (this as Collection<Boolean>).anyTrue()
     "allFalse" -> (this as Collection<Boolean>).allFalse()
     "anyFalse" -> (this as Collection<Boolean>).anyFalse()
-    "subsetOf" -> this.subsetOf(params)
-    "supersetOf" -> this.supersetOf(params)
+    "subsetOf" -> this.subsetOf(params, fhirPathTypeResolver)
+    "supersetOf" -> this.supersetOf(params, fhirPathTypeResolver)
     "count" -> this.count()
-    "distinct" -> this.distinct() // Use Kotlin's distinct()
-    "isDistinct" -> this.isDistinct()
+    "distinct" -> this.distinctFun(fhirPathTypeResolver)
+    "isDistinct" -> this.isDistinct(fhirPathTypeResolver)
 
     // Filtering and projection
     // https://hl7.org/fhirpath/N1/#filtering-and-projection
@@ -61,12 +61,12 @@ internal fun Collection<Any>.invoke(
     "tail" -> this.drop(1) // Use Kotlin's drop()
     "skip" -> this.drop(params[0] as Int) // Use Kotlin's drop()
     "take" -> this.take(params[0] as Int) // Use Kotlin's take()
-    "intersect" -> this.intersectFun(params)
-    "exclude" -> this.exclude(params)
+    "intersect" -> this.intersectFun(params, fhirPathTypeResolver)
+    "exclude" -> this.exclude(params, fhirPathTypeResolver)
 
     // Combining
     // https://hl7.org/fhirpath/N1/#combining
-    "union" -> this.union(params)
+    "union" -> this.union(params, fhirPathTypeResolver)
     "combine" -> this.combine(params)
 
     // Conversion
@@ -108,6 +108,8 @@ internal fun Collection<Any>.invoke(
     // https://build.fhir.org/ig/HL7/FHIRPath/#additional-string-functions
     "encode" -> this.encode(params, fhirPathTypeResolver)
     "decode" -> this.decode(params, fhirPathTypeResolver)
+    "escape" -> this.escape(params, fhirPathTypeResolver)
+    "unescape" -> this.unescape(params, fhirPathTypeResolver)
     "trim" -> this.trim(fhirPathTypeResolver)
     "split" -> this.split(params, fhirPathTypeResolver)
     "join" -> this.join(params, fhirPathTypeResolver)
@@ -130,10 +132,6 @@ internal fun Collection<Any>.invoke(
     "children" -> this.children(fhirModelNavigator)
     "descendants" -> this.descendants(fhirModelNavigator)
 
-    // FHIR-specific functions
-    // https://hl7.org/fhir/fhirpath.html#functions
-    "extension" -> this.extension(params, fhirModelNavigator)
-
     // Utility functions
     // https://hl7.org/fhirpath/N1/#utility-functions
     "now" -> now(now)
@@ -144,9 +142,18 @@ internal fun Collection<Any>.invoke(
     "precision" -> this.precision(fhirPathTypeResolver)
     "comparable" -> this.comparable(params, fhirPathTypeResolver)
 
+    // Reflection
+    // https://hl7.org/fhirpath/N1/#types-and-reflection
+    // https://build.fhir.org/ig/HL7/FHIRPath/en/#reflection
+    "type" -> this.type(fhirPathTypeResolver)
+
     // Defined as a boolean logic operator in the specification, but the grammar handles this as a
     // function invocation.
     "not" -> this.not()
+
+    // FHIR-specific functions
+    // https://hl7.org/fhir/fhirpath.html#functions
+    "extension" -> this.extension(params, fhirModelNavigator)
 
     else -> error("Function '$functionName' is not implemented.")
   }

@@ -16,6 +16,9 @@
 
 package dev.ohs.fhir.fhirpath.functions
 
+import dev.ohs.fhir.fhirpath.toFhirPathType
+import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
+
 /** See [specification](https://hl7.org/fhirpath/N1/#empty-boolean). */
 internal fun Collection<Any>.empty(): Collection<Boolean> = listOf(isEmpty())
 
@@ -34,12 +37,22 @@ internal fun Collection<Boolean>.allFalse(): Collection<Boolean> = listOf(all { 
 internal fun Collection<Boolean>.anyFalse(): Collection<Boolean> = listOf(any { !it })
 
 /** See [specification](https://hl7.org/fhirpath/N1/#subsetofother-collection-boolean). */
-internal fun Collection<Any>.subsetOf(params: Collection<Any>): Collection<Boolean> =
-  listOf(all { params.contains(it) })
+internal fun Collection<Any>.subsetOf(
+  params: Collection<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Boolean> {
+  val paramsConverted = params.mapTo(mutableSetOf()) { it.toFhirPathType(fhirPathTypeResolver) }
+  return listOf(paramsConverted.containsAll(map { it.toFhirPathType(fhirPathTypeResolver) }))
+}
 
 /** See [specification](https://hl7.org/fhirpath/N1/#supersetofother-collection-boolean). */
-internal fun Collection<Any>.supersetOf(params: Collection<Any>): Collection<Boolean> =
-  listOf(params.all { this.contains(it) })
+internal fun Collection<Any>.supersetOf(
+  params: Collection<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Boolean> {
+  val thisConverted = mapTo(mutableSetOf()) { it.toFhirPathType(fhirPathTypeResolver) }
+  return listOf(thisConverted.containsAll(params.map { it.toFhirPathType(fhirPathTypeResolver) }))
+}
 
 /** See [specification](https://hl7.org/fhirpath/N1/#count-integer). */
 internal fun Collection<Any>.count(): Collection<Int> = listOf(size)
@@ -48,6 +61,20 @@ internal fun Collection<Any>.count(): Collection<Int> = listOf(size)
 // Use Kotlin's distinct()
 // internal fun Collection<Any>.distinct(): Collection<Any>
 
+/**
+ * See [specification](https://hl7.org/fhirpath/N1/#distinct-collection).
+ *
+ * Duplicates are detected on the converted FHIRPath values, but the original items are kept and the
+ * first occurrence of each value wins. The specification does not prescribe which duplicate to
+ * keep.
+ */
+internal fun Collection<Any>.distinctFun(
+  fhirPathTypeResolver: FhirPathTypeResolver
+): Collection<Any> {
+  return distinctBy { it.toFhirPathType(fhirPathTypeResolver) }
+}
+
 /** See [specification](https://hl7.org/fhirpath/N1/#isdistinct-boolean). */
-internal fun Collection<Any>.isDistinct(): Collection<Boolean> =
-  listOf(count() == distinct().count())
+internal fun Collection<Any>.isDistinct(
+  fhirPathTypeResolver: FhirPathTypeResolver
+): Collection<Boolean> = listOf(count() == distinctFun(fhirPathTypeResolver).count())

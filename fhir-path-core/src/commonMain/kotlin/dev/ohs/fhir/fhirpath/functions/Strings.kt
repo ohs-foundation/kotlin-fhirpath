@@ -67,8 +67,13 @@ internal fun Collection<Any>.startsWith(
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
   check(size <= 1) { "startsWith() cannot be called on a collection with more than 1 item" }
-  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
-  val prefix = params.single().unwrapString(fhirPathTypeResolver)!!
+  val item = singleOrNull() ?: return emptyList()
+  val input =
+    item.unwrapString(fhirPathTypeResolver)
+      ?: error("startsWith() cannot be called on non-string item: $item")
+  val prefix =
+    params.single().unwrapString(fhirPathTypeResolver)
+      ?: error("startsWith() prefix must be a string")
   return listOf(input.startsWith(prefix))
 }
 
@@ -78,8 +83,13 @@ internal fun Collection<Any>.endsWith(
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
   check(size <= 1) { "endsWith() cannot be called on a collection with more than 1 item" }
-  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
-  val suffix = params.single().unwrapString(fhirPathTypeResolver)!!
+  val item = singleOrNull() ?: return emptyList()
+  val input =
+    item.unwrapString(fhirPathTypeResolver)
+      ?: error("endsWith() cannot be called on non-string item: $item")
+  val suffix =
+    params.single().unwrapString(fhirPathTypeResolver)
+      ?: error("endsWith() suffix must be a string")
   return listOf(input.endsWith(suffix))
 }
 
@@ -89,8 +99,13 @@ internal fun Collection<Any>.strContains(
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
   check(size <= 1) { "contains() cannot be called on a collection with more than 1 item" }
-  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
-  val substring = params.single().unwrapString(fhirPathTypeResolver)!!
+  val item = singleOrNull() ?: return emptyList()
+  val input =
+    item.unwrapString(fhirPathTypeResolver)
+      ?: error("contains() cannot be called on non-string item: $item")
+  val substring =
+    params.single().unwrapString(fhirPathTypeResolver)
+      ?: error("contains() substring must be a string")
   return listOf(input.contains(substring))
 }
 
@@ -360,3 +375,211 @@ private fun isUnreservedUrlChar(ch: Char): Boolean =
     ch == '_' ||
     ch == '.' ||
     ch == '~'
+
+/**
+ * Escapes the single string item in the input collection for the specified target. Supported
+ * targets: `'html'` and `'json'`.
+ *
+ * See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#escapetarget--string--string).
+ */
+internal fun Collection<Any>.escape(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<String> {
+  check(size <= 1) { "escape() cannot be called on a collection with more than 1 item" }
+  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+  val target = params.singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+
+  return when (target) {
+    "html" -> listOf(htmlEscape(input))
+    "json" -> listOf(jsonEscape(input))
+    else -> emptyList()
+  }
+}
+
+/**
+ * Unescapes the single string item in the input collection for the specified target. Supported
+ * targets: `'html'` and `'json'`. Malformed input, such as a truncated `\uXXXX` escape or an entity
+ * with an invalid code point, returns empty rather than throwing.
+ *
+ * See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#unescapetarget--string--string).
+ */
+internal fun Collection<Any>.unescape(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<String> {
+  check(size <= 1) { "unescape() cannot be called on a collection with more than 1 item" }
+  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+  val target = params.singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+
+  return try {
+    when (target) {
+      "html" -> listOf(htmlUnescape(input))
+      "json" -> listOf(jsonUnescape(input))
+      else -> emptyList()
+    }
+  } catch (_: IllegalArgumentException) {
+    emptyList()
+  }
+}
+
+/**
+ * Escapes the HTML special characters `&`, `<`, `>`, `"` and `'` as named or numeric entities, and
+ * every character above 127 as a numeric entity. A surrogate pair is escaped as a single entity for
+ * the full code point.
+ *
+ * These five are the only characters with markup meaning in HTML, matching the XML predefined
+ * entities (https://www.w3.org/TR/xml/#sec-predefined-ent) and OWASP's HTML encoding rule
+ * (https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html).
+ */
+private fun htmlEscape(input: String): String = buildString {
+  var i = 0
+  while (i < input.length) {
+    val char = input[i]
+    val next = input.getOrNull(i + 1)
+    when {
+      char == '&' -> append("&amp;")
+      char == '<' -> append("&lt;")
+      char == '>' -> append("&gt;")
+      char == '"' -> append("&quot;")
+      // Numeric because HTML4 never defined `&apos;`.
+      char == '\'' -> append("&#39;")
+      char.isHighSurrogate() && next != null && next.isLowSurrogate() -> {
+        append("&#").append(surrogatePairToCodePoint(char, next)).append(';')
+        i += 2
+        continue
+      }
+      char.code > 127 -> append("&#").append(char.code).append(';')
+      else -> append(char)
+    }
+    i++
+  }
+}
+
+/**
+ * Decodes HTML character entities, both numeric (`&#65;`, `&#x41;`) and named. Only the five
+ * predefined names (`amp`, `lt`, `gt`, `quot`, `apos`) are decoded, which covers everything
+ * [htmlEscape] can produce. HTML defines many more names (`&nbsp;`, `&eacute;` and so on, see
+ * https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references); those are left
+ * in the string unchanged.
+ */
+private fun htmlUnescape(input: String): String = buildString {
+  var i = 0
+  while (i < input.length) {
+    val char = input[i]
+    if (char == '&') {
+      // The longest decodable entity is `&#1114111;`, the last Unicode code point
+      // (https://www.unicode.org/glossary/#code_point), whose `;` is 9 characters from the `&`.
+      val end = input.indexOf(';', i)
+      val decoded =
+        if (end in (i + 1)..(i + 9)) decodeHtmlEntity(input.substring(i + 1, end)) else null
+      if (decoded != null) {
+        append(decoded)
+        i = end + 1
+        continue
+      }
+    }
+    append(char)
+    i++
+  }
+}
+
+/** Decodes the text between `&` and `;`, or returns null if it is not a recognized entity. */
+private fun decodeHtmlEntity(entity: String): String? =
+  when {
+    entity == "amp" -> "&"
+    entity == "lt" -> "<"
+    entity == "gt" -> ">"
+    entity == "quot" -> "\""
+    entity == "apos" -> "'"
+    entity.startsWith("#x") || entity.startsWith("#X") ->
+      codePointToString(entity.drop(2).toInt(16))
+    entity.startsWith("#") -> codePointToString(entity.drop(1).toInt())
+    else -> null
+  }
+
+/**
+ * Escapes `\`, `"` and control characters as in a JSON string literal (RFC 8259,
+ * https://datatracker.ietf.org/doc/html/rfc8259#section-7).
+ */
+private fun jsonEscape(input: String): String = buildString {
+  for (char in input) {
+    when (char) {
+      '\\' -> append("\\\\")
+      '"' -> append("\\\"")
+      '\n' -> append("\\n")
+      '\r' -> append("\\r")
+      '\t' -> append("\\t")
+      '\b' -> append("\\b")
+      '\u000C' -> append("\\f")
+      // The remaining control characters have no dedicated escape.
+      in '\u0000'..'\u001F' -> append("\\u").append(char.code.toString(16).padStart(4, '0'))
+      else -> append(char)
+    }
+  }
+}
+
+/** Decodes JSON string literal escape sequences, including `\uXXXX`. */
+private fun jsonUnescape(input: String): String = buildString {
+  var i = 0
+  while (i < input.length) {
+    val char = input[i]
+    val next = input.getOrNull(i + 1)
+    if (char == '\\' && next != null) {
+      when (next) {
+        '"' -> append('"')
+        '\\' -> append('\\')
+        '/' -> append('/')
+        'n' -> append('\n')
+        'r' -> append('\r')
+        't' -> append('\t')
+        'b' -> append('\b')
+        'f' -> append('\u000C')
+        'u' -> {
+          // The 6 character `\uXXXX` escape carries one UTF-16 code unit, so appending each
+          // unit as a Char lets a surrogate pair, arriving as two escapes, combine naturally.
+          // The bound is checked up front because on Kotlin/JS substring clamps instead of
+          // throwing, and a truncated escape like `a\u12` would silently decode garbage.
+          val escapeEnd = i + 6
+          require(escapeEnd <= input.length) { "Truncated unicode escape" }
+          append(Char(input.substring(i + 2, escapeEnd).toInt(16)))
+          i = escapeEnd
+          continue
+        }
+        // An escape JSON does not define, like FHIRPath's `\'`, keeps the escaped character.
+        else -> append(next)
+      }
+      i += 2
+    } else {
+      append(char)
+      i++
+    }
+  }
+}
+
+/**
+ * Reverses the encoding in [codePointToString]: strip the 0xD800 and 0xDC00 markers, rejoin the two
+ * 10 bit halves, add back the 0x10000.
+ */
+private fun surrogatePairToCodePoint(high: Char, low: Char): Int =
+  0x10000 + ((high.code - 0xD800) shl 10) + (low.code - 0xDC00)
+
+/**
+ * Converts a Unicode code point to a string: a single `Char` for code points up to `0xFFFF`, and a
+ * surrogate pair for those above, which do not fit in one 16 bit `Char`.
+ */
+private fun codePointToString(codePoint: Int): String {
+  // No character exists above 0x10FFFF, and 0xD800..0xDFFF is set aside for the two char
+  // encoding below, so neither is a real character.
+  require(codePoint in 0..0x10FFFF && codePoint !in 0xD800..0xDFFF) {
+    "Invalid code point: $codePoint"
+  }
+  return if (codePoint <= 0xFFFF) {
+    Char(codePoint).toString()
+  } else {
+    // Too big for one 16 bit char, so it is split in two. Subtracting 0x10000 makes it fit in
+    // 20 bits, and the 0xD800 and 0xDC00 markers show which char is which half.
+    val offset = codePoint - 0x10000
+    charArrayOf(Char(0xD800 + (offset shr 10)), Char(0xDC00 + (offset and 0x3FF))).concatToString()
+  }
+}

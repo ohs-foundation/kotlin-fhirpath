@@ -7,23 +7,20 @@ plugins {
 val generateR5Helpers = tasks.register<FhirModelHelperGenerationTask>("generateR5Helpers") {
     description = "Generate FHIR model extensions for R5"
     this.corePackageFiles.from(
-        File(project.rootDir, "third_party/hl7.fhir.r5.core/package").listFiles()
+        layout.projectDirectory.dir("../third_party/hl7.fhir.r5.core/package")
     )
     this.fhirVersion.set("r5")
-    outputDirectory.set(layout.buildDirectory.dir("generated/r5/kotlin"))
+    outputDirectory.set(layout.projectDirectory.dir("src/commonMain/kotlin"))
+    finalizedBy(rootProject.tasks.named("spotlessApply"))
 }
 
-kotlin {
-    sourceSets {
-        commonMain {
-            kotlin {
-                srcDir(generateR5Helpers)
-            }
-        }
-    }
+// Ensure Kotlin compilation tasks depend on code generation
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
+    dependsOn(generateR5Helpers)
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+// Ensure Jar packaging tasks depend on code generation
+tasks.withType<org.gradle.jvm.tasks.Jar>().configureEach {
     dependsOn(generateR5Helpers)
 }
 

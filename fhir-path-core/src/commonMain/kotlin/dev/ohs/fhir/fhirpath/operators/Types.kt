@@ -17,6 +17,7 @@
 package dev.ohs.fhir.fhirpath.operators
 
 import dev.ohs.fhir.fhirpath.toFhirPathType
+import dev.ohs.fhir.fhirpath.types.FhirPathType
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 
 /** See [specification](https://hl7.org/fhirpath/N1/#istype-type-specifier). */
@@ -28,26 +29,20 @@ internal fun Collection<Any>.`is`(
   val item = singleOrNull() ?: return emptyList()
 
   val type = fhirPathTypeResolver.resolveFromObject(item)
-  val targetType = params.single()
-  return listOf(type == targetType)
+  val targetType = params.single() as? FhirPathType ?: return listOf(false)
+  return listOf(type != null && type.isSubtypeOf(targetType))
 }
 
-/**
- * See [specification](https://hl7.org/fhirpath/N1/#oftypetype-type-specifier-collection).
- *
- * The type comparison is an exact match, so subtypes are not matched: `ofType(Quantity)` does not
- * return `Duration` items even though `Duration` specializes `Quantity`. The FHIRPath spec calls
- * for matching "the given type or a subclass thereof", which is not supported yet for complex types
- * and resources. For primitives the exact match is the specified behavior: "All primitives are
- * considered to be independent types (so `markdown` is not a subclass of `string`)"
- * (https://hl7.org/fhir/R5/fhirpath.html). The same limitation applies to `is` and `as`.
- */
+/** See [specification](https://hl7.org/fhirpath/N1/#oftypetype-type-specifier-collection). */
 internal fun Collection<Any>.ofType(
   params: List<Any>,
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
-  val targetType = params.single()
-  return filter { fhirPathTypeResolver.resolveFromObject(it) == targetType }
+  val targetType = params.single() as? FhirPathType ?: return emptyList()
+  return filter { item ->
+    val type = fhirPathTypeResolver.resolveFromObject(item)
+    type != null && (type == targetType || type.typeName == targetType.typeName)
+  }
 }
 
 /** See [specification](https://hl7.org/fhirpath/N1/#astype-type-specifier). */
@@ -59,15 +54,18 @@ internal fun Collection<Any>.`as`(
   val item = singleOrNull() ?: return emptyList()
 
   val type = fhirPathTypeResolver.resolveFromObject(item)
-  val targetType = params.single()
+  val targetType = params.single() as? FhirPathType ?: return emptyList()
 
-  if (type == targetType) {
+  if (type != null && (type == targetType || type.typeName == targetType.typeName)) {
     return this
   }
 
   val converted = item.toFhirPathType(fhirPathTypeResolver)
   val convertedType = fhirPathTypeResolver.resolveFromObject(converted)
-  if (convertedType == targetType) {
+  if (
+    convertedType != null &&
+      (convertedType == targetType || convertedType.typeName == targetType.typeName)
+  ) {
     return listOf(converted)
   }
 
