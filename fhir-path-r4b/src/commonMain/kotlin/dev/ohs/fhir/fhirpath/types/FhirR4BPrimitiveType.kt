@@ -19,7 +19,8 @@ package dev.ohs.fhir.fhirpath.types
 import dev.ohs.fhir.model.r4b.Enumeration
 import kotlin.Any
 
-public enum class FhirR4BPrimitiveType(override val typeName: kotlin.String) : FhirR4BType {
+public enum class FhirR4BPrimitiveType(override val typeName: kotlin.String) :
+  FhirR4BType, FhirPrimitiveType {
   Oid("oid"),
   Uri("uri"),
   Id("id"),

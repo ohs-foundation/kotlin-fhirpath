@@ -112,6 +112,13 @@ interface FhirType : FhirPathType {
   abstract override val typeName: String
 }
 
+/**
+ * Marker for FHIR primitive types (e.g. `string`, `code`, `boolean`). Primitives are Elements whose
+ * actual value lives in a `value` property, which may be absent when the element only carries an
+ * `id` or `extension`; `hasValue()` relies on this distinction.
+ */
+interface FhirPrimitiveType : FhirType
+
 enum class FhirPathSystemType(override val typeName: String) : FhirPathType {
   BOOLEAN("Boolean"),
   STRING("String"),

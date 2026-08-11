@@ -83,11 +83,9 @@ val skippedTestCaseToReasonMap =
       "Ordered function validation not implemented. Test expects error when using skip() on unordered collection (children()), but engine does not track collection ordering.",
     "testPolymorphicsB" to "Allow invalid test where it's not strict mode but expects output",
     "testIndex" to "TBD",
-    "testPeriodInvariantOld" to "hasValue() is not implemented.",
     "testPeriodInvariantNew" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "testContainedId" to "TBD",
-    "testPrimitiveExtensions" to "Function `hasValue` is not implemented.",
     "testSort8" to "Test uses `-\$this` for descending string sort, but spec uses asc/desc.",
     "testSort10" to "Test uses `-` prefix for descending sort, but spec uses asc/desc.",
     "testType22" to

@@ -17,6 +17,8 @@
 package dev.ohs.fhir.fhirpath.functions
 
 import dev.ohs.fhir.fhirpath.model.FhirModelNavigator
+import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
+import dev.ohs.fhir.fhirpath.types.FhirPrimitiveType
 
 /**
  * Returns the extensions with the given url on each item in the input collection.
@@ -39,4 +41,30 @@ internal fun Collection<Any>.extension(
       }
     }
     .filter { fhirModelNavigator.accessProperty(it, "url") == url }
+}
+
+/**
+ * Returns whether the input is a single FHIR primitive that has an actual value, as opposed to only
+ * carrying an `id` or `extension` (e.g. a `_given` element with an extension but no value). Returns
+ * false for an empty input, for non-primitives (including complex types with a `value` property
+ * such as `Quantity`), and for FHIRPath literals, which are System values rather than FHIR
+ * primitives.
+ *
+ * See [specification](https://hl7.org/fhir/fhirpath.html#functions).
+ */
+internal fun Collection<Any>.hasValue(
+  fhirPathTypeResolver: FhirPathTypeResolver,
+  fhirModelNavigator: FhirModelNavigator,
+): Collection<Boolean> {
+  // Per the specification, the result is true only when the collection "contains a single value
+  // which is a FHIR primitive" with a value; an empty or multi-item collection is simply false.
+  val item = singleOrNull() ?: return listOf(false)
+  if (fhirPathTypeResolver.resolveFromObject(item) !is FhirPrimitiveType) {
+    return listOf(false)
+  }
+  // Code-bound elements are `Enumeration` objects, which have no generated property dispatch, so
+  // their value presence is checked through the resolver's string conversion instead.
+  val value =
+    fhirModelNavigator.accessProperty(item, "value") ?: fhirPathTypeResolver.convertToString(item)
+  return listOf(value != null)
 }
