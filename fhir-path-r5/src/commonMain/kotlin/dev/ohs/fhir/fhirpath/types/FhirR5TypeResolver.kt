@@ -17,7 +17,6 @@
 package dev.ohs.fhir.fhirpath.types
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import dev.ohs.fhir.fhirpath.functions.DEFAULT_UNIT
 import dev.ohs.fhir.model.r5.Enumeration
 import dev.ohs.fhir.model.r5.Resource
 import dev.ohs.fhir.model.r5.ext.getFhirType
@@ -27,7 +26,9 @@ fun FhirPathDate.Companion.fromFhirR5Date(fhirDate: dev.ohs.fhir.model.r5.FhirDa
   return fromString(fhirDate.toString())
 }
 
-fun FhirPathDateTime.Companion.fromFhirR5DateTime(fhirDateTime: dev.ohs.fhir.model.r5.FhirDateTime): FhirPathDateTime {
+fun FhirPathDateTime.Companion.fromFhirR5DateTime(
+  fhirDateTime: dev.ohs.fhir.model.r5.FhirDateTime
+): FhirPathDateTime {
   return fromString(fhirDateTime.toString())
 }
 
@@ -66,7 +67,10 @@ private val fhirR5TypeToFhirPathType =
     FhirR5PrimitiveType.PositiveInt to
       (FhirPathSystemType.INTEGER to { it -> (it as dev.ohs.fhir.model.r5.PositiveInt).value!! }),
     FhirR5PrimitiveType.Decimal to
-      (FhirPathSystemType.DECIMAL to { it -> (it as dev.ohs.fhir.model.r5.Decimal).value!! }),
+      (FhirPathSystemType.DECIMAL to
+        { it ->
+          (it as dev.ohs.fhir.model.r5.Decimal).value!!.toBigDecimal()
+        }),
     FhirR5PrimitiveType.Date to
       (FhirPathSystemType.DATE to
         { it ->
@@ -88,7 +92,7 @@ private val fhirR5TypeToFhirPathType =
       (FhirPathSystemType.QUANTITY to
         {
           (it as dev.ohs.fhir.model.r5.Quantity).let {
-            val pair = (it.value!!.value!! to it.code!!.value!!)
+            val pair = (it.value!!.value!!.toBigDecimal() to it.code!!.value!!)
             FhirPathQuantity(value = pair.first, unit = pair.second)
           }
         }),
@@ -134,3 +138,11 @@ object FhirR5TypeResolver : FhirPathTypeResolver() {
     return value
   }
 }
+
+/**
+ * Converts the model's [dev.ohs.fhir.model.r5.FhirDecimal] wrapper to the engine's [BigDecimal].
+ * The wrapper preserves the number's original text and its own BigDecimal is internal to
+ * kotlin-fhir, so the string form is the lossless public path.
+ */
+private fun dev.ohs.fhir.model.r5.FhirDecimal.toBigDecimal(): BigDecimal =
+  BigDecimal.parseString(toString())
