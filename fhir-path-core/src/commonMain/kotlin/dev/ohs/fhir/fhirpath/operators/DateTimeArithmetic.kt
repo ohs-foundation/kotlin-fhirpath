@@ -234,38 +234,51 @@ private sealed interface DurationUnit {
   val names: Set<String>
   val nanoseconds: Long
 
-  fun toPeriod(value: Long): DateTimePeriod
+  fun toPeriod(value: BigDecimal): DateTimePeriod
 
   enum class DateBased(override val names: Set<String>, override val nanoseconds: Long) :
     DurationUnit {
     YEAR(setOf("year", "years"), DAYS_PER_YEAR * NANOSECONDS_PER_DAY) {
-      override fun toPeriod(value: Long) = DateTimePeriod(years = value.toInt())
+      override fun toPeriod(value: BigDecimal) =
+        DateTimePeriod(years = value.toBigInteger().intValue())
     },
     MONTH(setOf("month", "months"), DAYS_PER_MONTH * NANOSECONDS_PER_DAY) {
-      override fun toPeriod(value: Long) = DateTimePeriod(months = value.toInt())
+      override fun toPeriod(value: BigDecimal) =
+        DateTimePeriod(months = value.toBigInteger().intValue())
     },
     WEEK(setOf("week", "weeks", "wk"), DAYS_PER_WEEK * NANOSECONDS_PER_DAY) {
-      override fun toPeriod(value: Long) = DateTimePeriod(days = (value * DAYS_PER_WEEK).toInt())
+      override fun toPeriod(value: BigDecimal) =
+        DateTimePeriod(days = (value.toBigInteger().intValue() * DAYS_PER_WEEK))
     },
     DAY(setOf("day", "days", "d"), NANOSECONDS_PER_DAY) {
-      override fun toPeriod(value: Long) = DateTimePeriod(days = value.toInt())
+      override fun toPeriod(value: BigDecimal) =
+        DateTimePeriod(days = value.toBigInteger().intValue())
     },
   }
 
   enum class TimeBased(override val names: Set<String>, override val nanoseconds: Long) :
     DurationUnit {
     HOUR(setOf("hour", "hours", "h"), NANOSECONDS_PER_HOUR) {
-      override fun toPeriod(value: Long) = DateTimePeriod(hours = value.toInt())
+      override fun toPeriod(value: BigDecimal) =
+        DateTimePeriod(hours = value.toBigInteger().intValue())
     },
     MINUTE(setOf("minute", "minutes", "min"), NANOSECONDS_PER_MINUTE) {
-      override fun toPeriod(value: Long) = DateTimePeriod(minutes = value.toInt())
+      override fun toPeriod(value: BigDecimal) =
+        DateTimePeriod(minutes = value.toBigInteger().intValue())
     },
     SECOND(setOf("second", "seconds", "s"), NANOSECONDS_PER_SECOND) {
-      override fun toPeriod(value: Long) = DateTimePeriod(seconds = value.toInt())
+      override fun toPeriod(value: BigDecimal): DateTimePeriod {
+        val totalNanos =
+          (value * BigDecimal.fromLong(NANOSECONDS_PER_SECOND)).toBigInteger().longValue()
+        return DateTimePeriod(nanoseconds = totalNanos)
+      }
     },
     MILLISECOND(setOf("millisecond", "milliseconds", "ms"), NANOSECONDS_PER_MILLISECOND) {
-      override fun toPeriod(value: Long) =
-        DateTimePeriod(nanoseconds = value * NANOSECONDS_PER_MILLISECOND)
+      override fun toPeriod(value: BigDecimal): DateTimePeriod {
+        val totalNanos =
+          (value * BigDecimal.fromLong(NANOSECONDS_PER_MILLISECOND)).toBigInteger().longValue()
+        return DateTimePeriod(nanoseconds = totalNanos)
+      }
     },
   }
 
@@ -301,7 +314,14 @@ private sealed interface DurationUnit {
  * @property value The integer magnitude of the duration.
  * @property originalUnit The original string representation of the unit for diagnostic messages.
  */
-private class DurationInfo(val unit: DurationUnit, val value: Long, val originalUnit: String) {
+private class DurationInfo(
+  val unit: DurationUnit,
+  val exactValue: BigDecimal,
+  val originalUnit: String,
+) {
+  val value: Long
+    get() = exactValue.toBigInteger().longValue()
+
   fun toYears(): Int =
     when (unit) {
       DurationUnit.DateBased.YEAR -> value.toInt()
@@ -341,10 +361,10 @@ private class DurationInfo(val unit: DurationUnit, val value: Long, val original
 
   fun toNanoseconds(): Long {
     check(unit is DurationUnit.TimeBased) { "Cannot convert '$originalUnit' to nanoseconds" }
-    return value * unit.nanoseconds
+    return (exactValue * BigDecimal.fromLong(unit.nanoseconds)).toBigInteger().longValue()
   }
 
-  fun toDateTimePeriod(): DateTimePeriod = unit.toPeriod(value)
+  fun toDateTimePeriod(): DateTimePeriod = unit.toPeriod(exactValue)
 
   companion object {
     fun from(duration: FhirPathQuantity, allowedUnits: Set<String>): DurationInfo {
@@ -354,11 +374,7 @@ private class DurationInfo(val unit: DurationUnit, val value: Long, val original
         "Unsupported or invalid unit '${duration.unit}' for date/time arithmetic"
       }
       val unit = checkNotNull(DurationUnit.from(unquotedUnit)) { "Invalid unit '${duration.unit}'" }
-      return DurationInfo(
-        unit = unit,
-        value = value.toBigInteger().longValue(),
-        originalUnit = duration.unit ?: "",
-      )
+      return DurationInfo(unit = unit, exactValue = value, originalUnit = duration.unit ?: "")
     }
   }
 }
