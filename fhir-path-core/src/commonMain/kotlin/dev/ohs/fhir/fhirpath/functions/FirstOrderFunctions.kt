@@ -132,11 +132,6 @@ internal fun Collection<Any>.invoke(
     "children" -> this.children(fhirModelNavigator)
     "descendants" -> this.descendants(fhirModelNavigator)
 
-    // FHIR-specific functions
-    // https://hl7.org/fhir/fhirpath.html#functions
-    "extension" -> this.extension(params, fhirModelNavigator)
-    "hasValue" -> this.hasValue(fhirPathTypeResolver, fhirModelNavigator)
-
     // Utility functions
     // https://hl7.org/fhirpath/STU3/en/#utility-functions
     "now" -> now(now)
@@ -159,6 +154,7 @@ internal fun Collection<Any>.invoke(
     // FHIR-specific functions
     // https://hl7.org/fhir/fhirpath.html#functions
     "extension" -> this.extension(params, fhirModelNavigator)
+    "hasValue" -> this.hasValue(fhirPathTypeResolver, fhirModelNavigator)
 
     else -> error("Function '$functionName' is not implemented.")
   }
