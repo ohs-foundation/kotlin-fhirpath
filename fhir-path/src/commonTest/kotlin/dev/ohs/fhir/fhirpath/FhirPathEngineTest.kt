@@ -43,8 +43,7 @@ private val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
  *
  * N.B. This should be kept in sync with the conformance table in the `README.md` file.
  */
-val skippedTestGroupToReasonMap =
-  mapOf("testConformsTo" to "Unimplemented")
+val skippedTestGroupToReasonMap = mapOf("testConformsTo" to "Unimplemented")
 
 /**
  * A map from the test case name to the reason why the test case is skipped.
@@ -54,7 +53,7 @@ val skippedTestGroupToReasonMap =
 val skippedTestCaseToReasonMap =
   mapOf(
     "testPolymorphismAsB" to
-      "No error should be thrown according to https://hl7.org/fhirpath/#as-type-specifier",
+      "No error should be thrown according to https://hl7.org/fhirpath/STU3/en/#as-type-specifier",
     "testDateTimeGreaterThanDate1" to
       "Comparison of two date time values, one with a timezone offset one without",
     "testQuantity4" to "https://github.com/FHIR/fhir-test-cases/pull/243",

@@ -97,7 +97,7 @@ internal class FhirPathEvaluator(
     }
 
     // Ensure determinism of current date and time functions by getting the current timestamp once.
-    // See https://hl7.org/fhirpath/N1/#current-date-and-time-functions.
+    // See https://hl7.org/fhirpath/STU3/en/#current-date-and-time-functions.
     now = Clock.System.now()
   }
 
@@ -406,7 +406,7 @@ internal class FhirPathEvaluator(
     return when (val functionName = visit(functionNode.identifier()).first() as String) {
       "iif" -> {
         // See
-        // [specification](https://hl7.org/fhirpath/N1/#iifcriterion-expression-true-result-collection-otherwise-result-collection-collection).
+        // [specification](https://hl7.org/fhirpath/STU3/en/#iifcriterion-this--boolean-true-result-this--collection--otherwise-result-this--collection--collection).
         // N.B. this function is implemented here due to its short-circuiting behavior.
         check(context.size <= 1) { "iif cannot be called on a collection with more than 1 item" }
         val params = functionNode.paramList()!!.expression()
@@ -420,7 +420,8 @@ internal class FhirPathEvaluator(
         }
       }
       "exists" -> {
-        // See [specification](https://hl7.org/fhirpath/N1/#existscriteria-expression-boolean).
+        // See
+        // [specification](https://hl7.org/fhirpath/STU3/en/#existscriteria--this-index--boolean--boolean).
         val paramList = functionNode.paramList() ?: return listOf(context.isNotEmpty())
         val expression = paramList.expression().single()
         listOf(
@@ -434,7 +435,8 @@ internal class FhirPathEvaluator(
         )
       }
       "all" -> {
-        // See [specification](https://hl7.org/fhirpath/N1/#allcriteria-expression-boolean).
+        // See
+        // [specification](https://hl7.org/fhirpath/STU3/en/#allcriteria--this-index--boolean--boolean).
         val expression = functionNode.paramList()!!.expression().single()
         listOf(
           context.all {
@@ -447,7 +449,8 @@ internal class FhirPathEvaluator(
         )
       }
       "where" -> {
-        // See [specification](https://hl7.org/fhirpath/N1/#wherecriteria-expression-collection).
+        // See
+        // [specification](https://hl7.org/fhirpath/STU3/en/#wherecriteria--this-index--boolean--collection).
         val expression = functionNode.paramList()!!.expression().single()
         context.filter {
           // Set the single item in the collection as the context for the expression
@@ -458,7 +461,8 @@ internal class FhirPathEvaluator(
         }
       }
       "select" -> {
-        // See [specification](https://hl7.org/fhirpath/N1/#selectprojection-expression-collection).
+        // See
+        // [specification](https://hl7.org/fhirpath/STU3/en/#selectprojection-this-index--any--collection).
         val projection = functionNode.paramList()!!.expression().single()
         context.flatMap {
           // Set the single item as the context for the projection
@@ -470,7 +474,7 @@ internal class FhirPathEvaluator(
       }
       "aggregate" -> {
         // See
-        // [specification](https://hl7.org/fhirpath/N1/#aggregateaggregator-expression-init-value-value).
+        // [specification](https://hl7.org/fhirpath/STU3/en/#aggregateaggregator--total-this-index--collection--init--collection--collection).
         val params = functionNode.paramList()!!.expression()
         val aggregator = params[0]
         var total: Collection<Any> = if (params.size > 1) visit(params[1]) else emptyList()
@@ -487,7 +491,8 @@ internal class FhirPathEvaluator(
         total
       }
       "repeat" -> {
-        // See [specification](https://hl7.org/fhirpath/N1/#repeatexpression-collection).
+        // See
+        // [specification](https://hl7.org/fhirpath/STU3/en/#repeatprojection-this--collection--collection).
         val expression = functionNode.paramList()!!.expression().single()
         val queue = ArrayDeque(context)
         val finalResults = mutableListOf<Any>()
@@ -522,7 +527,7 @@ internal class FhirPathEvaluator(
       }
       "trace" -> {
         // See
-        // [specification](https://hl7.org/fhirpath/N1/#tracename-string-projection-expression-collection).
+        // [specification](https://hl7.org/fhirpath/STU3/en/#tracename--string--projection-this-index--any--collection).
 
         // Logger label
         val name = visit(functionNode.paramList()!!.expression()[0]).single() as String
@@ -561,7 +566,8 @@ internal class FhirPathEvaluator(
         context
       }
       "sort" -> {
-        // See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#sort).
+        // See
+        // [specification](https://hl7.org/fhirpath/STU3/en/#sortkeyselector-this--any-asc--desc--keyselector-this--any-asc--desc---collection).
         if (context.size <= 1) return context.toList()
 
         val keySelectors = functionNode.paramList()?.expression() ?: emptyList()
@@ -614,7 +620,8 @@ internal class FhirPathEvaluator(
         return context.`as`(listOf(type), fhirPathTypeResolver)
       }
       "ofType" -> {
-        // See [specification](https://hl7.org/fhirpath/N1/#oftypetype-type-specifier-collection).
+        // See
+        // [specification](https://hl7.org/fhirpath/STU3/en/#oftypetype--type-specifier--collection).
         val type =
           fhirPathTypeResolver.resolveFromString(
             functionNode.paramList()!!.expression().single().text
@@ -668,7 +675,7 @@ internal class FhirPathEvaluator(
 private fun FhirPathQuantity.negate(): FhirPathQuantity =
   FhirPathQuantity(value = value?.negate(), unit = unit)
 
-/** See [specification](https://hl7.org/fhirpath/#string). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#string). */
 private fun unescapeFhirPathString(string: String) =
   if (string.indexOf("\\") == -1) {
     string

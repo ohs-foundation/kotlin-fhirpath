@@ -72,7 +72,7 @@ class ComparableTest {
   fun `calendar year is not comparable to the UCUM year`() {
     // Matches the comparison behavior in the published spec: `1 year > 1 'a'` is empty because
     // calendar durations above seconds are not comparable to definite durations
-    // (https://hl7.org/fhirpath/N1/#time-valued-quantities).
+    // (https://hl7.org/fhirpath/STU3/en/#time-valued-quantities).
     assertEquals(
       listOf(false),
       fhirPathEngine.evaluateExpression("(1 year).comparable(1 'a')", null).toList(),

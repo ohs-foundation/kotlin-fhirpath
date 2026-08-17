@@ -44,7 +44,7 @@ import kotlinx.datetime.offsetAt
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
-/** See [specification](https://hl7.org/fhirpath/N1/#now-datetime). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#now--datetime). */
 @OptIn(ExperimentalTime::class)
 internal fun now(now: Instant): Collection<FhirPathDateTime> {
   val systemTimeZone = TimeZone.currentSystemDefault()
@@ -63,7 +63,7 @@ internal fun now(now: Instant): Collection<FhirPathDateTime> {
   )
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#timeofday-time). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#timeofday--time). */
 @OptIn(ExperimentalTime::class)
 internal fun timeOfDay(now: Instant): Collection<Any> {
   val systemTimeZone = TimeZone.currentSystemDefault()
@@ -77,7 +77,7 @@ internal fun timeOfDay(now: Instant): Collection<Any> {
   )
 }
 
-/** See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#today--date). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#today--date). */
 @OptIn(ExperimentalTime::class)
 internal fun today(now: Instant): Collection<FhirPathDate> {
   val systemTimeZone = TimeZone.currentSystemDefault()
@@ -94,7 +94,7 @@ internal fun today(now: Instant): Collection<FhirPathDate> {
  * Date/DateTime/Time).
  *
  * See
- * [specification](https://build.fhir.org/ig/HL7/FHIRPath/#lowboundaryprecision-integer-decimal-date-datetime-time).
+ * [specification](https://hl7.org/fhirpath/STU3/en/#lowboundaryprecision-integer-decimal--date--datetime--time).
  */
 internal fun Collection<Any>.lowBoundary(
   params: List<Any>,
@@ -196,7 +196,7 @@ internal fun Collection<Any>.lowBoundary(
  * Date/DateTime/Time).
  *
  * See
- * [specification](https://build.fhir.org/ig/HL7/FHIRPath/#highboundaryprecision-integer-decimal-date-datetime-time).
+ * [specification](https://hl7.org/fhirpath/STU3/en/#highboundaryprecision-integer-decimal--date--datetime--time).
  */
 internal fun Collection<Any>.highBoundary(
   params: List<Any>,
@@ -312,7 +312,7 @@ internal fun Collection<Any>.highBoundary(
   }
 }
 
-/** See [specification](https://build.fhir.org/ig/HL7/FHIRPath/#precision--integer). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#precision--integer). */
 internal fun Collection<Any>.precision(
   fhirPathTypeResolver: FhirPathTypeResolver
 ): Collection<Any> {
@@ -468,9 +468,9 @@ private fun computeDecimalHighBoundary(value: BigDecimal, precision: Int?): Coll
  *
  * The comparison uses equal semantics ([toEqualCanonicalized]), not equivalence: per the
  * specification, returning true "indicates that a result from equality or comparison functions will
- * succeed, and not return empty" (https://build.fhir.org/ig/HL7/FHIRPath/#fn-comparable). For
- * example, a calendar `year` is equivalent (`~`) to `1 'a'` but not comparable to it, since `1 year
- * = 1 'a'` is empty (https://hl7.org/fhirpath/N1/#time-valued-quantities).
+ * succeed, and not return empty" (https://hl7.org/fhirpath/STU3/en/#fn-comparable). For example, a
+ * calendar `year` is equivalent (`~`) to `1 'a'` but not comparable to it, since `1 year = 1 'a'`
+ * is empty (https://hl7.org/fhirpath/STU3/en/#time-valued-quantities).
  */
 internal fun Collection<Any>.comparable(
   params: List<Any>,

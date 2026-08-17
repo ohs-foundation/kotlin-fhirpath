@@ -58,7 +58,7 @@ val TIME_ARITHMETIC_UNITS =
   listOf("hour", "hours", "minute", "minutes", "second", "seconds", "millisecond", "milliseconds")
 val DATETIME_ARITHMETIC_UNITS = DATE_ARITHMETIC_UNITS + TIME_ARITHMETIC_UNITS
 
-/** See [specification](https://hl7.org/fhirpath/N1/#multiplication). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#-multiplication). */
 internal fun multiplication(
   left: Collection<Any>,
   right: Collection<Any>,
@@ -96,7 +96,7 @@ internal fun multiplication(
   }
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#division). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#-division). */
 internal fun division(
   left: Collection<Any>,
   right: Collection<Any>,
@@ -128,7 +128,7 @@ internal fun division(
   return listOf(leftBigDecimal.divide(rightBigDecimal, DECIMAL_MODE))
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#addition). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#-addition). */
 @OptIn(ExperimentalTime::class)
 internal fun addition(
   left: Collection<Any>,
@@ -158,7 +158,7 @@ internal fun addition(
   }
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#subtraction). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#--subtraction). */
 internal fun subtraction(
   left: Collection<Any>,
   right: Collection<Any>,
@@ -185,7 +185,7 @@ internal fun subtraction(
   }
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#div). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#div). */
 internal fun div(left: Collection<Any>, right: Collection<Any>): Collection<Any> {
   val leftBigDecimal =
     when (val leftItem = left.singleOrNull() ?: return emptyList()) {
@@ -207,7 +207,7 @@ internal fun div(left: Collection<Any>, right: Collection<Any>): Collection<Any>
   return listOf(quotient.intValue())
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#mod). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#mod). */
 internal fun mod(left: Collection<Any>, right: Collection<Any>): Collection<Any> {
   val leftItem = left.singleOrNull() ?: return emptyList()
   val leftBigDecimal =
@@ -240,7 +240,7 @@ internal fun mod(left: Collection<Any>, right: Collection<Any>): Collection<Any>
   return listOf(remainder)
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#string-concatenation) */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#-string-concatenation). */
 internal fun concat(left: Collection<Any>, right: Collection<Any>): Collection<Any> {
   check(left.size <= 1) { "& cannot be called on a collection with more than 1 item" }
   check(right.size <= 1) { "& cannot be called on a collection with more than 1 item" }

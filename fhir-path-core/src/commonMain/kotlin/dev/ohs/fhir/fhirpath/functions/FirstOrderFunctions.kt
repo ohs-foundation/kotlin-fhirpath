@@ -36,7 +36,7 @@ internal fun Collection<Any>.invoke(
 ): Collection<Any> =
   when (functionName) {
     // Existence
-    // https://hl7.org/fhirpath/N1/#existence
+    // https://hl7.org/fhirpath/STU3/en/#existence
     // exists() and all() are implemented as higher-order functions in FhirPathEvaluator.kt
     "empty" -> this.empty()
     "allTrue" -> (this as Collection<Boolean>).allTrue()
@@ -50,11 +50,11 @@ internal fun Collection<Any>.invoke(
     "isDistinct" -> this.isDistinct(fhirPathTypeResolver)
 
     // Filtering and projection
-    // https://hl7.org/fhirpath/N1/#filtering-and-projection
+    // https://hl7.org/fhirpath/STU3/en/#filtering-and-projection
     // These functions are higher-order functions and are handled directly in the evaluator.
 
     // Subsetting
-    // https://hl7.org/fhirpath/N1/#subsetting
+    // https://hl7.org/fhirpath/STU3/en/#subsetting
     "single" -> this.singleFun()
     "first" -> this.firstFun()
     "last" -> this.lastFun()
@@ -65,12 +65,12 @@ internal fun Collection<Any>.invoke(
     "exclude" -> this.exclude(params, fhirPathTypeResolver)
 
     // Combining
-    // https://hl7.org/fhirpath/N1/#combining
+    // https://hl7.org/fhirpath/STU3/en/#combining
     "union" -> this.union(params, fhirPathTypeResolver)
     "combine" -> this.combine(params)
 
     // Conversion
-    // https://hl7.org/fhirpath/N1/#conversion
+    // https://hl7.org/fhirpath/STU3/en/#conversion
     "toBoolean" -> this.toBoolean(fhirPathTypeResolver)
     "convertsToBoolean" -> this.convertsToBoolean(fhirPathTypeResolver)
     "toInteger" -> this.toInteger(fhirPathTypeResolver)
@@ -89,7 +89,7 @@ internal fun Collection<Any>.invoke(
     "convertsToTime" -> this.convertsToTime(fhirPathTypeResolver)
 
     // String manipulation
-    // https://hl7.org/fhirpath/N1/#string-manipulation
+    // https://hl7.org/fhirpath/STU3/en/#string-manipulation
     "indexOf" -> this.indexOf(params, fhirPathTypeResolver)
     "substring" -> this.substring(params, fhirPathTypeResolver)
     "startsWith" -> this.startsWith(params, fhirPathTypeResolver)
@@ -115,7 +115,7 @@ internal fun Collection<Any>.invoke(
     "join" -> this.join(params, fhirPathTypeResolver)
 
     // Math
-    // https://hl7.org/fhirpath/N1/#math
+    // https://hl7.org/fhirpath/STU3/en/#math
     "abs" -> this.abs(fhirPathTypeResolver)
     "ceiling" -> this.ceiling(fhirPathTypeResolver)
     "exp" -> this.exp(fhirPathTypeResolver)
@@ -128,7 +128,7 @@ internal fun Collection<Any>.invoke(
     "truncate" -> this.truncate(fhirPathTypeResolver)
 
     // Tree navigation
-    // https://hl7.org/fhirpath/N1/#tree-navigation
+    // https://hl7.org/fhirpath/STU3/en/#tree-navigation
     "children" -> this.children(fhirModelNavigator)
     "descendants" -> this.descendants(fhirModelNavigator)
 
@@ -138,7 +138,7 @@ internal fun Collection<Any>.invoke(
     "hasValue" -> this.hasValue(fhirPathTypeResolver, fhirModelNavigator)
 
     // Utility functions
-    // https://hl7.org/fhirpath/N1/#utility-functions
+    // https://hl7.org/fhirpath/STU3/en/#utility-functions
     "now" -> now(now)
     "timeOfDay" -> timeOfDay(now)
     "today" -> today(now)
@@ -148,7 +148,7 @@ internal fun Collection<Any>.invoke(
     "comparable" -> this.comparable(params, fhirPathTypeResolver)
 
     // Reflection
-    // https://hl7.org/fhirpath/N1/#types-and-reflection
+    // https://hl7.org/fhirpath/STU3/en/#types-and-reflection
     // https://build.fhir.org/ig/HL7/FHIRPath/en/#reflection
     "type" -> this.type(fhirPathTypeResolver)
 

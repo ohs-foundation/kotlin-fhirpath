@@ -42,8 +42,8 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
  * (e.g. `System.String`). In our implementation, FHIR types are preserved as long as possible to
  * retain metadata (`id`, `extension`), but unwrapped to system types when needed for calculations.
  *
- * See [FHIRPath Specification](https://hl7.org/fhirpath/N1/#types-and-reflection) and
- * [FHIR Types in FHIRPath](https://fhir.hl7.org/fhir/fhirpath.html#types).
+ * See [FHIRPath Specification](https://hl7.org/fhirpath/STU3/en/#types-and-reflection) and
+ * [FHIR Types in FHIRPath](https://hl7.org/fhir/R5/fhirpath.html#types).
  */
 interface FhirPathType {
   val namespace: String

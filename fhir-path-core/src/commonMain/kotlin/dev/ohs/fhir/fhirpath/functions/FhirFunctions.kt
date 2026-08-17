@@ -26,7 +26,7 @@ import dev.ohs.fhir.fhirpath.types.FhirPrimitiveType
  * `extension(url)` is a shorthand for `extension.where(url = url)`. It works on any element
  * carrying extensions, including primitives (e.g. `Patient.birthDate.extension(...)`).
  *
- * See [specification](https://hl7.org/fhir/fhirpath.html#functions).
+ * See [specification](https://hl7.org/fhir/R5/fhirpath.html#functions).
  */
 internal fun Collection<Any>.extension(
   params: List<Any>,
@@ -50,7 +50,7 @@ internal fun Collection<Any>.extension(
  * such as `Quantity`), and for FHIRPath literals, which are System values rather than FHIR
  * primitives.
  *
- * See [specification](https://hl7.org/fhir/fhirpath.html#functions).
+ * See [specification](https://hl7.org/fhir/R5/fhirpath.html#functions).
  */
 internal fun Collection<Any>.hasValue(
   fhirPathTypeResolver: FhirPathTypeResolver,

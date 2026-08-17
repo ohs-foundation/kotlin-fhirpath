@@ -36,7 +36,7 @@ abstract class FhirPathTypeResolver {
     }
 
     // Unqualified type names are resolved as FHIR types first and then FHIRPath system types, as
-    // specified in https://hl7.org/fhirpath/#models.
+    // specified in https://hl7.org/fhirpath/STU3/en/#models.
     try {
       return resolveFhirTypeFromString(name)
     } catch (_: Exception) {}
