@@ -22,21 +22,25 @@ HL7 specifications and test suites.
 
 ## Specification conformance
 
-This section documents the library's implementation against official HL7 language specifications, covering both the FHIRPath specification and the FHIRPath section in the FHIR specification.
+This section documents the library's implementation against official HL7 language specifications,
+covering both the FHIRPath specification and the FHIRPath section in the FHIR specification.
 
 ### Status Legend
 
 - **`✅`**: Fully supported and conforms to the specification.
-- **`⚠️`**: Partially implemented, has a known bug, or diverges from the specification (see *Notes* for details).
+- **`⚠️`**: Partially implemented, has a known bug, or diverges from the specification (see *Notes*
+- for details).
 - **`❌`**: Unimplemented.
 
 ### FHIRPath specification
 
-This section documents the library's conformance against Sections 5, 6, 7, 9, and 10 of the official [FHIRPath Specification v3.0.0 (STU3)](https://hl7.org/fhirpath/STU3/en/).
+This section documents the library's conformance against Sections 5, 6, 7, 9, and 10 of the official
+[FHIRPath Specification v3.0.0 (STU3)](https://hl7.org/fhirpath/STU3/en/).
 
 #### Functions
 
-This table documents all special variables (`$this`, `$index`, `$total`) and built-in functions defined across [sec. 5](https://hl7.org/fhirpath/STU3/en/#functions).
+This table documents all special variables (`$this`, `$index`, `$total`) and built-in functions
+defined across [sec. 5](https://hl7.org/fhirpath/STU3/en/#functions).
 
 | Function / Variable                                                                                                                  | Specification                                                                                                                                          | Code                                                                                                                       | Status | Notes                                                                                                                         |
 |:-------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|:-------|:------------------------------------------------------------------------------------------------------------------------------|
@@ -161,7 +165,8 @@ This table documents all special variables (`$this`, `$index`, `$total`) and bui
 
 #### Operations
 
-This table documents all language operators defined in [sec. 6](https://hl7.org/fhirpath/STU3/en/#operations).
+This table documents all language operators defined in
+[sec. 6](https://hl7.org/fhirpath/STU3/en/#operations).
 
 | Operator                                 | Specification                                                                    | Code                                                                                                         | Status | Notes                                                                                                                                                            |
 |:-----------------------------------------|:---------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -208,7 +213,8 @@ This table documents all language operators defined in [sec. 6](https://hl7.org/
 
 #### Aggregates
 
-This table documents all aggregate functions listed in [sec. 7](https://hl7.org/fhirpath/STU3/en/#aggregates).
+This table documents all aggregate functions listed in
+[sec. 7](https://hl7.org/fhirpath/STU3/en/#aggregates).
 
 | Aggregate                                                                                          | Specification                                                                                                               | Code                                                                                                         | Status | Notes                                          |
 |:---------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|:-------|:-----------------------------------------------|
@@ -238,11 +244,13 @@ This table documents all type inspection and reflection operators defined in [se
 
 ### FHIRPath in FHIR specification
 
-This section documents the library's conformance against Sections 2.1.9.1.4 - 2.1.9.1.7 and 2.1.9.3 - 2.1.9.5 of the [FHIR R5 specification](https://hl7.org/fhir/R5/fhirpath.html).
+This section documents the library's conformance against Sections 2.1.9.1.4 - 2.1.9.1.7 and 2.1.9.3
+- 2.1.9.5 of the [FHIR R5 specification](https://hl7.org/fhir/R5/fhirpath.html).
 
 #### FHIR Specific Variables
 
-This table documents special resource context variables defined in [sec. 2.1.9.1.4](https://hl7.org/fhir/R5/fhirpath.html#variables).
+This table documents special resource context variables defined in
+[sec. 2.1.9.1.4](https://hl7.org/fhir/R5/fhirpath.html#variables).
 
 | Variable        | Specification                                                     | Code                                                                                                         | Status | Notes                                                              |
 |:----------------|:------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|:-------|:-------------------------------------------------------------------|
@@ -274,7 +282,8 @@ This table documents all FHIR domain functions defined in [sec. 2.1.9.1.5](https
 
 #### Changes to operators
 
-This table documents FHIR-specific operator semantics defined in [sec. 2.1.9.1.6](https://hl7.org/fhir/R5/fhirpath.html#changes).
+This table documents FHIR-specific operator semantics defined in
+[sec. 2.1.9.1.6](https://hl7.org/fhir/R5/fhirpath.html#changes).
 
 | Operator Semantics                    | Specification                                                   | Code                                                                                                 | Status | Notes                                                                                                           |
 |:--------------------------------------|:----------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------|:-------|:----------------------------------------------------------------------------------------------------------------|
@@ -282,7 +291,8 @@ This table documents FHIR-specific operator semantics defined in [sec. 2.1.9.1.6
 
 #### Environment variables
 
-This table documents FHIR domain environment variables defined in [sec. 2.1.9.1.7](https://hl7.org/fhir/R5/fhirpath.html#vars).
+This table documents FHIR domain environment variables defined in
+[sec. 2.1.9.1.7](https://hl7.org/fhir/R5/fhirpath.html#vars).
 
 | Variable           | Specification                                                | Code                                                                                                         | Status | Notes                                                     |
 |:-------------------|:-------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|:-------|:----------------------------------------------------------|
@@ -293,7 +303,8 @@ This table documents FHIR domain environment variables defined in [sec. 2.1.9.1.
 
 #### Service APIs and Type Factory
 
-This table documents type instantiation and server/terminology API bindings defined in [sec. 2.1.9.3 - 2.1.9.5](https://hl7.org/fhir/R5/fhirpath.html#factory).
+This table documents type instantiation and server/terminology API bindings defined in
+[sec. 2.1.9.3 - 2.1.9.5](https://hl7.org/fhir/R5/fhirpath.html#factory).
 
 | Feature                                          | Specification                                                  | Code | Status | Notes                                                                      |
 |:-------------------------------------------------|:---------------------------------------------------------------|:-----|:-------|:---------------------------------------------------------------------------|
