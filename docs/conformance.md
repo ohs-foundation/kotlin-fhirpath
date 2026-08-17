@@ -27,10 +27,10 @@ covering both the FHIRPath specification and the FHIRPath section in the FHIR sp
 
 ### Status Legend
 
-- **`✅`**: Fully supported and conforms to the specification.
-- **`⚠️`**: Partially implemented, has a known bug, or diverges from the specification (see *Notes*
+- ✅: Fully supported and conforms to the specification.
+- ⚠️: Partially implemented, has a known bug, or diverges from the specification (see *Notes*
 - for details).
-- **`❌`**: Unimplemented.
+- ❌: Unimplemented.
 
 ### FHIRPath specification
 
