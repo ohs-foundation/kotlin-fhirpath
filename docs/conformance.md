@@ -28,8 +28,8 @@ covering both the FHIRPath specification and the FHIRPath section in the FHIR sp
 ### Status Legend
 
 - ✅: Fully supported and conforms to the specification.
-- ⚠️: Partially implemented, has a known bug, or diverges from the specification (see *Notes*
-- for details).
+- ⚠️: Partially implemented, has a known bug, or diverges from the specification (see *Notes* for
+  details).
 - ❌: Unimplemented.
 
 ### FHIRPath specification
@@ -244,8 +244,8 @@ This table documents all type inspection and reflection operators defined in [se
 
 ### FHIRPath in FHIR specification
 
-This section documents the library's conformance against Sections 2.1.9.1.4 - 2.1.9.1.7 and 2.1.9.3
-- 2.1.9.5 of the [FHIR R5 specification](https://hl7.org/fhir/R5/fhirpath.html).
+This section documents the library's conformance against Sections 2.1.9.1.4 - 2.1.9.1.7 and
+2.1.9.3 - 2.1.9.5 of the [FHIR R5 specification](https://hl7.org/fhir/R5/fhirpath.html).
 
 #### FHIR Specific Variables
 
@@ -321,7 +321,7 @@ This section documents the library's verification results against all test cases
 |------------------------------------|--------------------|-----|--------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `testPolymorphismAsB`              | Test               |     | To be raised                                           | No error should be thrown according to [specification](https://hl7.org/fhirpath/#as-type-specifier).                                                                                                   |
 | `testDollarOrderNotAllowed`        | Implementation     |     |                                                        | Ordered function validation not implemented. Test expects error when using `skip()` on unordered collection (`children()`), but engine does not track collection ordering.                             |
-| `testDateTimeGreaterThanDate1`     | Implementation     |     |                                                        | Comparison of two date time values, one with a timezone offset one without; see [Date time values without timezone offset](#date-time-values-without-timezone-offset)                                  |
+| `testDateTimeGreaterThanDate1`     | Implementation     |     |                                                        | Comparison of two date time values, one with a timezone offset one without; see [Date time values without timezone offset](../README.md#date-time-values-without-timezone-offset)                      |
 | `testSubSetOf3`                    | Specification/Test |     |                                                        | The test resource is invalid and missing (https://github.com/FHIR/fhir-test-cases/issues/247); the scope of "$this" is unclear (https://jira.hl7.org/browse/FHIR-44601)                                |
 | `testQuantity4`                    | Test               |     | [PR](https://github.com/FHIR/fhir-test-cases/pull/243) |                                                                                                                                                                                                        |
 | `testIif11`                        | Implementation     |     |                                                        | https://jira.hl7.org/browse/FHIR-44774; https://jira.hl7.org/browse/FHIR-44601                                                                                                                         |
