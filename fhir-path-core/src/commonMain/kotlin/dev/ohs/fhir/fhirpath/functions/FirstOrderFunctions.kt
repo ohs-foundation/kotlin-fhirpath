@@ -148,14 +148,22 @@ internal fun Collection<Any>.invoke(
     // https://build.fhir.org/ig/HL7/FHIRPath/en/#comparison
     "comparable" -> this.comparable(params, fhirPathTypeResolver)
 
+    // Defined as a boolean logic operator in the specification, but the grammar handles this as a
+    // function invocation.
+    "not" -> this.not()
+
+    // Aggregate
+    // https://hl7.org/fhirpath/STU3/en/#aggregates
+    // aggregate is a higher-order function handled directly in the evaluator
+    "sum" -> this.sumFun(fhirPathTypeResolver)
+    "min" -> this.minFun(fhirPathTypeResolver)
+    "max" -> this.maxFun(fhirPathTypeResolver)
+    "avg" -> this.avgFun(fhirPathTypeResolver)
+
     // Reflection
     // https://hl7.org/fhirpath/STU3/en/#types-and-reflection
     // https://build.fhir.org/ig/HL7/FHIRPath/en/#reflection
     "type" -> this.type(fhirPathTypeResolver)
-
-    // Defined as a boolean logic operator in the specification, but the grammar handles this as a
-    // function invocation.
-    "not" -> this.not()
 
     // FHIR-specific functions
     // https://hl7.org/fhir/fhirpath.html#functions
