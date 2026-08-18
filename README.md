@@ -1,6 +1,7 @@
 # Kotlin FHIRPath
 
 [![tests](https://github.com/ohs-foundation/kotlin-fhirpath/actions/workflows/run-tests.yml/badge.svg)](https://github.com/ohs-foundation/kotlin-fhirpath/actions/workflows/run-tests.yml)
+[![codegen](https://github.com/ohs-foundation/kotlin-fhirpath/actions/workflows/verify-codegen.yml/badge.svg)](https://github.com/ohs-foundation/kotlin-fhirpath/actions/workflows/verify-codegen.yml)
 [![fhir-path-core](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-core?color=yellow&label=fhir-path-core)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-core)
 [![FHIR R4](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4?color=green&label=fhir-path-r4)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4)
 [![FHIR R4B](https://img.shields.io/maven-central/v/dev.ohs.fhir/fhir-path-r4b?color=orange&label=fhir-path-r4b)](https://central.sonatype.com/artifact/dev.ohs.fhir/fhir-path-r4b)
@@ -379,40 +380,29 @@ strictEngine.evaluateExpression("name.given1", patient) // Throws IllegalStateEx
 
 ## Developer Guide
 
-### ANTLR
+### Code Generation
 
-To generate the lexer, parser, and visitor locally using ANTLR Kotlin:
+This project tracks generated source code in version control under `src/commonMain/kotlin/...` to eliminate unnecessary build-time codegen overhead during routine builds:
+* **[ANTLR parser](fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/parsers)**: Generated from the formal [FHIRPath grammar](third_party/fhirpath-2.0.0).
+* **[UCUM helpers](fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/ucum)**: Generated from [ucum-essence.xml](third_party/ucum/ucum-essence.xml).
+* **Model extensions** ([R4](fhir-path-r4/src/commonMain/kotlin/dev/ohs/fhir/model/r4/ext), [R4B](fhir-path-r4b/src/commonMain/kotlin/dev/ohs/fhir/model/r4b/ext), and [R5](fhir-path-r5/src/commonMain/kotlin/dev/ohs/fhir/model/r5/ext)): Generated from FHIR StructureDefinitions.
 
-```shell
-./gradlew :fhir-path-core:generateKotlinGrammarSource
-```
-
-The generated code will be placed in `fhir-path-core/build/generated/grammar` under package
-`dev.ohs.fhir.fhirpath.parsers`.
-
-### UCUM helpers
-
-To generate UCUM helpers:
+To regenerate all sources across all modules at once:
 
 ```shell
-./gradlew :fhir-path-core:generateUcumHelpers
+./gradlew generateSources
 ```
 
-The generated code will be located in `fhir-path-core/build/generated/ucum` under package
-`dev.ohs.fhir.fhirpath.ucum`.
-
-### Model extensions
-
-To generate FHIR version specific model extensions:
+To verify that committed generated code matches generator output (as run in CI):
 
 ```shell
-./gradlew :fhir-path-r4:generateR4Helpers
-./gradlew :fhir-path-r4b:generateR4BHelpers
-./gradlew :fhir-path-r5:generateR5Helpers
+./gradlew verifyCodegen
 ```
 
-The generated code will be located in `fhir-path-<version>/build/generated` under packages
-`dev.ohs.fhir.model.<FHIR_VERSION>.ext` and `dev.ohs.fhir.fhirpath`.
+You can also run individual generation tasks locally:
+* `./gradlew :fhir-path-core:generateKotlinGrammarSource`
+* `./gradlew :fhir-path-core:generateUcumHelpers`
+* `./gradlew :fhir-path-r4:generateR4Helpers` (similarly for `:fhir-path-r4b:generateR4BHelpers` and `:fhir-path-r5:generateR5Helpers`)
 
 ### Tests
 
