@@ -143,9 +143,19 @@ internal fun Collection<Any>.invoke(
     "lowBoundary" -> this.lowBoundary(params, fhirPathTypeResolver)
     "highBoundary" -> this.highBoundary(params, fhirPathTypeResolver)
     "precision" -> this.precision(fhirPathTypeResolver)
+    "yearOf" -> this.yearOf(fhirPathTypeResolver)
+    "monthOf" -> this.monthOf(fhirPathTypeResolver)
+    "dayOf" -> this.dayOf(fhirPathTypeResolver)
+    "hourOf" -> this.hourOf(fhirPathTypeResolver)
+    "minuteOf" -> this.minuteOf(fhirPathTypeResolver)
+    "secondOf" -> this.secondOf(fhirPathTypeResolver)
+    "millisecondOf" -> this.millisecondOf(fhirPathTypeResolver)
+    "timezoneOffsetOf" -> this.timezoneOffsetOf(fhirPathTypeResolver)
+    "dateOf" -> this.dateOf(fhirPathTypeResolver)
+    "timeOf" -> this.timeOf(fhirPathTypeResolver)
 
     // Comparison
-    // https://build.fhir.org/ig/HL7/FHIRPath/en/#comparison
+    // https://hl7.org/fhirpath/STU3/en/#comparison
     "comparable" -> this.comparable(params, fhirPathTypeResolver)
 
     // Reflection
