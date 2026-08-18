@@ -18,6 +18,7 @@ package dev.ohs.fhir.fhirpath.operators
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import com.ionspin.kotlin.bignum.integer.BigInteger
 import dev.ohs.fhir.fhirpath.createSecondBigDecimal
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
@@ -52,33 +53,18 @@ private const val DAYS_PER_YEAR = 365
 private const val DAYS_PER_MONTH = 30
 private const val DAYS_PER_WEEK = 7
 private const val HOURS_PER_DAY = 24
-private const val HOURS_PER_YEAR = HOURS_PER_DAY * DAYS_PER_YEAR
-private const val HOURS_PER_MONTH = HOURS_PER_DAY * DAYS_PER_MONTH
 private const val MINUTES_PER_HOUR = 60
 private const val MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR
-private const val MINUTES_PER_YEAR = MINUTES_PER_DAY * DAYS_PER_YEAR
-private const val MINUTES_PER_MONTH = MINUTES_PER_DAY * DAYS_PER_MONTH
-private const val SECONDS_PER_MINUTE = 60L
-private const val SECONDS_PER_HOUR = MINUTES_PER_HOUR * SECONDS_PER_MINUTE
-private const val SECONDS_PER_DAY = HOURS_PER_DAY * SECONDS_PER_HOUR
-private const val SECONDS_PER_YEAR = DAYS_PER_YEAR * SECONDS_PER_DAY
-private const val SECONDS_PER_MONTH = DAYS_PER_MONTH * SECONDS_PER_DAY
-private const val MILLISECONDS_PER_SECOND = 1_000L
-private const val MILLISECONDS_PER_MINUTE = SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND
-private const val MILLISECONDS_PER_HOUR = SECONDS_PER_HOUR * MILLISECONDS_PER_SECOND
-private const val MILLISECONDS_PER_DAY = HOURS_PER_DAY * MILLISECONDS_PER_HOUR
-private const val MILLISECONDS_PER_YEAR = DAYS_PER_YEAR * MILLISECONDS_PER_DAY
-private const val MILLISECONDS_PER_MONTH = DAYS_PER_MONTH * MILLISECONDS_PER_DAY
 private const val NANOSECONDS_PER_MILLISECOND = 1_000_000L
 private const val NANOSECONDS_PER_SECOND = 1_000_000_000L
-private const val NANOSECONDS_PER_MINUTE = SECONDS_PER_MINUTE * NANOSECONDS_PER_SECOND
+private const val NANOSECONDS_PER_MINUTE = 60L * NANOSECONDS_PER_SECOND
 private const val NANOSECONDS_PER_HOUR = MINUTES_PER_HOUR * NANOSECONDS_PER_MINUTE
 private const val NANOSECONDS_PER_DAY = HOURS_PER_DAY * NANOSECONDS_PER_HOUR
 
 /**
  * Adds a date-based duration ([DATE_ARITHMETIC_UNITS]) to a [FhirPathDate].
  *
- * Per the [specification](https://hl7.org/fhirpath/N1/#datetime-arithmetic), addition of
+ * Per the [specification](https://hl7.org/fhirpath/STU3/en/#datetime-arithmetic), addition of
  * time-valued duration units (hours, minutes, seconds, milliseconds) to a [FhirPathDate] is not
  * permitted and will result in an empty collection `{}` / error.
  */
@@ -92,15 +78,16 @@ internal operator fun FhirPathDate.plus(duration: FhirPathQuantity): FhirPathDat
   }
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#datetime-arithmetic). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#datetime-arithmetic). */
 internal operator fun FhirPathDate.minus(duration: FhirPathQuantity): FhirPathDate =
   this + duration.copy(value = -duration.value!!)
 
-/** See [specification](https://hl7.org/fhirpath/N1/#datetime-arithmetic). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#datetime-arithmetic). */
 @OptIn(ExperimentalTime::class)
 internal operator fun FhirPathDateTime.plus(duration: FhirPathQuantity): FhirPathDateTime {
   val durationInfo = DurationInfo.from(duration, DATETIME_ARITHMETIC_UNITS)
 
+  // For partial date time values, the result retains the partial date time precision.
   return when (precision) {
     FhirPathDateTime.Precision.YEAR ->
       FhirPathDateTime(year = year + durationInfo.toYears(), utcOffset = utcOffset)
@@ -148,7 +135,7 @@ internal operator fun FhirPathDateTime.plus(duration: FhirPathQuantity): FhirPat
   }
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#datetime-arithmetic). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#datetime-arithmetic). */
 internal operator fun FhirPathDateTime.minus(duration: FhirPathQuantity): FhirPathDateTime =
   this + duration.copy(value = -duration.value!!)
 
@@ -156,9 +143,9 @@ internal operator fun FhirPathDateTime.minus(duration: FhirPathQuantity): FhirPa
  * Adds a time-based duration ([TIME_ARITHMETIC_UNITS]) to a [FhirPathTime], wrapping around the
  * 24-hour clock cycle.
  *
- * Per the [specification](https://hl7.org/fhirpath/N1/#datetime-arithmetic), addition of date-based
- * duration units (years, months, weeks, days) to a [FhirPathTime] is not permitted and will result
- * in an empty collection `{}` / error.
+ * Per the [specification](https://hl7.org/fhirpath/STU3/en/#datetime-arithmetic), addition of
+ * date-based duration units (years, months, weeks, days) to a [FhirPathTime] is not permitted and
+ * will result in an empty collection `{}` / error.
  */
 internal operator fun FhirPathTime.plus(duration: FhirPathQuantity): FhirPathTime {
   val durationInfo = DurationInfo.from(duration, TIME_ARITHMETIC_UNITS)
@@ -179,17 +166,22 @@ internal operator fun FhirPathTime.plus(duration: FhirPathQuantity): FhirPathTim
     }
 
     FhirPathTime.Precision.SECOND -> {
-      val (wholeSecond, nanosecond) = second!!.toSecondAndNanosecond()
-      val totalNanoseconds = LocalTime(hour, minute!!, wholeSecond, nanosecond).toNanosecondOfDay()
-      val unitsPerDay = NANOSECONDS_PER_DAY / durationInfo.unit.nanoseconds
-      val addNanoseconds = durationInfo.value.mod(unitsPerDay) * durationInfo.unit.nanoseconds
-      val newTotalNanoseconds = (totalNanoseconds + addNanoseconds).mod(NANOSECONDS_PER_DAY)
+      val totalNanoseconds =
+        second!!.toSecondAndNanosecond().let { (wholeSecond, nanosecond) ->
+          LocalTime(hour, minute!!, wholeSecond, nanosecond).toNanosecondOfDay()
+        }
+      val nanosecondsToAdd =
+        (durationInfo.value * BigDecimal.fromLong(durationInfo.unit.nanoseconds)).toBigInteger()
+      val newTotalNanoseconds =
+        (BigInteger.fromLong(totalNanoseconds) + nanosecondsToAdd)
+          .mod(BigInteger.fromLong(NANOSECONDS_PER_DAY))
+          .longValue()
       FhirPathTime.fromLocalTime(LocalTime.fromNanosecondOfDay(newTotalNanoseconds))
     }
   }
 }
 
-/** See [specification](https://hl7.org/fhirpath/N1/#datetime-arithmetic). */
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#datetime-arithmetic). */
 internal operator fun FhirPathTime.minus(duration: FhirPathQuantity): FhirPathTime =
   this + duration.copy(value = -duration.value!!)
 
@@ -308,73 +300,71 @@ private sealed interface DurationUnit {
  * - `2 hours` -> `7,200,000,000,000 nanoseconds` (`2 * 3.6e12`)
  *
  * This class implements the calendar duration conversion factors defined in the
- * [specification](https://build.fhir.org/ig/HL7/FHIRPath/en/#time-valued-unit-conversions).
+ * [specification](https://hl7.org/fhirpath/STU3/en/#time-valued-unit-conversions).
  *
- * @property unit The resolved FHIRPath [DurationUnit].
- * @property value The integer magnitude of the duration.
- * @property originalUnit The original string representation of the unit for diagnostic messages.
+ * @property unit The resolved enum [DurationUnit] (normalizing calendar names and UCUM
+ *   abbreviations like `'s'`, `second`, and `seconds` to a single enum instance).
+ * @property value The decimal magnitude of the duration as specified in the [FhirPathQuantity]
+ *   (used for `second` and `millisecond` units to apply sub-second fractions).
+ * @property wholeValue The integer magnitude of the duration, discarding any decimal remainder
+ *   (used for all other units—years, months, weeks, days, hours, minutes—per calendar duration
+ *   semantics).
+ * @property originalUnit The raw unit string from [FhirPathQuantity.unit] (e.g. `'s'` vs `second`),
+ *   preserved for descriptive error messages when unit conversion fails.
  */
 private class DurationInfo(
   val unit: DurationUnit,
-  val exactValue: BigDecimal,
+  val value: BigDecimal,
   val originalUnit: String,
 ) {
-  val value: Long
-    get() = exactValue.toBigInteger().longValue()
+  val wholeValue: Long
+    get() = value.toBigInteger().longValue()
 
   fun toYears(): Int =
     when (unit) {
-      DurationUnit.DateBased.YEAR -> value.toInt()
-      DurationUnit.DateBased.MONTH -> (value / MONTHS_PER_YEAR).toInt()
+      DurationUnit.DateBased.YEAR -> wholeValue.toInt()
+      DurationUnit.DateBased.MONTH -> (wholeValue / MONTHS_PER_YEAR).toInt()
       else -> toDays() / DAYS_PER_YEAR
     }
 
   fun toMonths(): Int =
     when (unit) {
-      DurationUnit.DateBased.YEAR -> (value * MONTHS_PER_YEAR).toInt()
-      DurationUnit.DateBased.MONTH -> value.toInt()
+      DurationUnit.DateBased.YEAR -> (wholeValue * MONTHS_PER_YEAR).toInt()
+      DurationUnit.DateBased.MONTH -> wholeValue.toInt()
       else -> toDays() / DAYS_PER_MONTH
     }
 
   fun toDays(): Int =
     when (unit) {
-      DurationUnit.DateBased.YEAR -> (value * DAYS_PER_YEAR).toInt()
-      DurationUnit.DateBased.MONTH -> (value * DAYS_PER_MONTH).toInt()
-      DurationUnit.DateBased.WEEK -> (value * DAYS_PER_WEEK).toInt()
-      DurationUnit.DateBased.DAY -> value.toInt()
-      is DurationUnit.TimeBased -> (value / (NANOSECONDS_PER_DAY / unit.nanoseconds)).toInt()
+      DurationUnit.DateBased.YEAR -> (wholeValue * DAYS_PER_YEAR).toInt()
+      DurationUnit.DateBased.MONTH -> (wholeValue * DAYS_PER_MONTH).toInt()
+      DurationUnit.DateBased.WEEK -> (wholeValue * DAYS_PER_WEEK).toInt()
+      DurationUnit.DateBased.DAY -> wholeValue.toInt()
+      is DurationUnit.TimeBased -> (wholeValue * unit.nanoseconds / NANOSECONDS_PER_DAY).toInt()
     }
 
-  fun toHours(): Int {
-    check(unit is DurationUnit.TimeBased) { "Cannot convert '$originalUnit' to hours" }
-    return (value / (NANOSECONDS_PER_HOUR / unit.nanoseconds)).toInt()
-  }
+  fun toHours(): Int = (wholeValue * unit.nanoseconds / NANOSECONDS_PER_HOUR).toInt()
 
-  fun toMinutes(): Int {
-    check(unit is DurationUnit.TimeBased) { "Cannot convert '$originalUnit' to minutes" }
-    return if (unit == DurationUnit.TimeBased.HOUR) {
-      (value * MINUTES_PER_HOUR).toInt()
-    } else {
-      (value / (NANOSECONDS_PER_MINUTE / unit.nanoseconds)).toInt()
-    }
-  }
+  fun toMinutes(): Int = (wholeValue * unit.nanoseconds / NANOSECONDS_PER_MINUTE).toInt()
 
-  fun toNanoseconds(): Long {
-    check(unit is DurationUnit.TimeBased) { "Cannot convert '$originalUnit' to nanoseconds" }
-    return (exactValue * BigDecimal.fromLong(unit.nanoseconds)).toBigInteger().longValue()
-  }
-
-  fun toDateTimePeriod(): DateTimePeriod = unit.toPeriod(exactValue)
+  fun toDateTimePeriod(): DateTimePeriod = unit.toPeriod(value)
 
   companion object {
     fun from(duration: FhirPathQuantity, allowedUnits: Set<String>): DurationInfo {
-      val value = checkNotNull(duration.value) { "Duration quantity must have a value" }
+      val rawValue = checkNotNull(duration.value) { "Duration quantity must have a value" }
       val unquotedUnit = duration.unit?.removeSurrounding("'")?.removeSurrounding("\"") ?: ""
       check(unquotedUnit in allowedUnits) {
         "Unsupported or invalid unit '${duration.unit}' for date/time arithmetic"
       }
       val unit = checkNotNull(DurationUnit.from(unquotedUnit)) { "Invalid unit '${duration.unit}'" }
-      return DurationInfo(unit = unit, exactValue = value, originalUnit = duration.unit ?: "")
+      // Preserve decimals only for seconds/milliseconds per spec
+      val effectiveValue =
+        when (unit) {
+          DurationUnit.TimeBased.SECOND,
+          DurationUnit.TimeBased.MILLISECOND -> rawValue
+          else -> BigDecimal.fromBigInteger(rawValue.toBigInteger())
+        }
+      return DurationInfo(unit = unit, value = effectiveValue, originalUnit = duration.unit ?: "")
     }
   }
 }
