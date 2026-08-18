@@ -24,7 +24,6 @@ import dev.ohs.fhir.fhirpath.coerceToType
 import dev.ohs.fhir.fhirpath.createSecondBigDecimal
 import dev.ohs.fhir.fhirpath.decimalPlaces
 import dev.ohs.fhir.fhirpath.toBigDecimalPreservingScale
-import dev.ohs.fhir.fhirpath.toEqualCanonicalized
 import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.toPlainStringWithMinDecimalPlaces
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
@@ -458,32 +457,4 @@ private fun computeDecimalHighBoundary(value: BigDecimal, precision: Int?): Coll
       .toPlainStringWithMinDecimalPlaces(targetPrecision.toLong())
       .toBigDecimalPreservingScale()
   )
-}
-
-/**
- * Returns whether the two singleton quantities have comparable units, i.e. whether their units
- * canonicalize to the same UCUM base unit (e.g. `cm` and `[in_i]` are both lengths, so they are
- * comparable; `cm` and `s` are not). A quantity with an unknown unit is only comparable to a
- * quantity with the same unit.
- *
- * The comparison uses equal semantics ([toEqualCanonicalized]), not equivalence: per the
- * specification, returning true "indicates that a result from equality or comparison functions will
- * succeed, and not return empty" (https://hl7.org/fhirpath/STU3/en/#fn-comparable). For example, a
- * calendar `year` is equivalent (`~`) to `1 'a'` but not comparable to it, since `1 year = 1 'a'`
- * is empty (https://hl7.org/fhirpath/STU3/en/#time-valued-quantities).
- */
-internal fun Collection<Any>.comparable(
-  params: List<Any>,
-  fhirPathTypeResolver: FhirPathTypeResolver,
-): Collection<Boolean> {
-  check(size <= 1) { "comparable() cannot be called on a collection with more than 1 item" }
-  val left =
-    singleOrNull()?.toFhirPathType(fhirPathTypeResolver) as? FhirPathQuantity ?: return emptyList()
-  val right =
-    params.singleOrNull()?.toFhirPathType(fhirPathTypeResolver) as? FhirPathQuantity
-      ?: return emptyList()
-
-  val leftUnit = left.toEqualCanonicalized().unit ?: return listOf(false)
-  val rightUnit = right.toEqualCanonicalized().unit ?: return listOf(false)
-  return listOf(leftUnit == rightUnit)
 }

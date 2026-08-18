@@ -17,6 +17,7 @@
 package dev.ohs.fhir.fhirpath.functions
 
 import dev.ohs.fhir.fhirpath.model.FhirModelNavigator
+import dev.ohs.fhir.fhirpath.operators.comparable
 import dev.ohs.fhir.fhirpath.operators.not
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 import kotlin.time.ExperimentalTime
@@ -140,6 +141,9 @@ internal fun Collection<Any>.invoke(
     "lowBoundary" -> this.lowBoundary(params, fhirPathTypeResolver)
     "highBoundary" -> this.highBoundary(params, fhirPathTypeResolver)
     "precision" -> this.precision(fhirPathTypeResolver)
+
+    // Comparison
+    // https://build.fhir.org/ig/HL7/FHIRPath/en/#comparison
     "comparable" -> this.comparable(params, fhirPathTypeResolver)
 
     // Reflection

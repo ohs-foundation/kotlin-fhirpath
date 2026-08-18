@@ -16,6 +16,7 @@
 
 package dev.ohs.fhir.fhirpath.functions
 
+import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 import kotlin.math.min
 
@@ -302,10 +303,10 @@ internal fun Collection<Any>.join(
 }
 
 private fun Any.unwrapString(fhirPathTypeResolver: FhirPathTypeResolver): String? {
-  if (this is String) {
-    return this
+  return when (this) {
+    is String -> this
+    else -> toFhirPathType(fhirPathTypeResolver) as? String
   }
-  return fhirPathTypeResolver.convertToString(this)
 }
 
 private fun String.toSingleLineModeRegex(): Regex = "$SINGLE_LINE_MODE_REGEX_PREFIX$this".toRegex()

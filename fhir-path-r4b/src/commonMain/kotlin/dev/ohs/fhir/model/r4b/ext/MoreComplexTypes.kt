@@ -41,6 +41,7 @@ import dev.ohs.fhir.model.r4b.Dosage
 import dev.ohs.fhir.model.r4b.Duration
 import dev.ohs.fhir.model.r4b.Element
 import dev.ohs.fhir.model.r4b.ElementDefinition
+import dev.ohs.fhir.model.r4b.Enumeration
 import dev.ohs.fhir.model.r4b.Expression
 import dev.ohs.fhir.model.r4b.Extension
 import dev.ohs.fhir.model.r4b.HumanName
@@ -82,6 +83,28 @@ import kotlin.Any
 import kotlin.Boolean as KotlinBoolean
 import kotlin.String as KotlinString
 import kotlin.collections.List
+
+internal fun Enumeration<*>.getProperty(name: KotlinString): Any? =
+  when (name) {
+    "id" -> this.id
+    "extension" -> this.extension
+    "value" -> this.value
+    else -> error("$name is not a valid property name")
+  }
+
+internal fun Enumeration<*>.hasProperty(name: KotlinString): KotlinBoolean =
+  when (name) {
+    "id" -> true
+    "extension" -> true
+    "value" -> true
+    else -> false
+  }
+
+internal fun Enumeration<*>.getAllChildren(): List<Any> = buildList {
+  this@getAllChildren.id?.let { add(it) }
+  addAll(this@getAllChildren.extension)
+  this@getAllChildren.value?.let { add(it) }
+}
 
 internal fun Element.getProperty(name: KotlinString): Any? =
   when (this) {
@@ -146,6 +169,7 @@ internal fun Element.getProperty(name: KotlinString): Any? =
     is Quantity -> getProperty(name)
     is Address -> getProperty(name)
     is UsageContext -> getProperty(name)
+    is Enumeration<*> -> getProperty(name)
     else -> null
   }
 
@@ -212,6 +236,7 @@ internal fun Element.hasProperty(name: KotlinString): KotlinBoolean =
     is Quantity -> hasProperty(name)
     is Address -> hasProperty(name)
     is UsageContext -> hasProperty(name)
+    is Enumeration<*> -> hasProperty(name)
     else -> false
   }
 
@@ -278,5 +303,6 @@ internal fun Element.getAllChildren(): List<Any> =
     is Quantity -> getAllChildren()
     is Address -> getAllChildren()
     is UsageContext -> getAllChildren()
+    is Enumeration<*> -> getAllChildren()
     else -> emptyList()
   }

@@ -60,9 +60,6 @@ abstract class FhirPathTypeResolver {
 
   protected abstract fun resolveFhirTypeFromObject(value: Any): FhirType?
 
-  /** Converts the value to a string if possible, otherwise returns null. */
-  abstract fun convertToString(value: Any): String?
-
   /** Converts the value to its equivalent FHIRPath system type if one exists. */
   abstract fun toFhirPathType(value: Any): Any
 }
