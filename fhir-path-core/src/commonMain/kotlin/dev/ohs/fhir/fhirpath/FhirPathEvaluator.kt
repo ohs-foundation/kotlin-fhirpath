@@ -66,8 +66,10 @@ internal class FhirPathEvaluator(
   val fhirPathTypeResolver: FhirPathTypeResolver,
   val fhirModelNavigator: FhirModelNavigator,
   val strictMode: Boolean = false,
+  context: Any? = null,
+  variables: Map<String, Any?> = emptyMap(),
 ) : fhirpathBaseVisitor<Collection<Any>>() {
-  private var resource: Any? = null
+  private val resource: Any? = context
   private val contextStack = ArrayDeque<Collection<Any>>()
   private val thisStack = ArrayDeque<Any>()
   private val indexStack = ArrayDeque<Int>()
@@ -78,26 +80,12 @@ internal class FhirPathEvaluator(
 
   @OptIn(ExperimentalTime::class) private var now: Instant = Clock.System.now()
 
-  @OptIn(ExperimentalTime::class)
-  fun initialize(context: Any?, variables: Map<String, Any?>? = emptyMap()) {
-    resource = null
-    contextStack.clear()
-    thisStack.clear()
-    indexStack.clear()
-    totalStack.clear()
-    this.variables.clear()
-    traces = emptyMap()
-
+  init {
     if (context != null) {
-      resource = context
       contextStack.add(listOf(context))
       thisStack.add(context)
     }
-
-    if (variables != null) {
-      this.variables.putAll(variables)
-    }
-
+    this.variables.putAll(variables)
     // Ensure determinism of current date and time functions by getting the current timestamp once.
     // See https://hl7.org/fhirpath/STU3/en/#current-date-and-time-functions.
     now = Clock.System.now()
