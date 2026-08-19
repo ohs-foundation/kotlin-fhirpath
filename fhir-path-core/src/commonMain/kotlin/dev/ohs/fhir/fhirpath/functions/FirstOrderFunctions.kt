@@ -76,6 +76,8 @@ internal fun Collection<Any>.invoke(
     "convertsToBoolean" -> this.convertsToBoolean(fhirPathTypeResolver)
     "toInteger" -> this.toInteger(fhirPathTypeResolver)
     "convertsToInteger" -> this.convertsToInteger(fhirPathTypeResolver)
+    "toLong" -> this.toLong(fhirPathTypeResolver)
+    "convertsToLong" -> this.convertsToLong(fhirPathTypeResolver)
     "toDate" -> this.toDate(fhirPathTypeResolver)
     "convertsToDate" -> this.convertsToDate(fhirPathTypeResolver)
     "toDateTime" -> this.toDateTime(fhirPathTypeResolver)

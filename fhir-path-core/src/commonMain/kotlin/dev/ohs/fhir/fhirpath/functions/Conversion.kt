@@ -130,6 +130,34 @@ internal fun Collection<Any>.convertsToInteger(
   return listOf(toInteger(fhirPathTypeResolver).isNotEmpty())
 }
 
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#tolong--long). */
+internal fun Collection<Any>.toLong(fhirPathTypeResolver: FhirPathTypeResolver): Collection<Long> {
+  check(size <= 1) { "toLong() cannot be called on a collection with more than 1 item" }
+
+  if (isEmpty()) return emptyList()
+
+  return when (val value = single().toFhirPathType(fhirPathTypeResolver)) {
+    is Long -> listOf(value)
+    is Int -> listOf(value.toLong())
+    is String -> {
+      value.toLongOrNull()?.let { listOf(it) } ?: emptyList()
+    }
+    is Boolean -> if (value) listOf(1L) else listOf(0L)
+    else -> emptyList()
+  }
+}
+
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#convertstolong--boolean). */
+internal fun Collection<Any>.convertsToLong(
+  fhirPathTypeResolver: FhirPathTypeResolver
+): Collection<Boolean> {
+  check(size <= 1) { "convertsToLong() cannot be called on a collection with more than 1 item" }
+
+  if (isEmpty()) return emptyList()
+
+  return listOf(toLong(fhirPathTypeResolver).isNotEmpty())
+}
+
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#todateformat--string--date). */
 internal fun Collection<Any>.toDate(
   fhirPathTypeResolver: FhirPathTypeResolver
