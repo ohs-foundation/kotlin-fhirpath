@@ -21,10 +21,20 @@ import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathTime
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class DateTimeComponentTest :
   FunSpec({
     val engine = FhirPathEngine.forR4()
+
+    // yearOf()
+    test("yearOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.yearOf()", null))
+    }
+
+    test("yearOf() returns empty list when called on invalid type") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("'not_a_date'.yearOf()", null))
+    }
 
     test("yearOf() extracts year from Date") {
       assertEquals(listOf(2023), engine.evaluateExpression("@2023-05-15.yearOf()", null))
@@ -34,28 +44,81 @@ class DateTimeComponentTest :
       assertEquals(listOf(2024), engine.evaluateExpression("@2024-01-01T12:30:45Z.yearOf()", null))
     }
 
-    test("monthOf() extracts month from Date") {
-      assertEquals(listOf(5), engine.evaluateExpression("@2023-05-15.monthOf()", null))
+    test("yearOf() extracts year from partial Date with only year") {
+      assertEquals(listOf(2023), engine.evaluateExpression("@2023.yearOf()", null))
+    }
+
+    test("yearOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@2023-01-01 | @2024-01-01).yearOf()", null)
+      }
+    }
+
+    // monthOf()
+    test("monthOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.monthOf()", null))
+    }
+
+    test("monthOf() returns empty list when called on invalid type") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("'not_a_date'.monthOf()", null))
     }
 
     test("monthOf() returns empty list when Date is missing month") {
       assertEquals(emptyList<Any>(), engine.evaluateExpression("@2023.monthOf()", null))
     }
 
+    test("monthOf() extracts month from Date") {
+      assertEquals(listOf(5), engine.evaluateExpression("@2023-05-15.monthOf()", null))
+    }
+
     test("monthOf() extracts month from DateTime") {
       assertEquals(listOf(11), engine.evaluateExpression("@2023-11-01T12:00:00Z.monthOf()", null))
     }
 
-    test("dayOf() extracts day from Date") {
-      assertEquals(listOf(15), engine.evaluateExpression("@2023-05-15.dayOf()", null))
+    test("monthOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@2023-05-15 | @2023-11-01).monthOf()", null)
+      }
+    }
+
+    // dayOf()
+    test("dayOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.dayOf()", null))
+    }
+
+    test("dayOf() returns empty list when called on invalid type") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("'not_a_date'.dayOf()", null))
     }
 
     test("dayOf() returns empty list when Date is missing day") {
       assertEquals(emptyList<Any>(), engine.evaluateExpression("@2023-05.dayOf()", null))
     }
 
+    test("dayOf() extracts day from Date") {
+      assertEquals(listOf(15), engine.evaluateExpression("@2023-05-15.dayOf()", null))
+    }
+
     test("dayOf() extracts day from DateTime") {
       assertEquals(listOf(30), engine.evaluateExpression("@2023-04-30T10:00:00Z.dayOf()", null))
+    }
+
+    test("dayOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@2023-05-15 | @2023-05-16).dayOf()", null)
+      }
+    }
+
+    // hourOf()
+    test("hourOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.hourOf()", null))
+    }
+
+    test("hourOf() returns empty list when called on invalid type") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("'not_a_date'.hourOf()", null))
+    }
+
+    test("hourOf() returns empty list when Date is missing hour") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("@2023-05-15.hourOf()", null))
     }
 
     test("hourOf() extracts hour from Time") {
@@ -66,6 +129,25 @@ class DateTimeComponentTest :
       assertEquals(listOf(8), engine.evaluateExpression("@2023-05-15T08:15:00Z.hourOf()", null))
     }
 
+    test("hourOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@T14:30:00 | @T15:30:00).hourOf()", null)
+      }
+    }
+
+    // minuteOf()
+    test("minuteOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.minuteOf()", null))
+    }
+
+    test("minuteOf() returns empty list when called on invalid type") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("'not_a_date'.minuteOf()", null))
+    }
+
+    test("minuteOf() returns empty list when Time is missing minute") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("@T14.minuteOf()", null))
+    }
+
     test("minuteOf() extracts minute from Time") {
       assertEquals(listOf(30), engine.evaluateExpression("@T14:30:00.minuteOf()", null))
     }
@@ -74,37 +156,120 @@ class DateTimeComponentTest :
       assertEquals(listOf(15), engine.evaluateExpression("@2023-05-15T08:15:00Z.minuteOf()", null))
     }
 
-    test("secondOf() extracts integer second from Time ignoring milliseconds") {
+    test("minuteOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@T14:30:00 | @T14:45:00).minuteOf()", null)
+      }
+    }
+
+    // secondOf()
+    test("secondOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.secondOf()", null))
+    }
+
+    test("secondOf() returns empty list when called on invalid type") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("'not_a_date'.secondOf()", null))
+    }
+
+    test("secondOf() returns empty list when Time is missing seconds") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("@T14:30.secondOf()", null))
+    }
+
+    test("secondOf() returns empty list when DateTime is missing seconds") {
+      assertEquals(
+        emptyList<Any>(),
+        engine.evaluateExpression("@2023-05-15T08:15Z.secondOf()", null),
+      )
+    }
+
+    test("secondOf() extracts integer second from Time ignoring fractional seconds") {
       assertEquals(listOf(45), engine.evaluateExpression("@T14:30:45.123.secondOf()", null))
     }
 
-    test("secondOf() extracts integer second from DateTime ignoring milliseconds") {
+    test("secondOf() extracts integer second from DateTime ignoring fractional seconds") {
       assertEquals(
         listOf(9),
         engine.evaluateExpression("@2023-05-15T08:15:09.999Z.secondOf()", null),
       )
     }
 
-    test("millisecondOf() extracts 3-digit fractional second as integer ms") {
+    test("secondOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@T14:30:45 | @T14:30:50).secondOf()", null)
+      }
+    }
+
+    // millisecondOf()
+    test("millisecondOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.millisecondOf()", null))
+    }
+
+    test("millisecondOf() returns empty list when called on invalid type") {
+      assertEquals(
+        emptyList<Any>(),
+        engine.evaluateExpression("'not_a_date'.millisecondOf()", null),
+      )
+    }
+
+    test("millisecondOf() returns empty list when Time is missing milliseconds") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("@T14:30:45.millisecondOf()", null))
+    }
+
+    test("millisecondOf() returns empty list when DateTime is missing milliseconds") {
+      assertEquals(
+        emptyList<Any>(),
+        engine.evaluateExpression("@2012-01-01T12:30:40.millisecondOf()", null),
+      )
+    }
+
+    test("millisecondOf() extracts millisecond from Time") {
       assertEquals(listOf(123), engine.evaluateExpression("@T14:30:45.123.millisecondOf()", null))
+    }
+
+    test("millisecondOf() extracts millisecond from DateTime") {
+      assertEquals(
+        listOf(2),
+        engine.evaluateExpression("@2012-01-01T12:30:00.002-07:00.millisecondOf()", null),
+      )
     }
 
     test("millisecondOf() pads 1-digit fractional second to milliseconds") {
       assertEquals(listOf(500), engine.evaluateExpression("@T14:30:45.5.millisecondOf()", null))
     }
 
-    test("millisecondOf() returns 0 when fractional seconds are absent") {
-      assertEquals(listOf(0), engine.evaluateExpression("@T14:30:45.millisecondOf()", null))
+    test("millisecondOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@T14:30:45.123 | @T14:30:45.456).millisecondOf()", null)
+      }
     }
 
-    test("timezoneOffsetOf() extracts fractional decimal hours for half-hour offsets") {
+    // timezoneOffsetOf()
+    test("timezoneOffsetOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.timezoneOffsetOf()", null))
+    }
+
+    test("timezoneOffsetOf() returns empty list when called on invalid type") {
+      assertEquals(
+        emptyList<Any>(),
+        engine.evaluateExpression("'not_a_date'.timezoneOffsetOf()", null),
+      )
+    }
+
+    test("timezoneOffsetOf() returns empty list when DateTime is missing timezone offset") {
+      assertEquals(
+        emptyList<Any>(),
+        engine.evaluateExpression("@2023-05-15T12:00:00.timezoneOffsetOf()", null),
+      )
+    }
+
+    test("timezoneOffsetOf() extracts decimal hours for positive offset") {
       assertEquals(
         listOf(5.5.toBigDecimal()),
         engine.evaluateExpression("@2023-05-15T12:00:00+05:30.timezoneOffsetOf()", null),
       )
     }
 
-    test("timezoneOffsetOf() extracts negative decimal hours for western hemisphere offsets") {
+    test("timezoneOffsetOf() extracts decimal hours for negative offset") {
       assertEquals(
         listOf((-4).toBigDecimal()),
         engine.evaluateExpression("@2023-05-15T12:00:00-04:00.timezoneOffsetOf()", null),
@@ -116,6 +281,31 @@ class DateTimeComponentTest :
         listOf(0.toBigDecimal()),
         engine.evaluateExpression("@2023-05-15T12:00:00Z.timezoneOffsetOf()", null),
       )
+    }
+
+    test("timezoneOffsetOf() extracts 45-minute decimal offset") {
+      assertEquals(
+        listOf(8.75.toBigDecimal()),
+        engine.evaluateExpression("@2012-01-01T12:30:00.000+08:45.timezoneOffsetOf()", null),
+      )
+    }
+
+    test("timezoneOffsetOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression(
+          "(@2023-05-15T12:00:00Z | @2023-05-15T12:00:00+01:00).timezoneOffsetOf()",
+          null,
+        )
+      }
+    }
+
+    // dateOf()
+    test("dateOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.dateOf()", null))
+    }
+
+    test("dateOf() returns empty list when called on invalid type") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("'not_a_date'.dateOf()", null))
     }
 
     test("dateOf() returns identity when called on Date") {
@@ -132,6 +322,25 @@ class DateTimeComponentTest :
       )
     }
 
+    test("dateOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@2023-05-15 | @2023-05-16).dateOf()", null)
+      }
+    }
+
+    // timeOf()
+    test("timeOf() returns empty list when called on empty collection") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("{}.timeOf()", null))
+    }
+
+    test("timeOf() returns empty list when called on invalid type") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("'not_a_date'.timeOf()", null))
+    }
+
+    test("timeOf() returns empty list when Date is missing time") {
+      assertEquals(emptyList<Any>(), engine.evaluateExpression("@2023-05-15.timeOf()", null))
+    }
+
     test("timeOf() returns identity when called on Time") {
       assertEquals(
         listOf(FhirPathTime(14, 30, 45.toBigDecimal())),
@@ -144,5 +353,11 @@ class DateTimeComponentTest :
         listOf(FhirPathTime(12, 30, 45.toBigDecimal())),
         engine.evaluateExpression("@2023-05-15T12:30:45Z.timeOf()", null),
       )
+    }
+
+    test("timeOf() throws exception when called on collection with multiple items") {
+      assertFailsWith<IllegalStateException> {
+        engine.evaluateExpression("(@T14:30:45 | @T15:30:45).timeOf()", null)
+      }
     }
   })

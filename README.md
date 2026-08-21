@@ -154,7 +154,7 @@ graph LR
 The following table lists the chosen internal types for the FHIRPath primitive types.
 
 | FHIRPath type <img src="images/fhir.png" alt="kotlin" style="height: 1em"/> | Internal type <img src="images/kotlin.png" alt="kotlin" style="height: 1em"/> |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+|:----------------------------------------------------------------------------|:------------------------------------------------------------------------------|
 | Boolean                                                                     | kotlin.Boolean                                                                |
 | String                                                                      | kotlin.String                                                                 |
 | Integer                                                                     | kotlin.Int                                                                    |

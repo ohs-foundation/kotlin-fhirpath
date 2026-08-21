@@ -361,10 +361,12 @@ internal fun Collection<Any>.secondOf(fhirPathTypeResolver: FhirPathTypeResolver
 internal fun Collection<Any>.millisecondOf(fhirPathTypeResolver: FhirPathTypeResolver) =
   extractComponent("millisecondOf", fhirPathTypeResolver) {
     when (it) {
-      is FhirPathDateTime -> it.second
-      is FhirPathTime -> it.second
-      else -> null
-    }?.let { sec -> (sec * BigDecimal.fromInt(1000)).toBigInteger().intValue() % 1000 }
+        is FhirPathDateTime -> it.second
+        is FhirPathTime -> it.second
+        else -> null
+      }
+      ?.takeIf { it.decimalPlaces > 0 }
+      ?.let { sec -> (sec * BigDecimal.fromInt(1000)).toBigInteger().intValue() % 1000 }
   }
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#timezoneoffsetof-decimal). */
