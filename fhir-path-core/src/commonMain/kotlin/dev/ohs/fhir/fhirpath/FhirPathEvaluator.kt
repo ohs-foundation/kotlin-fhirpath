@@ -70,6 +70,7 @@ internal class FhirPathEvaluator(
   private var resource: Any? = null
   private val contextStack = ArrayDeque<Collection<Any>>()
   private val thisStack = ArrayDeque<Any>()
+  private val indexStack = ArrayDeque<Int>()
   private val totalStack = ArrayDeque<Collection<Any>>()
   private val variables = mutableMapOf<String, Any?>()
   var traces: Map<String, List<TraceEntry>> = emptyMap()
@@ -82,6 +83,7 @@ internal class FhirPathEvaluator(
     resource = null
     contextStack.clear()
     thisStack.clear()
+    indexStack.clear()
     totalStack.clear()
     this.variables.clear()
     traces = emptyMap()
@@ -425,13 +427,12 @@ internal class FhirPathEvaluator(
         val paramList = functionNode.paramList() ?: return listOf(context.isNotEmpty())
         val expression = paramList.expression().single()
         listOf(
-          context.any {
-            // Set the single item in the collection as the context for the expression
-            thisStack.addLast(it)
-            val result = visit(expression)
-            thisStack.removeLast()
-            result.singleOrNull() == true
-          }
+          context
+            .asSequence()
+            .mapIndexed { index, it ->
+              withIterationScope(it, index) { visit(expression).singleOrNull() == true }
+            }
+            .any { it }
         )
       }
       "all" -> {
@@ -439,38 +440,27 @@ internal class FhirPathEvaluator(
         // [specification](https://hl7.org/fhirpath/STU3/en/#allcriteria--this-index--boolean--boolean).
         val expression = functionNode.paramList()!!.expression().single()
         listOf(
-          context.all {
-            // Set the single item in the collection as the context for the expression
-            thisStack.addLast(it)
-            val result = visit(expression)
-            thisStack.removeLast()
-            result.singleOrNull() == true
-          }
+          context
+            .asSequence()
+            .mapIndexed { index, it ->
+              withIterationScope(it, index) { visit(expression).singleOrNull() == true }
+            }
+            .all { it }
         )
       }
       "where" -> {
         // See
         // [specification](https://hl7.org/fhirpath/STU3/en/#wherecriteria--this-index--boolean--collection).
         val expression = functionNode.paramList()!!.expression().single()
-        context.filter {
-          // Set the single item in the collection as the context for the expression
-          thisStack.addLast(it)
-          val result = visit(expression)
-          thisStack.removeLast()
-          result.singleOrNull() == true
+        context.filterIndexed { index, it ->
+          withIterationScope(it, index) { visit(expression).singleOrNull() == true }
         }
       }
       "select" -> {
         // See
         // [specification](https://hl7.org/fhirpath/STU3/en/#selectprojection-this-index--any--collection).
         val projection = functionNode.paramList()!!.expression().single()
-        context.flatMap {
-          // Set the single item as the context for the projection
-          thisStack.addLast(it)
-          val projectionResult = visit(projection)
-          thisStack.removeLast()
-          projectionResult
-        }
+        context.flatMapIndexed { index, it -> withIterationScope(it, index) { visit(projection) } }
       }
       "aggregate" -> {
         // See
@@ -479,14 +469,8 @@ internal class FhirPathEvaluator(
         val aggregator = params[0]
         var total: Collection<Any> = if (params.size > 1) visit(params[1]) else emptyList()
 
-        for (item in context) {
-          contextStack.addLast(listOf(item))
-          thisStack.addLast(item)
-          totalStack.addLast(total)
-          total = visit(aggregator)
-          totalStack.removeLast()
-          thisStack.removeLast()
-          contextStack.removeLast()
+        context.forEachIndexed { index, item ->
+          total = withIterationScope(item, index, total) { visit(aggregator) }
         }
         total
       }
@@ -497,14 +481,10 @@ internal class FhirPathEvaluator(
         val queue = ArrayDeque(context)
         val finalResults = mutableListOf<Any>()
 
+        var index = 0
         while (queue.isNotEmpty()) {
           val item = queue.removeFirst()
-
-          thisStack.addLast(item)
-          contextStack.addLast(listOf(item))
-          val results = visit(expression)
-          contextStack.removeLast()
-          thisStack.removeLast()
+          val results = withIterationScope(item, index++) { visit(expression) }
 
           for (result in results) {
             if (fhirModelNavigator.canHaveChildren(result)) {
@@ -536,13 +516,8 @@ internal class FhirPathEvaluator(
         val projectionExpr = functionNode.paramList()!!.expression().getOrNull(1)
         val logValue =
           if (projectionExpr != null) {
-            context.flatMap { item ->
-              thisStack.addLast(item)
-              contextStack.addLast(listOf(item))
-              val result = visit(projectionExpr)
-              contextStack.removeLast()
-              thisStack.removeLast()
-              result
+            context.flatMapIndexed { index, item ->
+              withIterationScope(item, index) { visit(projectionExpr) }
             }
           } else {
             context
@@ -647,6 +622,10 @@ internal class FhirPathEvaluator(
     return listOf(thisStack.last())
   }
 
+  override fun visitIndexInvocation(ctx: fhirpathParser.IndexInvocationContext): Collection<Any> {
+    return indexStack.lastOrNull()?.let { listOf(it) } ?: emptyList()
+  }
+
   override fun visitTotalInvocation(ctx: fhirpathParser.TotalInvocationContext): Collection<Any> {
     return totalStack.last()
   }
@@ -668,6 +647,26 @@ internal class FhirPathEvaluator(
   private fun evaluateWithThis(item: Any, block: () -> Any?): Any? {
     thisStack.addLast(item)
     return block().also { thisStack.removeLast() }
+  }
+
+  private inline fun <R> withIterationScope(
+    item: Any,
+    index: Int,
+    total: Collection<Any>? = null,
+    block: () -> R,
+  ): R {
+    contextStack.addLast(listOf(item))
+    thisStack.addLast(item)
+    indexStack.addLast(index)
+    if (total != null) totalStack.addLast(total)
+    try {
+      return block()
+    } finally {
+      if (total != null) totalStack.removeLast()
+      indexStack.removeLast()
+      thisStack.removeLast()
+      contextStack.removeLast()
+    }
   }
 }
 
