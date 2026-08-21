@@ -27,21 +27,25 @@ import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import dev.ohs.fhir.fhirpath.types.FhirPathTime
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 import dev.ohs.fhir.fhirpath.types.plus
+import kotlin.reflect.KClass
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#sum--integer--long--decimal--quantity). */
+@Suppress("UNCHECKED_CAST")
 internal fun Collection<Any>.sumFun(fhirPathTypeResolver: FhirPathTypeResolver): Collection<Any> {
   if (isEmpty()) return emptyList()
   val converted = map { it.toFhirPathType(fhirPathTypeResolver) }
-  converted.forEach {
-    when (it) {
-      is Int,
-      is Long,
-      is BigDecimal,
-      is FhirPathQuantity -> {}
-      else -> error("sum() cannot be applied to type ${it::class.simpleName}: $it")
+  val sum =
+    when (val type = converted.singleType("sum")) {
+      Int::class -> (converted as Collection<Int>).sum()
+      Long::class -> (converted as Collection<Long>).sum()
+      BigDecimal::class -> (converted as Collection<BigDecimal>).reduce(BigDecimal::plus)
+      FhirPathQuantity::class ->
+        (converted as Collection<FhirPathQuantity>).reduce { a, b ->
+          (a + b) ?: error("Cannot sum quantities with incompatible units: $a and $b")
+        }
+      else -> error("sum() cannot be applied to type ${type.simpleName}: ${converted.first()}")
     }
-  }
-  return listOf(converted.reduce(::add))
+  return listOf(sum)
 }
 
 /**
@@ -49,82 +53,72 @@ internal fun Collection<Any>.sumFun(fhirPathTypeResolver: FhirPathTypeResolver):
  * [specification](https://hl7.org/fhirpath/STU3/en/#min--integer--long--decimal--quantity--date--datetime--time--string).
  */
 internal fun Collection<Any>.minFun(fhirPathTypeResolver: FhirPathTypeResolver): Collection<Any> =
-  findMinOrMax(fhirPathTypeResolver, "min", isMin = true)
+  findMinOrMax(fhirPathTypeResolver, "min")
 
 /**
  * See
  * [specification](https://hl7.org/fhirpath/STU3/en/#max--integer--long--decimal--quantity--date--datetime--time--string).
  */
 internal fun Collection<Any>.maxFun(fhirPathTypeResolver: FhirPathTypeResolver): Collection<Any> =
-  findMinOrMax(fhirPathTypeResolver, "max", isMin = false)
+  findMinOrMax(fhirPathTypeResolver, "max")
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#avg--decimal--quantity). */
 internal fun Collection<Any>.avgFun(fhirPathTypeResolver: FhirPathTypeResolver): Collection<Any> {
   if (isEmpty()) return emptyList()
-  val sumVal = sumFun(fhirPathTypeResolver).single()
-  val countBigDecimal = size.toBigDecimal()
-  val result =
-    when (sumVal) {
-      is Int -> sumVal.toBigDecimal().divide(countBigDecimal, DECIMAL_MODE)
-      is Long -> sumVal.toBigDecimal().divide(countBigDecimal, DECIMAL_MODE)
-      is BigDecimal -> sumVal.divide(countBigDecimal, DECIMAL_MODE)
-      is FhirPathQuantity -> {
-        val valBd = sumVal.value ?: error("Quantity value cannot be null")
-        FhirPathQuantity(value = valBd.divide(countBigDecimal, DECIMAL_MODE), unit = sumVal.unit)
-      }
-      else -> error("Unexpected sum type in avg(): $sumVal")
+  val converted = map { item ->
+    when (val type = item.toFhirPathType(fhirPathTypeResolver)) {
+      is Int,
+      is Long -> (type as Number).toLong().toBigDecimal()
+      else -> type
     }
-  return listOf(result)
+  }
+  val count = size.toBigDecimal()
+  return listOf(
+    when (val sum = converted.sumFun(fhirPathTypeResolver).single()) {
+      is BigDecimal -> sum.divide(count, DECIMAL_MODE)
+      is FhirPathQuantity -> sum.copy(value = sum.value?.divide(count, DECIMAL_MODE))
+      else -> error("Unexpected sum type in avg(): $sum")
+    }
+  )
 }
 
-private fun add(left: Any, right: Any): Any {
-  return when {
-    left is Int && right is Int -> left + right
-    left is Int && right is Long -> left + right
-    left is Int && right is BigDecimal -> right + left
-    left is Long && right is Int -> left + right
-    left is Long && right is Long -> left + right
-    left is Long && right is BigDecimal -> right + left
-    left is BigDecimal && right is Int -> left + right
-    left is BigDecimal && right is Long -> left + right
-    left is BigDecimal && right is BigDecimal -> left + right
-    left is FhirPathQuantity && right is FhirPathQuantity ->
-      (left + right) ?: error("Cannot sum quantities with incommensurable units: $left and $right")
-    else ->
-      error("Cannot sum values of type ${left::class.simpleName} and ${right::class.simpleName}")
-  }
-}
+private fun Collection<Any>.singleType(functionName: String): KClass<out Any> =
+  map { it::class }.distinct().singleOrNull()
+    ?: error("All items in $functionName() input collection must be the same type")
+
+private val comparableTypes =
+  setOf(
+    Int::class,
+    Long::class,
+    BigDecimal::class,
+    FhirPathQuantity::class,
+    FhirPathDate::class,
+    FhirPathDateTime::class,
+    FhirPathTime::class,
+    String::class,
+  )
 
 private fun Collection<Any>.findMinOrMax(
   fhirPathTypeResolver: FhirPathTypeResolver,
-  name: String,
-  isMin: Boolean,
+  functionName: String,
 ): Collection<Any> {
   if (isEmpty()) return emptyList()
-  val converted = map { item ->
-    val fhirType = item.toFhirPathType(fhirPathTypeResolver)
-    when (fhirType) {
-      is Int,
-      is Long,
-      is BigDecimal,
-      is FhirPathQuantity,
-      is FhirPathDate,
-      is FhirPathDateTime,
-      is FhirPathTime,
-      is String -> fhirType
-      else -> error("$name() cannot be applied to type ${fhirType::class.simpleName}: $fhirType")
-    }
+  val converted = map { it.toFhirPathType(fhirPathTypeResolver) }
+  // Explicitly validate type because single-item collections bypass comparator invocation in
+  // min/max.
+  check(converted.singleType(functionName) in comparableTypes) {
+    "$functionName() cannot be applied to type ${converted.first()::class.simpleName}: ${converted.first()}"
   }
   val comparator =
     Comparator<Any> { a, b ->
       compare(a, b, fhirPathTypeResolver)
-        ?: error("Items in collection are not comparable in $name(): $a and $b")
+        ?: error("Items in collection are not comparable in $functionName(): $a and $b")
     }
   val result =
-    if (isMin) {
-      converted.minWithOrNull(comparator)
-    } else {
-      converted.maxWithOrNull(comparator)
+    when (functionName) {
+      "min" -> converted.minWithOrNull(comparator)
+      "max" -> converted.maxWithOrNull(comparator)
+      else -> error("Unexpected function: $functionName")
     }
   return listOfNotNull(result)
 }

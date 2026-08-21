@@ -45,7 +45,7 @@ class AggregateTest :
     }
 
     test("sum adds decimals") {
-      assertEquals(listOf(3.5.toBigDecimal()), engine.evaluateExpression("(1 | 2.5).sum()", null))
+      assertEquals(listOf(3.5.toBigDecimal()), engine.evaluateExpression("(1.0 | 2.5).sum()", null))
     }
 
     test("sum adds quantities") {
@@ -55,11 +55,22 @@ class AggregateTest :
       )
     }
 
+    test("sum adds quantities with compatible units") {
+      assertEquals(
+        listOf(FhirPathQuantity(1.5.toBigDecimal(), "'kg'")),
+        engine.evaluateExpression("(1 'kg' | 500 'g').sum()", null),
+      )
+    }
+
+    test("sum fails on mixed types") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(1 | 2.5).sum()", null) }
+    }
+
     test("sum fails on non-numeric types") {
       assertFailsWith<Exception> { engine.evaluateExpression("('a' | 'b').sum()", null) }
     }
 
-    test("sum fails on incommensurable units") {
+    test("sum fails on quantities in incompatible units") {
       assertFailsWith<Exception> { engine.evaluateExpression("(10 'm' | 5 's').sum()", null) }
     }
 
@@ -82,8 +93,30 @@ class AggregateTest :
       )
     }
 
-    test("min fails on incompatible types") {
-      assertFailsWith<Exception> { engine.evaluateExpression("(1 | 'a').min()", null) }
+    test("min finds smallest quantity") {
+      assertEquals(
+        listOf(FhirPathQuantity(5.toBigDecimal(), "'m'")),
+        engine.evaluateExpression("(10 'm' | 5 'm').min()", null),
+      )
+    }
+
+    test("min finds smallest quantity with compatible units") {
+      assertEquals(
+        listOf(FhirPathQuantity(500.toBigDecimal(), "'g'")),
+        engine.evaluateExpression("(1 'kg' | 500 'g').min()", null),
+      )
+    }
+
+    test("min fails on mixed types") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(1 | 2.5).min()", null) }
+    }
+
+    test("min fails on non-comparable types") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(true).min()", null) }
+    }
+
+    test("min fails on quantities in incompatible units") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(10 'm' | 5 's').min()", null) }
     }
 
     test("max returns empty on empty collection") {
@@ -105,8 +138,30 @@ class AggregateTest :
       )
     }
 
-    test("max fails on incompatible types") {
-      assertFailsWith<Exception> { engine.evaluateExpression("(1 | 'a').max()", null) }
+    test("max finds largest quantity") {
+      assertEquals(
+        listOf(FhirPathQuantity(10.toBigDecimal(), "'m'")),
+        engine.evaluateExpression("(10 'm' | 5 'm').max()", null),
+      )
+    }
+
+    test("max finds largest quantity with compatible units") {
+      assertEquals(
+        listOf(FhirPathQuantity(1.toBigDecimal(), "'kg'")),
+        engine.evaluateExpression("(1 'kg' | 500 'g').max()", null),
+      )
+    }
+
+    test("max fails on mixed types") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(1 | 2.5).max()", null) }
+    }
+
+    test("max fails on non-comparable types") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(true).max()", null) }
+    }
+
+    test("max fails on quantities in incompatible units") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(10 'm' | 5 's').max()", null) }
     }
 
     test("avg returns empty on empty collection") {
@@ -124,6 +179,10 @@ class AggregateTest :
       )
     }
 
+    test("avg averages mixed integer and decimal") {
+      assertEquals(listOf(1.75.toBigDecimal()), engine.evaluateExpression("(1 | 2.5).avg()", null))
+    }
+
     test("avg averages quantities") {
       assertEquals(
         listOf(FhirPathQuantity(15.toBigDecimal(), "'m'")),
@@ -131,7 +190,22 @@ class AggregateTest :
       )
     }
 
+    test("avg averages quantities with compatible units") {
+      assertEquals(
+        listOf(FhirPathQuantity(0.75.toBigDecimal(), "'kg'")),
+        engine.evaluateExpression("(1 'kg' | 500 'g').avg()", null),
+      )
+    }
+
+    test("avg fails on mixed numeric and quantity") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(1 | 2 'm').avg()", null) }
+    }
+
     test("avg fails on non-numeric types") {
       assertFailsWith<Exception> { engine.evaluateExpression("('a' | 'b').avg()", null) }
+    }
+
+    test("avg fails on quantities in incompatible units") {
+      assertFailsWith<Exception> { engine.evaluateExpression("(10 'm' | 5 's').avg()", null) }
     }
   })
