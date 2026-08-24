@@ -20,6 +20,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import dev.ohs.fhir.fhirpath.isValidUcumUnit
 import dev.ohs.fhir.fhirpath.operators.DECIMAL_MODE
+import dev.ohs.fhir.fhirpath.toBigDecimalOrNullPreservingScale
 import dev.ohs.fhir.fhirpath.toEqualCanonicalized
 import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.toPlainStringPreservingDecimalPlaces
@@ -111,6 +112,13 @@ internal fun Collection<Any>.toInteger(
 
   return when (val value = single().toFhirPathType(fhirPathTypeResolver)) {
     is Int -> listOf(value)
+    is Long -> {
+      if (value in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()) {
+        listOf(value.toInt())
+      } else {
+        emptyList()
+      }
+    }
     is String -> {
       value.toIntOrNull()?.let { listOf(it) } ?: emptyList()
     }
@@ -260,9 +268,10 @@ internal fun Collection<Any>.toDecimal(
   return when (val value = single().toFhirPathType(fhirPathTypeResolver)) {
     is BigDecimal -> listOf(value)
     is Int -> listOf(value.toBigDecimal())
+    is Long -> listOf(value.toBigDecimal())
     is Boolean -> listOf(if (value) BigDecimal.ONE else BigDecimal.ZERO)
     is String -> {
-      value.toDoubleOrNull()?.let { listOf(it.toBigDecimal()) } ?: emptyList()
+      value.toBigDecimalOrNullPreservingScale()?.let { listOf(it) } ?: emptyList()
     }
     else -> emptyList()
   }
