@@ -38,6 +38,17 @@ internal fun Collection<Any>.indexOf(
   return listOf(input.indexOf(substring))
 }
 
+/** See [specification](https://hl7.org/fhirpath/STU3/en/#lastindexofsubstring--string--integer). */
+internal fun Collection<Any>.lastIndexOf(
+  params: List<Any>,
+  fhirPathTypeResolver: FhirPathTypeResolver,
+): Collection<Any> {
+  check(size <= 1) { "lastIndexOf() cannot be called on a collection with more than 1 item" }
+  val input = singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+  val substring = params.singleOrNull()?.unwrapString(fhirPathTypeResolver) ?: return emptyList()
+  return listOf(input.lastIndexOf(substring, input.length))
+}
+
 /**
  * See
  * [specification](https://hl7.org/fhirpath/STU3/en/#substringstart--integer--length--integer--string).
