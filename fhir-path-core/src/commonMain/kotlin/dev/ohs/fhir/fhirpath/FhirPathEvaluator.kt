@@ -66,7 +66,7 @@ internal class FhirPathEvaluator(
   val fhirPathTypeResolver: FhirPathTypeResolver,
   val fhirModelNavigator: FhirModelNavigator,
   val strictMode: Boolean = false,
-  context: Any? = null,
+  val context: Any? = null,
   variables: Map<String, Any?> = emptyMap(),
 ) : fhirpathBaseVisitor<Collection<Any>>() {
   private val resource: Any? = context
@@ -336,6 +336,7 @@ internal class FhirPathEvaluator(
         ?: error("Invalid external constant")
 
     return when {
+      name == "context" -> context?.let { listOf(it) } ?: emptyList()
       name == "resource" -> resource?.let { listOf(it) } ?: emptyList()
       name == "sct" -> listOf("http://snomed.info/sct")
       name == "loinc" -> listOf("http://loinc.org")
