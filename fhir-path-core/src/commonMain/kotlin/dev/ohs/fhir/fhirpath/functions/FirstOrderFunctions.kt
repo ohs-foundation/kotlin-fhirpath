@@ -76,6 +76,8 @@ internal fun Collection<Any>.invoke(
     "convertsToBoolean" -> this.convertsToBoolean(fhirPathTypeResolver)
     "toInteger" -> this.toInteger(fhirPathTypeResolver)
     "convertsToInteger" -> this.convertsToInteger(fhirPathTypeResolver)
+    "toLong" -> this.toLong(fhirPathTypeResolver)
+    "convertsToLong" -> this.convertsToLong(fhirPathTypeResolver)
     "toDate" -> this.toDate(fhirPathTypeResolver)
     "convertsToDate" -> this.convertsToDate(fhirPathTypeResolver)
     "toDateTime" -> this.toDateTime(fhirPathTypeResolver)
@@ -141,19 +143,37 @@ internal fun Collection<Any>.invoke(
     "lowBoundary" -> this.lowBoundary(params, fhirPathTypeResolver)
     "highBoundary" -> this.highBoundary(params, fhirPathTypeResolver)
     "precision" -> this.precision(fhirPathTypeResolver)
+    "yearOf" -> this.yearOf(fhirPathTypeResolver)
+    "monthOf" -> this.monthOf(fhirPathTypeResolver)
+    "dayOf" -> this.dayOf(fhirPathTypeResolver)
+    "hourOf" -> this.hourOf(fhirPathTypeResolver)
+    "minuteOf" -> this.minuteOf(fhirPathTypeResolver)
+    "secondOf" -> this.secondOf(fhirPathTypeResolver)
+    "millisecondOf" -> this.millisecondOf(fhirPathTypeResolver)
+    "timezoneOffsetOf" -> this.timezoneOffsetOf(fhirPathTypeResolver)
+    "dateOf" -> this.dateOf(fhirPathTypeResolver)
+    "timeOf" -> this.timeOf(fhirPathTypeResolver)
 
     // Comparison
-    // https://build.fhir.org/ig/HL7/FHIRPath/en/#comparison
+    // https://hl7.org/fhirpath/STU3/en/#comparison
     "comparable" -> this.comparable(params, fhirPathTypeResolver)
+
+    // Defined as a boolean logic operator in the specification, but the grammar handles this as a
+    // function invocation.
+    "not" -> this.not()
+
+    // Aggregate
+    // https://hl7.org/fhirpath/STU3/en/#aggregates
+    // aggregate is a higher-order function handled directly in the evaluator
+    "sum" -> this.sumFun(fhirPathTypeResolver)
+    "min" -> this.minFun(fhirPathTypeResolver)
+    "max" -> this.maxFun(fhirPathTypeResolver)
+    "avg" -> this.avgFun(fhirPathTypeResolver)
 
     // Reflection
     // https://hl7.org/fhirpath/STU3/en/#types-and-reflection
     // https://build.fhir.org/ig/HL7/FHIRPath/en/#reflection
     "type" -> this.type(fhirPathTypeResolver)
-
-    // Defined as a boolean logic operator in the specification, but the grammar handles this as a
-    // function invocation.
-    "not" -> this.not()
 
     // FHIR-specific functions
     // https://hl7.org/fhir/fhirpath.html#functions

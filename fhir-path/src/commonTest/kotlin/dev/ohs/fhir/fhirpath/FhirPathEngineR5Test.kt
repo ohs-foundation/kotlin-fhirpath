@@ -69,7 +69,6 @@ val skippedR5TestCaseToReasonMap =
     "HighBoundaryDateTimeMillisecond3" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "testPolymorphicsB" to "Allow invalid test where it's not strict mode but expects output",
-    "testIndex" to "TBD",
     "testPeriodInvariantNew" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
     "testSubSetOf3" to

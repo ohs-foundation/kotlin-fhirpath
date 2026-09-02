@@ -47,7 +47,7 @@ internal fun Collection<Any>.ceiling(fhirPathTypeResolver: FhirPathTypeResolver)
   val value = this.singleOrNull()?.toFhirPathType(fhirPathTypeResolver) ?: return emptyList()
   return when (value) {
     is Int,
-    Long -> listOf(value)
+    is Long -> listOf(value)
     is BigDecimal ->
       listOf(value.ceil().intValue()) // TODO: handle the case where the value needs to be a Long
     else -> error("ceiling() can only be applied to numbers")
@@ -72,7 +72,7 @@ internal fun Collection<Any>.floor(fhirPathTypeResolver: FhirPathTypeResolver): 
   val value = this.singleOrNull()?.toFhirPathType(fhirPathTypeResolver) ?: return emptyList()
   return when (value) {
     is Int,
-    Long -> listOf(value)
+    is Long -> listOf(value)
     is BigDecimal ->
       listOf(value.floor().intValue()) // TODO: handle the case where the value needs to be a Long
     else -> error("floor() can only be applied to numbers")
@@ -204,7 +204,7 @@ internal fun Collection<Any>.truncate(fhirPathTypeResolver: FhirPathTypeResolver
   val value = this.singleOrNull()?.toFhirPathType(fhirPathTypeResolver) ?: return emptyList()
   return when (value) {
     is Int,
-    Long -> listOf(value)
+    is Long -> listOf(value)
     is BigDecimal -> listOf(value.toBigInteger().intValue())
     else -> error("truncate() can only be applied to numbers")
   }
