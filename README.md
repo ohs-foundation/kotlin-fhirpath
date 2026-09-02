@@ -419,8 +419,10 @@ The generated code will be located in `fhir-path-<version>/build/generated` unde
 This project distinguishes between two types of tests:
 
 * **Spec-based tests**: Driven by
-  [FhirPathEngineTest.kt](fhir-path/src/commonTest/kotlin/dev/ohs/fhir/fhirpath/FhirPathEngineTest.kt),
-  these load the official [test cases](https://github.com/FHIR/fhir-test-cases) from
+  [ConformanceSuite.kt](fhir-path/src/commonTest/kotlin/dev/ohs/fhir/fhirpath/ConformanceSuite.kt)
+  and run per FHIR version by `FhirPathEngineR4Test`, `FhirPathEngineR4BTest` and
+  `FhirPathEngineR5Test`, these load the official
+  [test cases](https://github.com/FHIR/fhir-test-cases) from
   [third_party/fhir-test-cases/](third_party/fhir-test-cases/). As they require local file access, they only run on **JVM**
   and **Android** targets. On other platform targets, file loading is stubbed out. See
   [Test Conformance](docs/conformance.md#test-conformance) for an analysis of known test suite

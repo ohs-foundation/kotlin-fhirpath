@@ -26,7 +26,7 @@ private val jsonR5 = Json { ignoreUnknownKeys = true }
 /**
  * A map from the test group name to the reason why the test group is skipped.
  *
- * N.B. This should be kept in sync with the conformance table in the `README.md` file.
+ * N.B. This should be kept in sync with the test conformance table in `docs/conformance.md`.
  */
 val skippedR5TestGroupToReasonMap =
   mapOf(
@@ -44,7 +44,7 @@ val skippedR5TestGroupToReasonMap =
 /**
  * A map from the test case name to the reason why the test case is skipped.
  *
- * N.B. This should be kept in sync with the conformance table in the `README.md` file.
+ * N.B. This should be kept in sync with the test conformance table in `docs/conformance.md`.
  */
 val skippedR5TestCaseToReasonMap =
   mapOf(
