@@ -56,9 +56,9 @@ private const val BASE_STRUCTURE_DEFINITION_PREFIX = "http://hl7.org/fhir/Struct
  * as those defined in implementation guides, would need profile validation, which is not
  * implemented, so they are unresolvable and yield empty.
  *
- * This follows the current specification (https://hl7.org/fhir/fhirpath.html#functions). R4 and R4B
- * require an error for an unresolvable structure instead; `testConformsTo3` in the R4 conformance
- * suite is skipped for this reason.
+ * This follows R5 (https://hl7.org/fhir/R5/fhirpath.html#functions). R4 and R4B require an error
+ * for an unresolvable structure instead; `testConformsTo3` in the R4 conformance suite is skipped
+ * for this reason.
  */
 internal fun Collection<Any>.conformsTo(
   params: List<Any>,

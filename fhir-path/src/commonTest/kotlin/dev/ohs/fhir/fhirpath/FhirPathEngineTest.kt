@@ -43,8 +43,7 @@ private val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
  *
  * N.B. This should be kept in sync with the conformance table in the `README.md` file.
  */
-val skippedTestGroupToReasonMap =
-  mapOf("Comparable" to "Unimplemented")
+val skippedTestGroupToReasonMap = mapOf("Comparable" to "Unimplemented")
 
 /**
  * A map from the test case name to the reason why the test case is skipped.
@@ -59,7 +58,7 @@ val skippedTestCaseToReasonMap =
       "Comparison of two date time values, one with a timezone offset one without",
     "testQuantity4" to "https://github.com/FHIR/fhir-test-cases/pull/243",
     "testConformsTo3" to
-      "Intentional deviation: an unresolvable structure returns empty following the current specification (https://hl7.org/fhir/fhirpath.html#functions); R4 requires an error, revised in R5",
+      "Intentional deviation: an unresolvable structure returns empty following R5 (https://hl7.org/fhir/R5/fhirpath.html#functions); R4 requires an error",
     "testSubSetOf3" to
       "The test resource is invalid and missing (https://github.com/FHIR/fhir-test-cases/issues/247); the scope of \"\$this\" is unclear (https://jira.hl7.org/browse/FHIR-44601)",
     "testIif11" to
