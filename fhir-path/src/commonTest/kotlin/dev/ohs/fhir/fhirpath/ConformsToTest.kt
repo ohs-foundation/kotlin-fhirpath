@@ -19,6 +19,8 @@ package dev.ohs.fhir.fhirpath
 import dev.ohs.fhir.model.r4.Resource
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.serialization.json.Json
 
 private val fhirPathEngine = FhirPathEngine.forR4()
@@ -31,27 +33,25 @@ class ConformsToTest {
 
   @Test
   fun `element conforms to its base data type profile`() {
-    assertEquals(
-      listOf(true),
+    assertTrue(
       fhirPathEngine
         .evaluateExpression(
           "name.first().conformsTo('http://hl7.org/fhir/StructureDefinition/HumanName')",
           patient,
         )
-        .toList(),
+        .single() as Boolean
     )
   }
 
   @Test
   fun `element does not conform to a different data type profile`() {
-    assertEquals(
-      listOf(false),
+    assertFalse(
       fhirPathEngine
         .evaluateExpression(
           "name.first().conformsTo('http://hl7.org/fhir/StructureDefinition/Address')",
           patient,
         )
-        .toList(),
+        .single() as Boolean
     )
   }
 
