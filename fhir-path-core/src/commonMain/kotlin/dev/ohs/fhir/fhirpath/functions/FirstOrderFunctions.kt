@@ -152,8 +152,8 @@ internal fun Collection<Any>.invoke(
 
     // FHIR-specific functions
     // https://hl7.org/fhir/fhirpath.html#functions
-    "conformsTo" -> this.conformsTo(params, fhirPathTypeResolver)
     "extension" -> this.extension(params, fhirModelNavigator)
+    "conformsTo" -> this.conformsTo(params, fhirPathTypeResolver)
 
     else -> error("Function '$functionName' is not implemented.")
   }
