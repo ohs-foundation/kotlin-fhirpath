@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 Open Health Stack Foundation
+ * Copyright 2025-2026 Open Health Stack Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,28 @@
 
 package dev.ohs.fhir.fhirpath
 
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
-import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 private val fhirPathEngine = FhirPathEngine.forR4()
 
-class ToQuantityTest {
+class MathTest {
 
   @Test
-  fun `toQuantity with unit conversion`() {
-    val result = fhirPathEngine.evaluateExpression("'5 \\'kg\\''.toQuantity('g')", null)
-    assertEquals(listOf(FhirPathQuantity(5000.toBigDecimal(), "'g'")), result.toList())
+  fun `ceiling on Long value`() {
+    val result = fhirPathEngine.evaluateExpression("%val.ceiling()", null, mapOf("val" to 100L))
+    assertEquals(listOf(100L), result.toList())
   }
 
   @Test
-  fun `toQuantity with calendar duration unit conversion`() {
-    val result = fhirPathEngine.evaluateExpression("'1 hour'.toQuantity('minute')", null)
-    assertEquals(listOf(FhirPathQuantity(60.toBigDecimal(), "minute")), result.toList())
+  fun `floor on Long value`() {
+    val result = fhirPathEngine.evaluateExpression("%val.floor()", null, mapOf("val" to 100L))
+    assertEquals(listOf(100L), result.toList())
+  }
+
+  @Test
+  fun `truncate on Long value`() {
+    val result = fhirPathEngine.evaluateExpression("%val.truncate()", null, mapOf("val" to 100L))
+    assertEquals(listOf(100L), result.toList())
   }
 }
