@@ -35,6 +35,13 @@ experimental nature of the sections marked as STU (Standard for Trial Use) in th
 
 The library supports FHIR R4, R4B and R5. Support will be added for future FHIR versions.
 
+Each FHIR version specifies how FHIRPath expressions work with its FHIR types, and defines FHIR
+specific variables, functions and operators ([R4](https://hl7.org/fhir/R4/fhirpath.html),
+[R4B](https://hl7.org/fhir/R4B/fhirpath.html), [R5](https://hl7.org/fhir/R5/fhirpath.html)). To
+reduce maintenance cost, this implementation follows the behavior in the latest FHIR version, while
+still supporting FHIR resources from older FHIR versions. Whenever the behavior differs between
+versions, it is documented.
+
 ## Supported platforms
 
 The library supports the following
@@ -178,18 +185,12 @@ The `conformsTo()` function supports the base FHIR profiles
 (`http://hl7.org/fhir/StructureDefinition/<Type>`): the input element's type is compared to the
 type named by the structure. Other profiles, such as those defined in implementation guides (e.g.
 the US Core Patient profile), would require profile validation, which is not implemented. Passing
-such a profile URL yields an empty result.
+such a profile URL yields an empty result[^2].
 
-#### FHIR version differences
-
-The FHIR specification can differ between versions on how a FHIRPath function behaves. This
-implementation follows the current specification uniformly across R4, R4B and R5, rather than
-implementing each version's behavior separately, maintaining per version behavior would multiply
-the code and tests to maintain, and later specification text is usually a correction or
-clarification of the earlier versions.
-
-One example is `conformsTo()`, R4 and R4B require an error for an unresolvable structure
-(https://hl7.org/fhir/R4/fhirpath.html#functions), while the current specification returns empty (https://hl7.org/fhir/fhirpath.html#functions). Therefore `testConformsTo3` is skipped in the conformance suite.
+[^2]: R4 and R4B require an error for an unresolvable structure
+(https://hl7.org/fhir/R4/fhirpath.html#functions), revised to an empty result in R5
+(https://hl7.org/fhir/R5/fhirpath.html#functions). Therefore `testConformsTo3` is skipped in the
+conformance suite.
 
 ### Timezone offset in date time values
 
