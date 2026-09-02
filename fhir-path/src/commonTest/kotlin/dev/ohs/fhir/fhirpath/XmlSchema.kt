@@ -49,6 +49,8 @@ data class Test(
   val invalid: Boolean? = null,
   val ordered: Boolean? = null,
   val mode: String? = null,
+  val testing: String? = null,
+  val skipStaticCheck: Boolean? = null,
   val checkOrderedFunctions: Boolean? = null,
   val isPredicate: Boolean? = null,
   val expression: Expression,
