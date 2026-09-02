@@ -29,13 +29,13 @@ import kotlin.test.assertFailsWith
 import nl.adaptivity.xmlutil.serialization.XML
 
 internal class ConformanceSuiteConfig(
-  val suiteFile: String,
-  val inputDir: String,
-  val engine: FhirPathEngine,
+  val testCasesXmlFilePath: String,
+  val resourcesDir: String,
+  val lenientEngine: FhirPathEngine,
   val strictEngine: FhirPathEngine,
-  val decodeResource: (String) -> Any,
-  val fhirStringValue: (Any) -> String?,
-  val fhirQuantityString: (Any) -> String?,
+  val resourceDecoder: (String) -> Any,
+  val fhirStringValueExtractor: (Any) -> String?,
+  val fhirQuantityStringExtractor: (Any) -> String?,
   val skippedGroups: Map<String, String>,
   val skippedCases: Map<String, String>,
 )
@@ -43,19 +43,20 @@ internal class ConformanceSuiteConfig(
 @OptIn(ExperimentalKotest::class)
 internal fun FunSpec.conformanceSuite(config: ConformanceSuiteConfig) {
   val inputMap: Map<String, Any> =
-    listJsonFiles(config.inputDir)
+    listJsonFiles(config.resourcesDir)
       .flatMap { entry ->
         val resource =
           try {
-            config.decodeResource(entry.value)
+            config.resourceDecoder(entry.value)
           } catch (e: Exception) {
-            println("Cannot decode ${config.inputDir}/${entry.key}: ${e.message}")
+            println("Cannot decode ${config.resourcesDir}/${entry.key}: ${e.message}")
             return@flatMap emptyList()
           }
         listOf(entry.key to resource, entry.key.replace(".json$".toRegex(), ".xml") to resource)
       }
       .toMap()
-  val suiteXml = loadFile(config.suiteFile).replace(" xmlns=\"http://hl7.org/fhirpath/tests\"", "")
+  val suiteXml =
+    loadFile(config.testCasesXmlFilePath).replace(" xmlns=\"http://hl7.org/fhirpath/tests\"", "")
   val testSuite = XML.decodeFromString<Tests>(suiteXml)
 
   testSuite.groups.forEach { group ->
@@ -74,7 +75,7 @@ internal fun FunSpec.conformanceSuite(config: ConformanceSuiteConfig) {
             if (testCase.mode == "strict" || testCase.expression.mode == "strict") {
               config.strictEngine
             } else {
-              config.engine
+              config.lenientEngine
             }
 
           if (testCase.expression.invalid != null) {
@@ -132,8 +133,8 @@ private fun inferType(config: ConformanceSuiteConfig, actual: Any): String =
     actual is FhirPathDate -> "date"
     actual is FhirPathDateTime -> "dateTime"
     actual is FhirPathTime -> "time"
-    actual is FhirPathQuantity || config.fhirQuantityString(actual) != null -> "Quantity"
-    actual is String || config.fhirStringValue(actual) != null -> "string"
+    actual is FhirPathQuantity || config.fhirQuantityStringExtractor(actual) != null -> "Quantity"
+    actual is String || config.fhirStringValueExtractor(actual) != null -> "string"
     else -> throw AssertionError("Unknown actual type: ${actual::class}")
   }
 
@@ -141,7 +142,7 @@ private fun Any.toStringValue(config: ConformanceSuiteConfig): String =
   when {
     this is String -> this
     else ->
-      config.fhirStringValue(this)
+      config.fhirStringValueExtractor(this)
         ?: throw AssertionError("Cannot extract string value from: $this")
   }
 
@@ -153,7 +154,7 @@ private fun Any.toQuantityString(config: ConformanceSuiteConfig): String =
       "$formattedVal '$cleanUnit'"
     }
     else ->
-      config.fhirQuantityString(this)
+      config.fhirQuantityStringExtractor(this)
         ?: throw AssertionError("Cannot extract Quantity value from: $this")
   }
 

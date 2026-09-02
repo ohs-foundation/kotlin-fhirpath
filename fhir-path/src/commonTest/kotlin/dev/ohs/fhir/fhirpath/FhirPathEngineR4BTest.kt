@@ -69,13 +69,13 @@ class FhirPathEngineR4BTest :
   FunSpec({
     conformanceSuite(
       ConformanceSuiteConfig(
-        suiteFile = "${TEST_RESOURCE_DIR}/tests-fhir-r4b.xml",
-        inputDir = "${TEST_RESOURCE_DIR}/resources",
-        engine = FhirPathEngine.forR4B(),
+        testCasesXmlFilePath = "${TEST_RESOURCE_DIR}/tests-fhir-r4b.xml",
+        resourcesDir = "${TEST_RESOURCE_DIR}/resources",
+        lenientEngine = FhirPathEngine.forR4B(),
         strictEngine = FhirPathEngine.forR4B(strictMode = true),
-        decodeResource = { jsonR4B.decodeFromString<dev.ohs.fhir.model.r4b.Resource>(it) },
-        fhirStringValue = { (it as? dev.ohs.fhir.model.r4b.String)?.value },
-        fhirQuantityString = {
+        resourceDecoder = { jsonR4B.decodeFromString<dev.ohs.fhir.model.r4b.Resource>(it) },
+        fhirStringValueExtractor = { (it as? dev.ohs.fhir.model.r4b.String)?.value },
+        fhirQuantityStringExtractor = {
           (it as? dev.ohs.fhir.model.r4b.Quantity)?.let { q ->
             "${q.value!!.value} ${q.code!!.value}"
           }
