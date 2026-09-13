@@ -16,6 +16,9 @@
 
 package dev.ohs.fhir.fhirpath
 
+import dev.ohs.fhir.model.r4.HumanName
+import dev.ohs.fhir.model.r4.Patient
+import dev.ohs.fhir.model.r4.String as FhirString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -23,24 +26,17 @@ import kotlin.test.assertFailsWith
 private val fhirPathEngine = FhirPathEngine.forR4()
 
 /**
- * Tests for FHIRPath environment variables.
- *
- * See https://hl7.org/fhirpath/STU3/en/#environment-variables and
- * https://hl7.org/fhir/R5/fhirpath.html#vars
+ * Tests for FHIRPath environment variables, including:
+ * 1. [FHIRPath STU3 sec. 9](https://hl7.org/fhirpath/STU3/en/#environment-variables): `%context`,
+ *    `%ucum`, and custom `%name` variables.
+ * 2. [FHIR R5 sec. 2.1.9.1.4](https://hl7.org/fhir/R5/fhirpath.html#variables): `%resource` and
+ *    `%rootResource`.
+ * 3. [FHIR R5 sec. 2.1.9.1.7](https://hl7.org/fhir/R5/fhirpath.html#vars): `%sct`, `%loinc`,
+ *    `%'vs-[name]'`, and `%'ext-[name]'`.
  */
 class EnvironmentVariablesTest {
 
-  @Test
-  fun `sct returns SNOMED CT URL`() {
-    val result = fhirPathEngine.evaluateExpression(expression = "%sct", base = null)
-    assertEquals(listOf("http://snomed.info/sct"), result.toList())
-  }
-
-  @Test
-  fun `loinc returns LOINC URL`() {
-    val result = fhirPathEngine.evaluateExpression(expression = "%loinc", base = null)
-    assertEquals(listOf("http://loinc.org"), result.toList())
-  }
+  // %ucum
 
   @Test
   fun `ucum returns UCUM URL`() {
@@ -48,21 +44,17 @@ class EnvironmentVariablesTest {
     assertEquals(listOf("http://unitsofmeasure.org"), result.toList())
   }
 
-  @Test
-  fun `vs-name returns ValueSet URL`() {
-    val result =
-      fhirPathEngine.evaluateExpression(expression = "%'vs-administrative-gender'", base = null)
-    assertEquals(listOf("http://hl7.org/fhir/ValueSet/administrative-gender"), result.toList())
-  }
+  // Custom variables
 
   @Test
-  fun `ext-name returns StructureDefinition URL`() {
+  fun `null environment variable returns empty`() {
     val result =
-      fhirPathEngine.evaluateExpression(expression = "%'ext-patient-birthPlace'", base = null)
-    assertEquals(
-      listOf("http://hl7.org/fhir/StructureDefinition/patient-birthPlace"),
-      result.toList(),
-    )
+      fhirPathEngine.evaluateExpression(
+        expression = "%nullVar",
+        base = null,
+        variables = mapOf("nullVar" to null),
+      )
+    assertEquals(emptyList<Any>(), result.toList())
   }
 
   @Test
@@ -77,20 +69,100 @@ class EnvironmentVariablesTest {
   }
 
   @Test
-  fun `null environment variable returns empty`() {
-    val result =
-      fhirPathEngine.evaluateExpression(
-        expression = "%nullVar",
-        base = null,
-        variables = mapOf("nullVar" to null),
-      )
-    assertEquals(emptyList<Any>(), result.toList())
-  }
-
-  @Test
   fun `unknown environment variable throws error`() {
     assertFailsWith<Exception> {
       fhirPathEngine.evaluateExpression(expression = "%unknownVar", base = null)
     }
+  }
+
+  // %resource
+
+  @Test
+  fun `resource returns empty collection when base is null`() {
+    val result = fhirPathEngine.evaluateExpression(expression = "%resource", base = null)
+    assertEquals(emptyList<Any>(), result.toList())
+  }
+
+  @Test
+  fun `resource returns base resource`() {
+    val patient = Patient(id = "p1")
+    val result = fhirPathEngine.evaluateExpression(expression = "%resource.id", base = patient)
+    assertEquals(listOf("p1"), result.toList())
+  }
+
+  @Test
+  fun `resource returns base resource within nested lambda scopes`() {
+    val patient =
+      Patient(id = "p1", name = listOf(HumanName(family = FhirString(value = "Smith"))))
+    val result =
+      fhirPathEngine.evaluateExpression(
+        expression = "Patient.name.where(family = 'Smith').select(%resource.id)",
+        base = patient,
+      )
+    assertEquals(listOf("p1"), result.toList())
+  }
+
+  // %rootResource
+
+  @Test
+  fun `rootResource returns empty collection when base is null`() {
+    val result = fhirPathEngine.evaluateExpression(expression = "%rootResource", base = null)
+    assertEquals(emptyList<Any>(), result.toList())
+  }
+
+  @Test
+  fun `rootResource returns base resource`() {
+    val patient = Patient(id = "p1")
+    val result = fhirPathEngine.evaluateExpression(expression = "%rootResource.id", base = patient)
+    assertEquals(listOf("p1"), result.toList())
+  }
+
+  @Test
+  fun `rootResource returns base resource within nested lambda scopes`() {
+    val patient =
+      Patient(id = "p1", name = listOf(HumanName(family = FhirString(value = "Smith"))))
+    val result =
+      fhirPathEngine.evaluateExpression(
+        expression = "Patient.name.where(family = 'Smith').select(%rootResource.id)",
+        base = patient,
+      )
+    assertEquals(listOf("p1"), result.toList())
+  }
+
+  // %sct
+
+  @Test
+  fun `sct returns SNOMED CT URL`() {
+    val result = fhirPathEngine.evaluateExpression(expression = "%sct", base = null)
+    assertEquals(listOf("http://snomed.info/sct"), result.toList())
+  }
+
+  // %loinc
+
+  @Test
+  fun `loinc returns LOINC URL`() {
+    val result = fhirPathEngine.evaluateExpression(expression = "%loinc", base = null)
+    assertEquals(listOf("http://loinc.org"), result.toList())
+  }
+
+  // %vs-[name]
+
+  @Test
+  fun `vs-name returns ValueSet URL`() {
+    val result =
+      fhirPathEngine.evaluateExpression(expression = "%'vs-administrative-gender'", base = null)
+    assertEquals(listOf("http://hl7.org/fhir/ValueSet/administrative-gender"), result.toList())
+  }
+
+  // %ext-[name]
+
+  @Test
+  fun `ext-name returns StructureDefinition URL`() {
+    val result =
+      fhirPathEngine.evaluateExpression(expression = "%'ext-patient-birthPlace'", base = null)
+    assertEquals(
+      listOf("http://hl7.org/fhir/StructureDefinition/patient-birthPlace"),
+      result.toList(),
+    )
   }
 }
