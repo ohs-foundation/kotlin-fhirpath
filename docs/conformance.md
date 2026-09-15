@@ -47,7 +47,7 @@ and built-in functions defined across [sec. 5](https://hl7.org/fhirpath/STU3/en/
 | `$this`         | [sec. 5](https://hl7.org/fhirpath/STU3/en/#special-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ✅      |       |
 | `$index`        | [sec. 5](https://hl7.org/fhirpath/STU3/en/#special-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ✅      |       |
 | `$total`        | [sec. 5](https://hl7.org/fhirpath/STU3/en/#special-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ✅      |       |
-| `%context`      | [sec. 5](https://hl7.org/fhirpath/STU3/en/#special-variables) |                                                                                                              | ❌      |       |
+| `%context`      | [sec. 5](https://hl7.org/fhirpath/STU3/en/#special-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ✅      |       |
 | `%resource`     | [sec. 5](https://hl7.org/fhirpath/STU3/en/#special-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ✅      |       |
 | `%rootResource` | [sec. 5](https://hl7.org/fhirpath/STU3/en/#special-variables) |                                                                                                              | ❌      |       |
 
@@ -236,7 +236,7 @@ This table documents all environment variables defined in [sec. 9](https://hl7.o
 | Variable                               | Specification                                                     | Code                                                                                                         | Status | Notes |
 |:---------------------------------------|:------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------|:-------|:------|
 | `%ucum`                                | [sec. 9](https://hl7.org/fhirpath/STU3/en/#environment-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ✅      |       |
-| `%context`                             | [sec. 9](https://hl7.org/fhirpath/STU3/en/#environment-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ❌      |       |
+| `%context`                             | [sec. 9](https://hl7.org/fhirpath/STU3/en/#environment-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ✅      |       |
 | Custom environment variables (`%name`) | [sec. 9](https://hl7.org/fhirpath/STU3/en/#environment-variables) | [`FhirPathEvaluator.kt`](../fhir-path-core/src/commonMain/kotlin/dev/ohs/fhir/fhirpath/FhirPathEvaluator.kt) | ✅      |       |
 
 #### Types and reflection
