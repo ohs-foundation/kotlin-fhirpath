@@ -16,9 +16,9 @@
 
 package dev.ohs.fhir.fhirpath
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
+import dev.ohs.fhir.fhirpath.types.FhirPathDecimal
 import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import dev.ohs.fhir.fhirpath.types.FhirPathTime
 import io.kotest.common.ExperimentalKotest
@@ -119,7 +119,7 @@ private fun assertOutputEquals(config: ConformanceSuiteConfig, expected: Output,
     "string" -> assertEquals(expected.value, actual.toStringValue(config))
     "boolean" -> assertEquals(expected.value, if (actual is Boolean) actual.toString() else "true")
     "integer" -> assertEquals(expected.value, (actual as Int).toString())
-    "decimal" -> assertEquals(expected.value.toBigDecimalPreservingScale(), actual as BigDecimal)
+    "decimal" -> assertEquals(FhirPathDecimal.fromString(expected.value), actual as FhirPathDecimal)
     "Quantity" -> assertEquals(expected.value, actual.toQuantityString(config))
     else -> throw AssertionError("Unknown type: $type")
   }
@@ -129,7 +129,7 @@ private fun inferType(config: ConformanceSuiteConfig, actual: Any): String =
   when {
     actual is Boolean -> "boolean"
     actual is Int -> "integer"
-    actual is BigDecimal -> "decimal"
+    actual is FhirPathDecimal -> "decimal"
     actual is FhirPathDate -> "date"
     actual is FhirPathDateTime -> "dateTime"
     actual is FhirPathTime -> "time"
@@ -150,8 +150,7 @@ private fun Any.toQuantityString(config: ConformanceSuiteConfig): String =
   when {
     this is FhirPathQuantity -> {
       val cleanUnit = unit?.trim('\'')
-      val formattedVal = value?.toPlainStringPreservingDecimalPlaces()
-      "$formattedVal '$cleanUnit'"
+      "$value '$cleanUnit'"
     }
     else ->
       config.fhirQuantityStringExtractor(this)

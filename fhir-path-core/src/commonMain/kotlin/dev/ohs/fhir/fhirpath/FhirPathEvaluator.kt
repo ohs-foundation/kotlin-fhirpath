@@ -16,8 +16,6 @@
 
 package dev.ohs.fhir.fhirpath
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import dev.ohs.fhir.fhirpath.functions.invoke
 import dev.ohs.fhir.fhirpath.functions.union
 import dev.ohs.fhir.fhirpath.model.FhirModelNavigator
@@ -42,6 +40,7 @@ import dev.ohs.fhir.fhirpath.parsers.fhirpathBaseVisitor
 import dev.ohs.fhir.fhirpath.parsers.fhirpathParser
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
+import dev.ohs.fhir.fhirpath.types.FhirPathDecimal
 import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import dev.ohs.fhir.fhirpath.types.FhirPathTime
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
@@ -66,7 +65,7 @@ internal class FhirPathEvaluator(
   val fhirPathTypeResolver: FhirPathTypeResolver,
   val fhirModelNavigator: FhirModelNavigator,
   val strictMode: Boolean = false,
-  context: Any? = null,
+  val context: Any? = null,
   variables: Map<String, Any?> = emptyMap(),
 ) : fhirpathBaseVisitor<Collection<Any>>() {
   private val resource: Any? = context
@@ -132,7 +131,7 @@ internal class FhirPathEvaluator(
         when (item) {
           is Int -> listOf(-item)
           is Long -> listOf(-item)
-          is BigDecimal -> listOf(-item)
+          is FhirPathDecimal -> listOf(-item)
           is FhirPathQuantity -> listOf(item.negate())
           else -> error("Polarity expression cannot be applied to: $item")
         }
@@ -296,7 +295,7 @@ internal class FhirPathEvaluator(
   override fun visitNumberLiteral(ctx: fhirpathParser.NumberLiteralContext): Collection<Any> {
     val numberText = ctx.text
     return if (numberText.contains('.')) {
-      listOf(numberText.toBigDecimalPreservingScale())
+      listOf(FhirPathDecimal.fromString(numberText))
     } else {
       listOf(numberText.toInt())
     }
@@ -318,7 +317,7 @@ internal class FhirPathEvaluator(
   }
 
   override fun visitQuantityLiteral(ctx: fhirpathParser.QuantityLiteralContext): Collection<Any> {
-    val number = ctx.quantity().NUMBER().text.toBigDecimal()
+    val number = FhirPathDecimal.fromString(ctx.quantity().NUMBER().text)
     val unit = ctx.quantity().unit()?.text!!
     val pair = (number to unit)
     return listOf(FhirPathQuantity(value = pair.first, unit = pair.second))
@@ -336,6 +335,7 @@ internal class FhirPathEvaluator(
         ?: error("Invalid external constant")
 
     return when {
+      name == "context" -> context?.let { listOf(it) } ?: emptyList()
       name == "resource" -> resource?.let { listOf(it) } ?: emptyList()
       name == "sct" -> listOf("http://snomed.info/sct")
       name == "loinc" -> listOf("http://loinc.org")
@@ -660,7 +660,7 @@ internal class FhirPathEvaluator(
 
 /** Returns a new [FhirPathQuantity] object with the numeric value negated. */
 private fun FhirPathQuantity.negate(): FhirPathQuantity =
-  FhirPathQuantity(value = value?.negate(), unit = unit)
+  FhirPathQuantity(value = value?.unaryMinus(), unit = unit)
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#string). */
 private fun unescapeFhirPathString(string: String) =
