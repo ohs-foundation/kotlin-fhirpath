@@ -17,7 +17,10 @@
 package dev.ohs.fhir.fhirpath
 
 import dev.ohs.fhir.fhirpath.model.FhirR4BModelNavigator
+import dev.ohs.fhir.fhirpath.terminology.TerminologyService
+import dev.ohs.fhir.fhirpath.terminology.ValueSetTerminologyService
 import dev.ohs.fhir.fhirpath.types.FhirR4BTypeResolver
+import dev.ohs.fhir.model.r4b.ValueSet
 
 fun FhirPathEngine.Companion.forR4B(strictMode: Boolean = false): FhirPathEngine {
   return FhirPathEngine(
@@ -26,3 +29,20 @@ fun FhirPathEngine.Companion.forR4B(strictMode: Boolean = false): FhirPathEngine
     strictMode = strictMode,
   )
 }
+
+/** Creates an engine that evaluates terminology functions such as `memberOf` with the service. */
+fun FhirPathEngine.Companion.forR4B(
+  strictMode: Boolean = false,
+  terminologyService: TerminologyService,
+): FhirPathEngine {
+  return FhirPathEngine(
+    fhirPathTypeResolver = FhirR4BTypeResolver,
+    fhirModelNavigator = FhirR4BModelNavigator,
+    strictMode = strictMode,
+    terminologyService = terminologyService,
+  )
+}
+
+/** Returns a [TerminologyService] that answers from the given value sets. */
+fun TerminologyService.Companion.forR4B(valueSets: Collection<ValueSet>): TerminologyService =
+  ValueSetTerminologyService(valueSets, FhirR4BModelNavigator)
