@@ -319,10 +319,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // Use only the FHIR version(s) you need:
-            implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta05")
+            implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta06")
 
             // Or include all versions at once:
-            // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta05")
+            // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta06")
         }
     }
 }
@@ -337,10 +337,10 @@ For Android projects, add the dependency to the `dependencies` block in the modu
 // e.g., app/build.gradle.kts
 dependencies {
     // Use only the FHIR version(s) you need:
-    implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta05")
+    implementation("dev.ohs.fhir:fhir-path-r4:1.0.0-beta06")
 
     // Or include all versions at once:
-    // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta05")
+    // implementation("dev.ohs.fhir:fhir-path:1.0.0-beta06")
 }
 ```
 
