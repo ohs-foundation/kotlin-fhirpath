@@ -1,6 +1,6 @@
 [versions]
 agp = "8.13.0"
-android-compileSdk = "35"
+android-compileSdk = "36"
 android-minSdk = "24"
 antlr-kotlin = "1.0.10"
 bignum = "0.3.10"
