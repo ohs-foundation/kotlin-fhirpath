@@ -19,6 +19,7 @@ package dev.ohs.fhir.fhirpath.functions
 import dev.ohs.fhir.fhirpath.model.FhirModelNavigator
 import dev.ohs.fhir.fhirpath.operators.comparable
 import dev.ohs.fhir.fhirpath.operators.not
+import dev.ohs.fhir.fhirpath.terminology.TerminologyService
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -34,6 +35,7 @@ internal fun Collection<Any>.invoke(
   now: Instant,
   fhirPathTypeResolver: FhirPathTypeResolver,
   fhirModelNavigator: FhirModelNavigator,
+  terminologyService: TerminologyService? = null,
 ): Collection<Any> =
   when (functionName) {
     // Existence
@@ -180,6 +182,8 @@ internal fun Collection<Any>.invoke(
     // https://hl7.org/fhir/fhirpath.html#functions
     "extension" -> this.extension(params, fhirModelNavigator)
     "hasValue" -> this.hasValue(fhirPathTypeResolver, fhirModelNavigator)
+    "memberOf" ->
+      this.memberOf(params, fhirPathTypeResolver, fhirModelNavigator, terminologyService)
 
     else -> error("Function '$functionName' is not implemented.")
   }

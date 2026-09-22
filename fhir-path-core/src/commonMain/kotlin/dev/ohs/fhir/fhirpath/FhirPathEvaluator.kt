@@ -38,6 +38,7 @@ import dev.ohs.fhir.fhirpath.operators.subtraction
 import dev.ohs.fhir.fhirpath.operators.xor
 import dev.ohs.fhir.fhirpath.parsers.fhirpathBaseVisitor
 import dev.ohs.fhir.fhirpath.parsers.fhirpathParser
+import dev.ohs.fhir.fhirpath.terminology.TerminologyService
 import dev.ohs.fhir.fhirpath.types.FhirPathDate
 import dev.ohs.fhir.fhirpath.types.FhirPathDateTime
 import dev.ohs.fhir.fhirpath.types.FhirPathDecimal
@@ -65,6 +66,7 @@ internal class FhirPathEvaluator(
   val fhirPathTypeResolver: FhirPathTypeResolver,
   val fhirModelNavigator: FhirModelNavigator,
   val strictMode: Boolean = false,
+  val terminologyService: TerminologyService? = null,
   val context: Any? = null,
   variables: Map<String, Any?> = emptyMap(),
 ) : fhirpathBaseVisitor<Collection<Any>>() {
@@ -601,7 +603,14 @@ internal class FhirPathEvaluator(
             listOf(thisStack.last())
           }
         val params = functionNode.paramList()?.expression()?.flatMap { visit(it) } ?: emptyList()
-        receiver.invoke(functionName, params, now, fhirPathTypeResolver, fhirModelNavigator)
+        receiver.invoke(
+          functionName,
+          params,
+          now,
+          fhirPathTypeResolver,
+          fhirModelNavigator,
+          terminologyService,
+        )
       }
     }
   }

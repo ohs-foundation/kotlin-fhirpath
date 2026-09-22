@@ -378,6 +378,26 @@ val fhirPathEngineStrict = FhirPathEngine.forR4(strictMode = true)
 strictEngine.evaluateExpression("name.given1", patient) // Throws IllegalStateException
 ```
 
+### Using `memberOf`
+
+`memberOf` needs a `TerminologyService`. `ValueSetTerminologyService` answers from ValueSet
+resources you already have, using their `expansion` and enumerated `compose`:
+
+```kotlin
+val valueSets: List<ValueSet> = ... // e.g. the value sets of an implementation guide
+val fhirPathEngine =
+  FhirPathEngine.forR4(terminologyService = TerminologyService.forR4(valueSets))
+
+fhirPathEngine.evaluateExpression(
+  "code.memberOf('http://example.org/ValueSet/vaccines')",
+  observation,
+)
+// [true]
+```
+
+The result is empty if there is no terminology service, or if the value set cannot be found or
+needs a code system to evaluate. Implement `TerminologyService` to answer from another source.
+
 ## Developer Guide
 
 ### Code Generation

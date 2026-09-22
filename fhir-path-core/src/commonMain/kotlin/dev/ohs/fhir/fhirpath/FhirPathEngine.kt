@@ -19,6 +19,7 @@ package dev.ohs.fhir.fhirpath
 import dev.ohs.fhir.fhirpath.model.FhirModelNavigator
 import dev.ohs.fhir.fhirpath.parsers.fhirpathLexer
 import dev.ohs.fhir.fhirpath.parsers.fhirpathParser
+import dev.ohs.fhir.fhirpath.terminology.TerminologyService
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 import org.antlr.v4.kotlinruntime.BailErrorStrategy
 import org.antlr.v4.kotlinruntime.CharStreams
@@ -29,7 +30,14 @@ class FhirPathEngine(
   private val fhirPathTypeResolver: FhirPathTypeResolver,
   val fhirModelNavigator: FhirModelNavigator,
   val strictMode: Boolean = false,
+  val terminologyService: TerminologyService?,
 ) {
+  constructor(
+    fhirPathTypeResolver: FhirPathTypeResolver,
+    fhirModelNavigator: FhirModelNavigator,
+    strictMode: Boolean = false,
+  ) : this(fhirPathTypeResolver, fhirModelNavigator, strictMode, terminologyService = null)
+
   var traces: Map<String, List<TraceEntry>> = emptyMap()
     private set
 
@@ -70,6 +78,7 @@ class FhirPathEngine(
         fhirPathTypeResolver = fhirPathTypeResolver,
         fhirModelNavigator = fhirModelNavigator,
         strictMode = strictMode,
+        terminologyService = terminologyService,
         context = base,
         variables = variables,
       )
