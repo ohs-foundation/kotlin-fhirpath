@@ -24,11 +24,13 @@ import dev.ohs.fhir.fhirpath.operators.and
 import dev.ohs.fhir.fhirpath.operators.`as`
 import dev.ohs.fhir.fhirpath.operators.compare
 import dev.ohs.fhir.fhirpath.operators.concat
+import dev.ohs.fhir.fhirpath.operators.contains
 import dev.ohs.fhir.fhirpath.operators.div
 import dev.ohs.fhir.fhirpath.operators.division
 import dev.ohs.fhir.fhirpath.operators.equal
 import dev.ohs.fhir.fhirpath.operators.equivalent
 import dev.ohs.fhir.fhirpath.operators.implies
+import dev.ohs.fhir.fhirpath.operators.`in`
 import dev.ohs.fhir.fhirpath.operators.`is`
 import dev.ohs.fhir.fhirpath.operators.mod
 import dev.ohs.fhir.fhirpath.operators.multiplication
@@ -233,18 +235,8 @@ internal class FhirPathEvaluator(
     val left = visit(ctx.expression(0)!!)
     val right = visit(ctx.expression(1)!!)
     return when (val op = ctx.getChild(1)!!.text) {
-      "in" ->
-        listOf(
-          right
-            .map { it.toFhirPathType(fhirPathTypeResolver) }
-            .contains(left.single().toFhirPathType(fhirPathTypeResolver))
-        )
-      "contains" ->
-        listOf(
-          left
-            .map { it.toFhirPathType(fhirPathTypeResolver) }
-            .contains(right.single().toFhirPathType(fhirPathTypeResolver))
-        )
+      "in" -> `in`(left, right, fhirPathTypeResolver)
+      "contains" -> contains(left, right, fhirPathTypeResolver)
       else -> error("Unknown membership operator: $op")
     }
   }

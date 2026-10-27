@@ -68,10 +68,6 @@ val skippedR5TestCaseToReasonMap =
     "testNow1" to "As `testDateTimeGreaterThanDate1`",
     "testSort8" to "Test uses `-\$this` for descending string sort, but spec uses asc/desc.",
     "testSort10" to "Test uses `-` prefix for descending sort, but spec uses asc/desc.",
-    "testInEmptyValue" to "`in` with an empty operand crashes with NoSuchElementException.",
-    "testInEmptyBoth" to "`in` with an empty operand crashes with NoSuchElementException.",
-    "testContainsCollectionEmpty4" to
-      "`contains` with an empty operand crashes with NoSuchElementException.",
     "testDiv6" to
       "`-5.5 div 2` evaluates to -3 because the engine floors negative decimal division, but the specification truncates toward zero, expecting -2.",
     "testMod6" to
