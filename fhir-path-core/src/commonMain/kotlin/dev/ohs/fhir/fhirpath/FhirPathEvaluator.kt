@@ -72,7 +72,7 @@ internal class FhirPathEvaluator(
 ) : fhirpathBaseVisitor<Collection<Any>>() {
   private val resource: Any? = context
   private val contextStack = ArrayDeque<Collection<Any>>()
-  private val thisStack = ArrayDeque<Any>()
+  private val thisStack = ArrayDeque<Any?>()
   private val indexStack = ArrayDeque<Int>()
   private val totalStack = ArrayDeque<Collection<Any>>()
   private val variables = mutableMapOf<String, Any?>()
@@ -393,13 +393,15 @@ internal class FhirPathEvaluator(
         // N.B. this function is implemented here due to its short-circuiting behavior.
         check(context.size <= 1) { "iif cannot be called on a collection with more than 1 item" }
         val params = functionNode.paramList()!!.expression()
-        val criterion = visit(params[0])
-        check(criterion.size <= 1) { "iif cannot be called with multiple expressions" }
-        return when (criterion.singleOrNull()) {
-          true -> visit(params[1])
-          false,
-          null -> params.getOrNull(2)?.let { visit(it) } ?: emptyList()
-          else -> error("iif criterion must evaluate to a Boolean")
+        return evaluateWithThis(context.singleOrNull()) {
+          val criterion = visit(params[0])
+          check(criterion.size <= 1) { "iif cannot be called with multiple expressions" }
+          when (criterion.singleOrNull()) {
+            true -> visit(params[1])
+            false,
+            null -> params.getOrNull(2)?.let { visit(it) } ?: emptyList()
+            else -> error("iif criterion must evaluate to a Boolean")
+          }
         }
       }
       "exists" -> {
@@ -591,7 +593,7 @@ internal class FhirPathEvaluator(
           if (ctx.getParent() is fhirpathParser.InvocationExpressionContext) {
             context
           } else {
-            listOf(thisStack.last())
+            thisStack.lastOrNull()?.let { listOf(it) } ?: emptyList()
           }
         val params = functionNode.paramList()?.expression()?.flatMap { visit(it) } ?: emptyList()
         receiver.invoke(functionName, params, now, fhirPathTypeResolver, fhirModelNavigator)
@@ -600,7 +602,7 @@ internal class FhirPathEvaluator(
   }
 
   override fun visitThisInvocation(ctx: fhirpathParser.ThisInvocationContext): Collection<Any> {
-    return listOf(thisStack.last())
+    return thisStack.lastOrNull()?.let { listOf(it) } ?: emptyList()
   }
 
   override fun visitIndexInvocation(ctx: fhirpathParser.IndexInvocationContext): Collection<Any> {
@@ -625,9 +627,13 @@ internal class FhirPathEvaluator(
   }
 
   /** Evaluates a block with the given item pushed onto thisStack. */
-  private fun evaluateWithThis(item: Any, block: () -> Any?): Any? {
+  private inline fun <R> evaluateWithThis(item: Any?, block: () -> R): R {
     thisStack.addLast(item)
-    return block().also { thisStack.removeLast() }
+    try {
+      return block()
+    } finally {
+      thisStack.removeLast()
+    }
   }
 
   private inline fun <R> withIterationScope(

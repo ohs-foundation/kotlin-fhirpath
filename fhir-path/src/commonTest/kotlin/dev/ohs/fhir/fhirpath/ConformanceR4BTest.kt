@@ -37,8 +37,6 @@ val skippedR4BTestCaseToReasonMap =
     "testDateTimeGreaterThanDate1" to
       "Comparison of two date time values, one with a timezone offset one without",
     "testQuantity4" to "https://github.com/FHIR/fhir-test-cases/pull/243",
-    "testIif11" to
-      "https://jira.hl7.org/browse/FHIR-44774; https://jira.hl7.org/browse/FHIR-44601; https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/scope.20of.20this/with/531507415; https://chat.fhir.org/#narrow/stream/179266-fhirpath/topic/context.20of.20the.20.60iif.20.60; https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/receiver.20of.20iif/with/558282370",
     "testNow1" to "As `testDateTimeGreaterThanDate1`",
     "testSort8" to "Test uses `-\$this` for descending string sort, but spec uses asc/desc.",
     "testSort10" to "Test uses `-` prefix for descending sort, but spec uses asc/desc.",
