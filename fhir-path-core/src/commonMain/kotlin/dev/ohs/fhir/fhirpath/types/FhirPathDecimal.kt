@@ -53,7 +53,10 @@ class FhirPathDecimal private constructor(internal val bigDecimal: BigDecimal) :
   operator fun unaryMinus() = FhirPathDecimal(-bigDecimal)
 
   fun divideAndRemainder(other: FhirPathDecimal): Pair<FhirPathDecimal, FhirPathDecimal> {
-    val (quotient, remainder) = bigDecimal divrem other.bigDecimal
+    val (absQuotient, absRemainder) = bigDecimal.abs() divrem other.bigDecimal.abs()
+    val quotient =
+      if (bigDecimal.isNegative != other.bigDecimal.isNegative) -absQuotient else absQuotient
+    val remainder = if (bigDecimal.isNegative) -absRemainder else absRemainder
     return FhirPathDecimal(quotient) to FhirPathDecimal(remainder)
   }
 

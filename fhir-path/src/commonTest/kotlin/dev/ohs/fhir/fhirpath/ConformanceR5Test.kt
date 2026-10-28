@@ -68,10 +68,6 @@ val skippedR5TestCaseToReasonMap =
     "testNow1" to "As `testDateTimeGreaterThanDate1`",
     "testSort8" to "Test uses `-\$this` for descending string sort, but spec uses asc/desc.",
     "testSort10" to "Test uses `-` prefix for descending sort, but spec uses asc/desc.",
-    "testDiv6" to
-      "`-5.5 div 2` evaluates to -3 because the engine floors negative decimal division, but the specification truncates toward zero, expecting -2.",
-    "testMod6" to
-      "`-5.5 mod 2` evaluates to 0.5, but the specification defines mod with the dividend's sign, expecting -1.5. Same floored arithmetic as `testDiv6`.",
     "testType22" to
       "`is` with an unknown `System` type should evaluate to false, but the type resolver throws `Unknown System type Patient`.",
     "testConformsTo3" to
