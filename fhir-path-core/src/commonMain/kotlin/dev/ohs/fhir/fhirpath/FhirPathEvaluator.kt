@@ -32,6 +32,7 @@ import dev.ohs.fhir.fhirpath.operators.equivalent
 import dev.ohs.fhir.fhirpath.operators.implies
 import dev.ohs.fhir.fhirpath.operators.`in`
 import dev.ohs.fhir.fhirpath.operators.`is`
+import dev.ohs.fhir.fhirpath.operators.itemsEqual
 import dev.ohs.fhir.fhirpath.operators.mod
 import dev.ohs.fhir.fhirpath.operators.multiplication
 import dev.ohs.fhir.fhirpath.operators.ofType
@@ -472,12 +473,7 @@ internal class FhirPathEvaluator(
               finalResults.add(result)
               queue.addLast(result)
             } else {
-              if (
-                finalResults.none {
-                  it.toFhirPathType(fhirPathTypeResolver) ==
-                    result.toFhirPathType(fhirPathTypeResolver)
-                }
-              ) {
+              if (finalResults.none { itemsEqual(it, result, fhirPathTypeResolver) == true }) {
                 finalResults.add(result)
               }
             }

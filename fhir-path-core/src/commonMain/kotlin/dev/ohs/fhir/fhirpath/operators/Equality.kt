@@ -94,7 +94,7 @@ internal fun equivalent(
 }
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#-equals). */
-private fun itemsEqual(
+internal fun itemsEqual(
   left: Any,
   right: Any,
   fhirPathTypeResolver: FhirPathTypeResolver,

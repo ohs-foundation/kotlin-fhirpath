@@ -16,7 +16,6 @@
 
 package dev.ohs.fhir.fhirpath.functions
 
-import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 
 /**
@@ -32,7 +31,7 @@ internal fun Collection<Any>.union(
   other: Collection<Any>,
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
-  return (this + other).distinctBy { it.toFhirPathType(fhirPathTypeResolver) }
+  return (this + other).distinctFun(fhirPathTypeResolver)
 }
 
 /**

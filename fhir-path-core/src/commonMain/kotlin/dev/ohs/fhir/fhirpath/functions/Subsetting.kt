@@ -16,7 +16,7 @@
 
 package dev.ohs.fhir.fhirpath.functions
 
-import dev.ohs.fhir.fhirpath.toFhirPathType
+import dev.ohs.fhir.fhirpath.operators.itemsEqual
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#single--any). */
@@ -54,9 +54,8 @@ internal fun Collection<Any>.intersectFun(
   other: Collection<Any>,
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
-  val otherConverted = other.mapTo(mutableSetOf()) { it.toFhirPathType(fhirPathTypeResolver) }
-  return this.filter { otherConverted.contains(it.toFhirPathType(fhirPathTypeResolver)) }
-    .distinctBy { it.toFhirPathType(fhirPathTypeResolver) }
+  return this.filter { item -> other.any { itemsEqual(item, it, fhirPathTypeResolver) == true } }
+    .distinctFun(fhirPathTypeResolver)
 }
 
 /**
@@ -69,6 +68,5 @@ internal fun Collection<Any>.exclude(
   other: Collection<Any>,
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Any> {
-  val otherConverted = other.mapTo(mutableSetOf()) { it.toFhirPathType(fhirPathTypeResolver) }
-  return this.filterNot { otherConverted.contains(it.toFhirPathType(fhirPathTypeResolver)) }
+  return this.filterNot { item -> other.any { itemsEqual(item, it, fhirPathTypeResolver) == true } }
 }

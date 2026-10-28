@@ -16,7 +16,7 @@
 
 package dev.ohs.fhir.fhirpath.functions
 
-import dev.ohs.fhir.fhirpath.toFhirPathType
+import dev.ohs.fhir.fhirpath.operators.itemsEqual
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#empty--boolean). */
@@ -41,8 +41,7 @@ internal fun Collection<Any>.subsetOf(
   params: Collection<Any>,
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Boolean> {
-  val paramsConverted = params.mapTo(mutableSetOf()) { it.toFhirPathType(fhirPathTypeResolver) }
-  return listOf(paramsConverted.containsAll(map { it.toFhirPathType(fhirPathTypeResolver) }))
+  return listOf(all { item -> params.any { itemsEqual(item, it, fhirPathTypeResolver) == true } })
 }
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#supersetofother--collection--boolean). */
@@ -50,8 +49,7 @@ internal fun Collection<Any>.supersetOf(
   params: Collection<Any>,
   fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Boolean> {
-  val thisConverted = mapTo(mutableSetOf()) { it.toFhirPathType(fhirPathTypeResolver) }
-  return listOf(thisConverted.containsAll(params.map { it.toFhirPathType(fhirPathTypeResolver) }))
+  return params.subsetOf(this, fhirPathTypeResolver)
 }
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#count--integer). */
@@ -71,7 +69,12 @@ internal fun Collection<Any>.count(): Collection<Int> = listOf(size)
 internal fun Collection<Any>.distinctFun(
   fhirPathTypeResolver: FhirPathTypeResolver
 ): Collection<Any> {
-  return distinctBy { it.toFhirPathType(fhirPathTypeResolver) }
+  return fold(mutableListOf()) { acc, item ->
+    if (acc.none { itemsEqual(it, item, fhirPathTypeResolver) == true }) {
+      acc.add(item)
+    }
+    acc
+  }
 }
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#isdistinct--boolean). */

@@ -16,7 +16,6 @@
 
 package dev.ohs.fhir.fhirpath.operators
 
-import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#in-membership--boolean). */
@@ -27,11 +26,7 @@ internal fun `in`(
 ): Collection<Boolean> {
   check(left.size <= 1) { "in cannot be called on a left operand with more than 1 item" }
   val leftItem = left.singleOrNull() ?: return emptyList()
-  return listOf(
-    right
-      .map { it.toFhirPathType(fhirPathTypeResolver) }
-      .contains(leftItem.toFhirPathType(fhirPathTypeResolver))
-  )
+  return listOf(right.any { itemsEqual(leftItem, it, fhirPathTypeResolver) == true })
 }
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#contains-containership--boolean). */
