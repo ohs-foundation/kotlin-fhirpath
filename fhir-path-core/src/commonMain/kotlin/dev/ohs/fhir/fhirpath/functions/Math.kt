@@ -21,7 +21,12 @@ import dev.ohs.fhir.fhirpath.toFhirPathType
 import dev.ohs.fhir.fhirpath.types.FhirPathDecimal
 import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import dev.ohs.fhir.fhirpath.types.FhirPathTypeResolver
+import dev.ohs.fhir.fhirpath.types.abs
+import dev.ohs.fhir.fhirpath.types.ceil
+import dev.ohs.fhir.fhirpath.types.floor
+import dev.ohs.fhir.fhirpath.types.round
 import dev.ohs.fhir.fhirpath.types.toFhirPathDecimal
+import dev.ohs.fhir.fhirpath.types.truncate
 import kotlin.math.abs
 import kotlin.math.exp
 import kotlin.math.ln
@@ -48,8 +53,8 @@ internal fun Collection<Any>.ceiling(fhirPathTypeResolver: FhirPathTypeResolver)
   return when (value) {
     is Int,
     is Long -> listOf(value)
-    is FhirPathDecimal ->
-      listOf(value.ceil().intValue()) // TODO: handle the case where the value needs to be a Long
+    is FhirPathDecimal -> listOf(value.ceil().intValue())
+    is FhirPathQuantity -> listOf(value.ceil())
     else -> error("ceiling() can only be applied to numbers")
   }
 }
@@ -73,8 +78,8 @@ internal fun Collection<Any>.floor(fhirPathTypeResolver: FhirPathTypeResolver): 
   return when (value) {
     is Int,
     is Long -> listOf(value)
-    is FhirPathDecimal ->
-      listOf(value.floor().intValue()) // TODO: handle the case where the value needs to be a Long
+    is FhirPathDecimal -> listOf(value.floor().intValue())
+    is FhirPathQuantity -> listOf(value.floor())
     else -> error("floor() can only be applied to numbers")
   }
 }
@@ -174,6 +179,7 @@ internal fun Collection<Any>.round(
     is Int -> listOf(value.toFhirPathDecimal())
     is Long -> listOf(value.toFhirPathDecimal())
     is FhirPathDecimal -> listOf(value.round(precision.toLong(), DECIMAL_MODE.roundingMode))
+    is FhirPathQuantity -> listOf(value.round(precision.toLong()))
     else -> error("round() can only be applied to numbers")
   }
 }
@@ -202,11 +208,8 @@ internal fun Collection<Any>.truncate(fhirPathTypeResolver: FhirPathTypeResolver
   return when (value) {
     is Int,
     is Long -> listOf(value)
-    is FhirPathDecimal -> listOf(value.intValue(exactRequired = false))
+    is FhirPathDecimal -> listOf(value.truncate().intValue())
+    is FhirPathQuantity -> listOf(value.truncate())
     else -> error("truncate() can only be applied to numbers")
   }
 }
-
-/** Returns a new [FhirPathQuantity] that is the absolute value of this quantity. */
-private fun FhirPathQuantity.abs(): FhirPathQuantity =
-  FhirPathQuantity(value = value!!.abs(), unit = unit)

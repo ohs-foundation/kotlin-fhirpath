@@ -164,6 +164,7 @@ private fun FhirPathQuantity.stripUcumPrefix(): FhirPathQuantity {
  */
 private fun FhirPathQuantity.toCanonicalizedUcumUnit(): FhirPathQuantity {
   val unitCode = unit?.stripSingleQuotes() ?: return this
+  if (unitCode.isEmpty() || unit in listOf("year", "years", "month", "months")) return this
 
   // Process base units
   BaseUnit.fromString(unitCode)?.let {
@@ -175,7 +176,8 @@ private fun FhirPathQuantity.toCanonicalizedUcumUnit(): FhirPathQuantity {
     return FhirPathQuantity(value = value!! * it.scalar.toFhirPathDecimal(), unit = "'${it.base}'")
   }
 
-  return this
+  // Normalize compound UCUM units (e.g., 'g/m' -> 'g.m-1')
+  return FhirPathQuantity(value = value, unit = formatUcumUnit(parseUcumUnit(unitCode)))
 }
 
 private fun String.stripSingleQuotes(): String {
@@ -210,7 +212,7 @@ private fun splitUcumComponents(unitString: String): List<String> {
  * - `"123"` → `null` (no unit letters)
  */
 private fun parseUnitAndExponent(component: String): Pair<String, Int>? {
-  val match = Regex("([a-zA-Z]+)(-?\\d*)").matchEntire(component) ?: return null
+  val match = Regex("([a-zA-Z]+|\\[[^\\]]+\\])(-?\\d*)").matchEntire(component) ?: return null
   val unit = match.groupValues[1]
   val exponentStr = match.groupValues[2]
   val exponent = if (exponentStr.isEmpty()) 1 else exponentStr.toInt()

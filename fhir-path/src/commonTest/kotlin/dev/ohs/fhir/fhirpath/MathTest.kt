@@ -16,6 +16,8 @@
 
 package dev.ohs.fhir.fhirpath
 
+import dev.ohs.fhir.fhirpath.types.FhirPathDecimal
+import dev.ohs.fhir.fhirpath.types.FhirPathQuantity
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -39,5 +41,32 @@ class MathTest {
   fun `truncate on Long value`() {
     val result = fhirPathEngine.evaluateExpression("%val.truncate()", null, mapOf("val" to 100L))
     assertEquals(listOf(100L), result.toList())
+  }
+
+  @Test
+  fun `ceiling on Quantity value`() {
+    val result = fhirPathEngine.evaluateExpression("(1.4 'mg').ceiling()", null)
+    assertEquals(listOf(FhirPathQuantity(FhirPathDecimal.fromInt(2), "'mg'")), result.toList())
+  }
+
+  @Test
+  fun `floor on Quantity value`() {
+    val result = fhirPathEngine.evaluateExpression("(1.4 'mg').floor()", null)
+    assertEquals(listOf(FhirPathQuantity(FhirPathDecimal.fromInt(1), "'mg'")), result.toList())
+  }
+
+  @Test
+  fun `truncate on Quantity value`() {
+    val result = fhirPathEngine.evaluateExpression("(-1.6 'mg').truncate()", null)
+    assertEquals(listOf(FhirPathQuantity(FhirPathDecimal.fromInt(-1), "'mg'")), result.toList())
+  }
+
+  @Test
+  fun `round on Quantity value`() {
+    val result = fhirPathEngine.evaluateExpression("(1.234 'mg').round(2)", null)
+    assertEquals(
+      listOf(FhirPathQuantity(FhirPathDecimal.fromString("1.23"), "'mg'")),
+      result.toList(),
+    )
   }
 }

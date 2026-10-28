@@ -296,55 +296,49 @@ internal fun Collection<Any>.toQuantity(
 
   if (isEmpty()) return emptyList()
 
-  return when (val item = single().toFhirPathType(fhirPathTypeResolver)) {
-    is Int -> listOf(FhirPathQuantity(value = item.toFhirPathDecimal(), unit = DEFAULT_UNIT))
-    is Long -> listOf(FhirPathQuantity(value = item.toFhirPathDecimal(), unit = DEFAULT_UNIT))
-    is FhirPathDecimal -> listOf(FhirPathQuantity(value = item, unit = DEFAULT_UNIT))
-    is FhirPathQuantity -> {
-      if (targetUnit != null) {
-        convertQuantityUnit(item, targetUnit)
-      } else {
-        listOf(item)
-      }
-    }
-    is String -> {
-      val match = QUANTITY_REGEX.matchEntire(item.trim()) ?: return emptyList()
-      val value = FhirPathDecimal.fromString(match.groups["value"]?.value!!)
-      val unit = match.groups["unit"]?.value?.trim()
-      val calendarDuration = match.groups["time"]?.value
+  val quantity =
+    when (val item = single().toFhirPathType(fhirPathTypeResolver)) {
+      is Int -> FhirPathQuantity(value = item.toFhirPathDecimal(), unit = DEFAULT_UNIT)
+      is Long -> FhirPathQuantity(value = item.toFhirPathDecimal(), unit = DEFAULT_UNIT)
+      is FhirPathDecimal -> FhirPathQuantity(value = item, unit = DEFAULT_UNIT)
+      is FhirPathQuantity -> item
+      is String -> {
+        val match = QUANTITY_REGEX.matchEntire(item.trim()) ?: return emptyList()
+        val value = FhirPathDecimal.fromString(match.groups["value"]?.value!!)
+        val unit = match.groups["unit"]?.value?.trim()
+        val calendarDuration = match.groups["time"]?.value
 
-      val parsedUnit: String =
-        when {
-          unit != null -> {
-            if (!isValidUcumUnit(unit)) {
-              return emptyList()
+        val parsedUnit: String =
+          when {
+            unit != null -> {
+              if (!isValidUcumUnit(unit)) {
+                return emptyList()
+              }
+              "'$unit'"
             }
-            "'$unit'"
-          }
-          calendarDuration != null -> {
-            if (calendarDuration !in CALENDAR_DURATION_LIST) {
-              return emptyList()
+            calendarDuration != null -> {
+              if (calendarDuration !in CALENDAR_DURATION_LIST) {
+                return emptyList()
+              }
+              calendarDuration
             }
-            calendarDuration
+            else -> DEFAULT_UNIT
           }
-          else -> DEFAULT_UNIT
-        }
 
-      val parsedQuantity = FhirPathQuantity(value = value, unit = parsedUnit)
-      if (targetUnit != null) {
-        convertQuantityUnit(parsedQuantity, targetUnit)
-      } else {
-        listOf(parsedQuantity)
+        FhirPathQuantity(value = value, unit = parsedUnit)
       }
-    }
-    is Boolean ->
-      listOf(
+      is Boolean ->
         FhirPathQuantity(
           value = if (item) FhirPathDecimal.ONE else FhirPathDecimal.ZERO,
           unit = DEFAULT_UNIT,
         )
-      )
-    else -> emptyList()
+      else -> return emptyList()
+    }
+
+  return if (targetUnit != null) {
+    convertQuantityUnit(quantity, targetUnit)
+  } else {
+    listOf(quantity)
   }
 }
 
@@ -352,13 +346,14 @@ internal fun Collection<Any>.toQuantity(
  * See [specification](https://hl7.org/fhirpath/STU3/en/#convertstoquantityunit--string--boolean).
  */
 internal fun Collection<Any>.convertsToQuantity(
-  fhirPathTypeResolver: FhirPathTypeResolver
+  targetUnit: String? = null,
+  fhirPathTypeResolver: FhirPathTypeResolver,
 ): Collection<Boolean> {
   check(size <= 1) { "convertsToQuantity() cannot be called on a collection with more than 1 item" }
 
   if (isEmpty()) return emptyList()
 
-  return listOf(toQuantity(targetUnit = null, fhirPathTypeResolver).isNotEmpty())
+  return listOf(toQuantity(targetUnit = targetUnit, fhirPathTypeResolver).isNotEmpty())
 }
 
 /** See [specification](https://hl7.org/fhirpath/STU3/en/#tostring--string). */

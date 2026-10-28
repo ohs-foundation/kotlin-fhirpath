@@ -495,11 +495,29 @@ class ConversionTest {
     )
 
   @Test
+  fun `toQuantity on Integer value with compatible target unit`() =
+    assertEquals(
+      listOf(FhirPathQuantity(FhirPathDecimal.fromInt(5), "'1'")),
+      fhirPathEngine.evaluateExpression("5.toQuantity('1')", null).toList(),
+    )
+
+  @Test
+  fun `toQuantity on Integer value with incompatible target unit`() =
+    assertEquals(
+      emptyList(),
+      fhirPathEngine.evaluateExpression("5.toQuantity('mg')", null).toList(),
+    )
+
+  @Test
   fun `toQuantity on Long value`() =
     assertEquals(
       listOf(FhirPathQuantity(FhirPathDecimal.fromLong(5L), "'1'")),
       fhirPathEngine.evaluateExpression("toQuantity()", 5L).toList(),
     )
+
+  @Test
+  fun `toQuantity on Long value with incompatible target unit`() =
+    assertEquals(emptyList(), fhirPathEngine.evaluateExpression("toQuantity('mg')", 5L).toList())
 
   @Test
   fun `toQuantity on Decimal value`() =
@@ -509,10 +527,24 @@ class ConversionTest {
     )
 
   @Test
+  fun `toQuantity on Decimal value with incompatible target unit`() =
+    assertEquals(
+      emptyList(),
+      fhirPathEngine.evaluateExpression("5.5.toQuantity('mg')", null).toList(),
+    )
+
+  @Test
   fun `toQuantity on Boolean true`() =
     assertEquals(
       listOf(FhirPathQuantity(FhirPathDecimal.fromInt(1), "'1'")),
       fhirPathEngine.evaluateExpression("true.toQuantity()", null).toList(),
+    )
+
+  @Test
+  fun `toQuantity on Boolean true with incompatible target unit`() =
+    assertEquals(
+      emptyList(),
+      fhirPathEngine.evaluateExpression("true.toQuantity('mg')", null).toList(),
     )
 
   @Test
@@ -551,10 +583,38 @@ class ConversionTest {
     )
 
   @Test
+  fun `convertsToQuantity on Quantity value with compatible target unit`() =
+    assertEquals(
+      listOf(true),
+      fhirPathEngine.evaluateExpression("'5 \\'kg\\''.convertsToQuantity('g')", null).toList(),
+    )
+
+  @Test
+  fun `convertsToQuantity on Quantity value with incompatible target unit`() =
+    assertEquals(
+      listOf(false),
+      fhirPathEngine.evaluateExpression("'5 \\'kg\\''.convertsToQuantity('cm')", null).toList(),
+    )
+
+  @Test
   fun `convertsToQuantity on Integer value`() =
     assertEquals(
       listOf(true),
       fhirPathEngine.evaluateExpression("5.convertsToQuantity()", null).toList(),
+    )
+
+  @Test
+  fun `convertsToQuantity on Integer value with compatible target unit`() =
+    assertEquals(
+      listOf(true),
+      fhirPathEngine.evaluateExpression("5.convertsToQuantity('1')", null).toList(),
+    )
+
+  @Test
+  fun `convertsToQuantity on Integer value with incompatible target unit`() =
+    assertEquals(
+      listOf(false),
+      fhirPathEngine.evaluateExpression("5.convertsToQuantity('mg')", null).toList(),
     )
 
   @Test

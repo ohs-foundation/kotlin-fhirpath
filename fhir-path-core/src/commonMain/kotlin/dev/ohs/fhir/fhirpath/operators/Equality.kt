@@ -18,7 +18,6 @@ package dev.ohs.fhir.fhirpath.operators
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import dev.ohs.fhir.fhirpath.asComparableOperands
-import dev.ohs.fhir.fhirpath.parseUcumUnit
 import dev.ohs.fhir.fhirpath.toEqualCanonicalized
 import dev.ohs.fhir.fhirpath.toEquivalentCanonicalized
 import dev.ohs.fhir.fhirpath.toFhirPathType
@@ -131,9 +130,7 @@ private fun itemsEqual(
     }
     leftFhirPath is FhirPathQuantity && rightFhirPath is FhirPathQuantity -> {
       with(leftFhirPath.toEqualCanonicalized() to rightFhirPath.toEqualCanonicalized()) {
-        val leftUnits = parseUcumUnit(first.unit!!)
-        val rightUnits = parseUcumUnit(second.unit!!)
-        if (leftUnits != rightUnits) return null
+        if (first.unit != second.unit) return null
         return first.value == second.value
       }
     }

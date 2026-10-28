@@ -65,15 +65,16 @@ class FhirPathDecimal private constructor(internal val bigDecimal: BigDecimal) :
 
   fun floor() = FhirPathDecimal(bigDecimal.floor())
 
+  fun truncate() = FhirPathDecimal(BigDecimal.fromBigInteger(bigDecimal.toBigInteger()))
+
   fun round(decimalPlaces: Long, roundingMode: RoundingMode) =
     FhirPathDecimal(bigDecimal.roundToDigitPositionAfterDecimalPoint(decimalPlaces, roundingMode))
 
-  /** Throws if [exactRequired] and the value has a fractional part; truncates otherwise. */
-  fun intValue(exactRequired: Boolean = true) = bigDecimal.intValue(exactRequired)
+  fun intValue() = bigDecimal.intValue()
 
-  fun longValue(exactRequired: Boolean = true) = bigDecimal.longValue(exactRequired)
+  fun longValue() = bigDecimal.longValue()
 
-  fun doubleValue(exactRequired: Boolean = true) = bigDecimal.doubleValue(exactRequired)
+  fun doubleValue() = bigDecimal.doubleValue()
 
   /** Returns the underlying ionspin [BigDecimal]. */
   fun asBigDecimal() = bigDecimal

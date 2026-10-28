@@ -85,7 +85,8 @@ internal fun Collection<Any>.invoke(
     "toDecimal" -> this.toDecimal(fhirPathTypeResolver)
     "convertsToDecimal" -> this.convertsToDecimal(fhirPathTypeResolver)
     "toQuantity" -> this.toQuantity(params.firstOrNull()?.toString(), fhirPathTypeResolver)
-    "convertsToQuantity" -> this.convertsToQuantity(fhirPathTypeResolver)
+    "convertsToQuantity" ->
+      this.convertsToQuantity(params.firstOrNull()?.toString(), fhirPathTypeResolver)
     "toString" -> this.toStringFun(fhirPathTypeResolver)
     "convertsToString" -> this.convertsToString(fhirPathTypeResolver)
     "toTime" -> this.toTime(fhirPathTypeResolver)

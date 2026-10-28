@@ -18,11 +18,32 @@ package dev.ohs.fhir.fhirpath.types
 
 import dev.ohs.fhir.fhirpath.div
 import dev.ohs.fhir.fhirpath.formatUcumUnit
+import dev.ohs.fhir.fhirpath.operators.DECIMAL_MODE
 import dev.ohs.fhir.fhirpath.parseUcumUnit
 import dev.ohs.fhir.fhirpath.times
 import dev.ohs.fhir.fhirpath.toEqualCanonicalized
 
 data class FhirPathQuantity(val value: FhirPathDecimal? = null, val unit: String? = null)
+
+/** Returns a new [FhirPathQuantity] that is the absolute value of this quantity. */
+internal fun FhirPathQuantity.abs(): FhirPathQuantity =
+  FhirPathQuantity(value = value!!.abs(), unit = unit)
+
+/** Returns a new [FhirPathQuantity] with its value rounded up to the nearest integer. */
+internal fun FhirPathQuantity.ceil(): FhirPathQuantity =
+  FhirPathQuantity(value = value!!.ceil(), unit = unit)
+
+/** Returns a new [FhirPathQuantity] with its value rounded down to the nearest integer. */
+internal fun FhirPathQuantity.floor(): FhirPathQuantity =
+  FhirPathQuantity(value = value!!.floor(), unit = unit)
+
+/** Returns a new [FhirPathQuantity] with its value rounded to [precision] decimal places. */
+internal fun FhirPathQuantity.round(precision: Long): FhirPathQuantity =
+  FhirPathQuantity(value = value!!.round(precision, DECIMAL_MODE.roundingMode), unit = unit)
+
+/** Returns a new [FhirPathQuantity] with the fractional part of its value truncated. */
+internal fun FhirPathQuantity.truncate(): FhirPathQuantity =
+  FhirPathQuantity(value = value!!.truncate(), unit = unit)
 
 operator fun FhirPathQuantity.plus(other: FhirPathQuantity): FhirPathQuantity? =
   addOrSubtract(other, FhirPathDecimal::plus)

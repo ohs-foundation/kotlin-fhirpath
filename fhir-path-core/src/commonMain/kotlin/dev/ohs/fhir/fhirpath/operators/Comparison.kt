@@ -44,7 +44,7 @@ internal fun compare(left: Any, right: Any, fhirPathTypeResolver: FhirPathTypeRe
     }
     leftFhirPath is FhirPathQuantity && rightFhirPath is FhirPathQuantity -> {
       with(leftFhirPath.toEqualCanonicalized() to rightFhirPath.toEqualCanonicalized()) {
-        if (first.unit!! != second.unit!!) return null
+        if (first.unit != second.unit) return null
         return first.value?.compareTo(second.value!!)
       }
     }
