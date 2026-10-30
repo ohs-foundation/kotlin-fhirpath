@@ -52,10 +52,6 @@ val skippedR5TestCaseToReasonMap =
       "Ordered function validation not implemented. Test expects error when using skip() on unordered collection (children()), but engine does not track collection ordering.",
     "testDateTimeGreaterThanDate1" to
       "Comparison of two date time values, one with a timezone offset one without",
-    "testLiteralYearToDateTime" to
-      "`'2015'.toDateTime()` correctly yields a year precision DateTime, but comparing it to the Date literal `@2015` returns empty instead of true because the Date operand is not implicitly converted to DateTime for equality.",
-    "testLiteralMonthToDateTime" to "As `testLiteralYearToDateTime`.",
-    "testLiteralDayToDateTime" to "As `testLiteralYearToDateTime`.",
     "testSubSetOf3" to
       "The input `explanationofbenefit-example.json` cannot be decoded by the R5 model (NullPointerException in kotlin-fhir), so the test runs without its input and crashes.",
     "testQuantity4" to "https://github.com/FHIR/fhir-test-cases/pull/243",

@@ -68,10 +68,10 @@ data class FhirPathDate(val year: Int, val month: Int? = null, val day: Int? = n
     year.compareTo(other.year).let { if (it != 0) return it }
 
     if ((month == null) != (other.month == null)) return null
-    month?.compareTo(other.month!!).let { if (it != 0) return it }
+    month?.compareTo(other.month!!)?.let { if (it != 0) return it }
 
     if ((day == null) != (other.day == null)) return null
-    day?.compareTo(other.day!!).let { if (it != 0) return it }
+    day?.compareTo(other.day!!)?.let { if (it != 0) return it }
 
     return 0
   }

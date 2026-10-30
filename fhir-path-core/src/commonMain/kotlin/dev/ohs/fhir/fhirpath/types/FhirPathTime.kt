@@ -71,8 +71,8 @@ data class FhirPathTime(val hour: Int, val minute: Int? = null, val second: BigD
       return null
     }
     hour.compareTo(other.hour).let { if (it != 0) return it }
-    minute?.compareTo(other.minute!!).let { if (it != 0) return it }
-    second?.compareTo(other.second!!).let { if (it != 0) return it }
+    minute?.compareTo(other.minute!!)?.let { if (it != 0) return it }
+    second?.compareTo(other.second!!)?.let { if (it != 0) return it }
     return 0
   }
 

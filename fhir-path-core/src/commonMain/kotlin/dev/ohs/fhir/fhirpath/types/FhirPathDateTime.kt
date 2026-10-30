@@ -112,16 +112,16 @@ data class FhirPathDateTime(
     year.compareTo(other.year).let { if (it != 0) return it }
 
     if ((month == null) != (other.month == null)) return null
-    month?.compareTo(other.month!!).let { if (it != 0) return it }
+    month?.compareTo(other.month!!)?.let { if (it != 0) return it }
 
     if ((day == null) != (other.day == null)) return null
-    day?.compareTo(other.day!!).let { if (it != 0) return it }
+    day?.compareTo(other.day!!)?.let { if (it != 0) return it }
 
     if ((hour == null) != (other.hour == null)) return null
-    hour?.compareTo(other.hour!!).let { if (it != 0) return it }
+    hour?.compareTo(other.hour!!)?.let { if (it != 0) return it }
 
     if ((minute == null) != (other.minute == null)) return null
-    minute?.compareTo(other.minute!!).let { if (it != 0) return it }
+    minute?.compareTo(other.minute!!)?.let { if (it != 0) return it }
 
     if ((second == null) != (other.second == null)) return null
     return 0 // Precision.SECOND is already covered above
