@@ -115,6 +115,44 @@ class EnvironmentVariablesTest {
   }
 
   @Test
+  fun `environment variable holding a list returns its items`() {
+    val result =
+      fhirPathEngine.evaluateExpression(
+        expression = "%myList",
+        base = null,
+        variables = mapOf("myList" to listOf("a", "b")),
+      )
+    assertEquals(listOf("a", "b"), result.toList())
+  }
+
+  @Test
+  fun `environment variable holding an empty list is empty`() {
+    val result =
+      fhirPathEngine.evaluateExpression(
+        expression = "%myList.empty()",
+        base = null,
+        variables = mapOf("myList" to emptyList<Any>()),
+      )
+    assertEquals(listOf(true), result.toList())
+  }
+
+  @Test
+  fun `environment variable holding a list of elements can be filtered`() {
+    val names =
+      listOf(
+        HumanName(family = FhirString(value = "Smith")),
+        HumanName(family = FhirString(value = "Doe")),
+      )
+    val result =
+      fhirPathEngine.evaluateExpression(
+        expression = "%names.where(family = 'Doe').count()",
+        base = null,
+        variables = mapOf("names" to names),
+      )
+    assertEquals(listOf(1), result.toList())
+  }
+
+  @Test
   fun `unknown environment variable throws error`() {
     assertFailsWith<Exception> {
       fhirPathEngine.evaluateExpression(expression = "%unknownVar", base = null)
