@@ -26,7 +26,9 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.asTypeName
 import dev.ohs.fhir.fhirpath.codegen.model.schema.StructureDefinition
+import dev.ohs.fhir.fhirpath.codegen.model.schema.backboneElements
 import dev.ohs.fhir.fhirpath.codegen.model.schema.capitalized
+import dev.ohs.fhir.fhirpath.codegen.model.schema.getNestedClassName
 
 object ComplexTypeExtensionFileSpecGenerator {
   fun generate(
@@ -35,6 +37,12 @@ object ComplexTypeExtensionFileSpecGenerator {
     structureDefinitions: List<StructureDefinition>,
   ): FileSpec {
     val enumerationClass = ClassName(modelPackageName, "Enumeration").parameterizedBy(STAR)
+    // Types nested inside complex types (e.g. `Dosage.DoseAndRate`) extend `Element` directly.
+    val nestedClassNames =
+      structureDefinitions.flatMap { structureDefinition ->
+        val modelClassName = ClassName(modelPackageName, structureDefinition.name.capitalized())
+        structureDefinition.backboneElements.keys.map { it.getNestedClassName(modelClassName) }
+      }
 
     return FileSpec.builder(modelExtensionPackageName, "MoreComplexTypes")
       .addFunction(
@@ -97,6 +105,9 @@ object ComplexTypeExtensionFileSpecGenerator {
                 ClassName(modelPackageName, structureDefinition.name.capitalized()),
               )
             }
+            for (nestedClassName in nestedClassNames) {
+              addStatement("is %T -> getProperty(name)", nestedClassName)
+            }
             addStatement("is %T -> getProperty(name)", enumerationClass)
             addStatement("else -> null")
           }
@@ -117,6 +128,9 @@ object ComplexTypeExtensionFileSpecGenerator {
                 ClassName(modelPackageName, structureDefinition.name.capitalized()),
               )
             }
+            for (nestedClassName in nestedClassNames) {
+              addStatement("is %T -> hasProperty(name)", nestedClassName)
+            }
             addStatement("is %T -> hasProperty(name)", enumerationClass)
             addStatement("else -> false")
           }
@@ -135,6 +149,9 @@ object ComplexTypeExtensionFileSpecGenerator {
                 "is %T -> getAllChildren()",
                 ClassName(modelPackageName, structureDefinition.name.capitalized()),
               )
+            }
+            for (nestedClassName in nestedClassNames) {
+              addStatement("is %T -> getAllChildren()", nestedClassName)
             }
             addStatement("is %T -> getAllChildren()", enumerationClass)
             addStatement("else -> emptyList()")

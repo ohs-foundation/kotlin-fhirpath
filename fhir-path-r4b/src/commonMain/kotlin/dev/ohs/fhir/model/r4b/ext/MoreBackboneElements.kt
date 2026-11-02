@@ -57,6 +57,8 @@ import dev.ohs.fhir.model.r4b.DeviceRequest
 import dev.ohs.fhir.model.r4b.DiagnosticReport
 import dev.ohs.fhir.model.r4b.DocumentManifest
 import dev.ohs.fhir.model.r4b.DocumentReference
+import dev.ohs.fhir.model.r4b.Dosage
+import dev.ohs.fhir.model.r4b.ElementDefinition
 import dev.ohs.fhir.model.r4b.Encounter
 import dev.ohs.fhir.model.r4b.EpisodeOfCare
 import dev.ohs.fhir.model.r4b.Evidence
@@ -80,6 +82,7 @@ import dev.ohs.fhir.model.r4b.Linkage
 import dev.ohs.fhir.model.r4b.List as R4bList
 import dev.ohs.fhir.model.r4b.Location
 import dev.ohs.fhir.model.r4b.ManufacturedItemDefinition
+import dev.ohs.fhir.model.r4b.MarketingStatus
 import dev.ohs.fhir.model.r4b.Measure
 import dev.ohs.fhir.model.r4b.MeasureReport
 import dev.ohs.fhir.model.r4b.Medication
@@ -105,9 +108,12 @@ import dev.ohs.fhir.model.r4b.Patient
 import dev.ohs.fhir.model.r4b.PaymentReconciliation
 import dev.ohs.fhir.model.r4b.Person
 import dev.ohs.fhir.model.r4b.PlanDefinition
+import dev.ohs.fhir.model.r4b.Population
 import dev.ohs.fhir.model.r4b.Practitioner
 import dev.ohs.fhir.model.r4b.PractitionerRole
 import dev.ohs.fhir.model.r4b.Procedure
+import dev.ohs.fhir.model.r4b.ProdCharacteristic
+import dev.ohs.fhir.model.r4b.ProductShelfLife
 import dev.ohs.fhir.model.r4b.Provenance
 import dev.ohs.fhir.model.r4b.Questionnaire
 import dev.ohs.fhir.model.r4b.QuestionnaireResponse
@@ -133,6 +139,7 @@ import dev.ohs.fhir.model.r4b.Task
 import dev.ohs.fhir.model.r4b.TerminologyCapabilities
 import dev.ohs.fhir.model.r4b.TestReport
 import dev.ohs.fhir.model.r4b.TestScript
+import dev.ohs.fhir.model.r4b.Timing
 import dev.ohs.fhir.model.r4b.ValueSet
 import dev.ohs.fhir.model.r4b.VerificationResult
 import dev.ohs.fhir.model.r4b.VisionPrescription
@@ -642,6 +649,13 @@ private fun BackboneElement.getProperty3(name: String): Any? =
     is VerificationResult.Validator -> getProperty(name)
     is VisionPrescription.LensSpecification -> getProperty(name)
     is VisionPrescription.LensSpecification.Prism -> getProperty(name)
+    is Dosage -> getProperty(name)
+    is ElementDefinition -> getProperty(name)
+    is MarketingStatus -> getProperty(name)
+    is Population -> getProperty(name)
+    is ProdCharacteristic -> getProperty(name)
+    is ProductShelfLife -> getProperty(name)
+    is Timing -> getProperty(name)
     else -> null
   }
 
@@ -1162,6 +1176,13 @@ private fun BackboneElement.hasProperty3(name: String): Boolean =
     is VerificationResult.Validator -> hasProperty(name)
     is VisionPrescription.LensSpecification -> hasProperty(name)
     is VisionPrescription.LensSpecification.Prism -> hasProperty(name)
+    is Dosage -> hasProperty(name)
+    is ElementDefinition -> hasProperty(name)
+    is MarketingStatus -> hasProperty(name)
+    is Population -> hasProperty(name)
+    is ProdCharacteristic -> hasProperty(name)
+    is ProductShelfLife -> hasProperty(name)
+    is Timing -> hasProperty(name)
     else -> false
   }
 
@@ -1674,6 +1695,13 @@ private fun BackboneElement.getAllChildren3(): CollectionsList<Any> =
     is VerificationResult.Validator -> getAllChildren()
     is VisionPrescription.LensSpecification -> getAllChildren()
     is VisionPrescription.LensSpecification.Prism -> getAllChildren()
+    is Dosage -> getAllChildren()
+    is ElementDefinition -> getAllChildren()
+    is MarketingStatus -> getAllChildren()
+    is Population -> getAllChildren()
+    is ProdCharacteristic -> getAllChildren()
+    is ProductShelfLife -> getAllChildren()
+    is Timing -> getAllChildren()
     else -> emptyList()
   }
 

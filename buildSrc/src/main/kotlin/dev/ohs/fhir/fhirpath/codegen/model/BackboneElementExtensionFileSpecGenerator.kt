@@ -34,6 +34,7 @@ object BackboneElementExtensionFileSpecGenerator {
     modelPackageName: String,
     modelExtPackageName: String,
     structureDefinitions: List<StructureDefinition>,
+    complexTypeStructureDefinitions: List<StructureDefinition>,
   ): FileSpec {
     val typeClassNames = mutableListOf<ClassName>()
     for (structureDefinition in structureDefinitions) {
@@ -42,6 +43,11 @@ object BackboneElementExtensionFileSpecGenerator {
       for (backboneElement in structureDefinition.backboneElements) {
         typeClassNames.add(backboneElement.key.getNestedClassName(modelClassName))
       }
+    }
+    // Complex types that specialize `BackboneElement` (e.g. `Dosage` in R4) are matched by
+    // `is BackboneElement` before `is Element`, so they must be routed here as well.
+    for (structureDefinition in complexTypeStructureDefinitions) {
+      typeClassNames.add(ClassName(modelPackageName, structureDefinition.name.capitalized()))
     }
 
     // Split the massive type check expressions into chunks of 150.
