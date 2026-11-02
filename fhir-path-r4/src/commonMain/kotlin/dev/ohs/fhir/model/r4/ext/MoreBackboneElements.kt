@@ -54,7 +54,9 @@ import dev.ohs.fhir.model.r4.DeviceRequest
 import dev.ohs.fhir.model.r4.DiagnosticReport
 import dev.ohs.fhir.model.r4.DocumentManifest
 import dev.ohs.fhir.model.r4.DocumentReference
+import dev.ohs.fhir.model.r4.Dosage
 import dev.ohs.fhir.model.r4.EffectEvidenceSynthesis
+import dev.ohs.fhir.model.r4.ElementDefinition
 import dev.ohs.fhir.model.r4.Encounter
 import dev.ohs.fhir.model.r4.EpisodeOfCare
 import dev.ohs.fhir.model.r4.EvidenceVariable
@@ -74,6 +76,7 @@ import dev.ohs.fhir.model.r4.Invoice
 import dev.ohs.fhir.model.r4.Linkage
 import dev.ohs.fhir.model.r4.List as R4List
 import dev.ohs.fhir.model.r4.Location
+import dev.ohs.fhir.model.r4.MarketingStatus
 import dev.ohs.fhir.model.r4.Measure
 import dev.ohs.fhir.model.r4.MeasureReport
 import dev.ohs.fhir.model.r4.Medication
@@ -104,9 +107,12 @@ import dev.ohs.fhir.model.r4.Patient
 import dev.ohs.fhir.model.r4.PaymentReconciliation
 import dev.ohs.fhir.model.r4.Person
 import dev.ohs.fhir.model.r4.PlanDefinition
+import dev.ohs.fhir.model.r4.Population
 import dev.ohs.fhir.model.r4.Practitioner
 import dev.ohs.fhir.model.r4.PractitionerRole
 import dev.ohs.fhir.model.r4.Procedure
+import dev.ohs.fhir.model.r4.ProdCharacteristic
+import dev.ohs.fhir.model.r4.ProductShelfLife
 import dev.ohs.fhir.model.r4.Provenance
 import dev.ohs.fhir.model.r4.Questionnaire
 import dev.ohs.fhir.model.r4.QuestionnaireResponse
@@ -123,6 +129,7 @@ import dev.ohs.fhir.model.r4.StructureDefinition
 import dev.ohs.fhir.model.r4.StructureMap
 import dev.ohs.fhir.model.r4.Subscription
 import dev.ohs.fhir.model.r4.Substance
+import dev.ohs.fhir.model.r4.SubstanceAmount
 import dev.ohs.fhir.model.r4.SubstanceNucleicAcid
 import dev.ohs.fhir.model.r4.SubstancePolymer
 import dev.ohs.fhir.model.r4.SubstanceProtein
@@ -135,6 +142,7 @@ import dev.ohs.fhir.model.r4.Task
 import dev.ohs.fhir.model.r4.TerminologyCapabilities
 import dev.ohs.fhir.model.r4.TestReport
 import dev.ohs.fhir.model.r4.TestScript
+import dev.ohs.fhir.model.r4.Timing
 import dev.ohs.fhir.model.r4.ValueSet
 import dev.ohs.fhir.model.r4.VerificationResult
 import dev.ohs.fhir.model.r4.VisionPrescription
@@ -620,6 +628,14 @@ private fun BackboneElement.getProperty3(name: String): Any? =
     is VerificationResult.Validator -> getProperty(name)
     is VisionPrescription.LensSpecification -> getProperty(name)
     is VisionPrescription.LensSpecification.Prism -> getProperty(name)
+    is Dosage -> getProperty(name)
+    is ElementDefinition -> getProperty(name)
+    is MarketingStatus -> getProperty(name)
+    is Population -> getProperty(name)
+    is ProdCharacteristic -> getProperty(name)
+    is ProductShelfLife -> getProperty(name)
+    is SubstanceAmount -> getProperty(name)
+    is Timing -> getProperty(name)
     else -> null
   }
 
@@ -1116,6 +1132,14 @@ private fun BackboneElement.hasProperty3(name: String): Boolean =
     is VerificationResult.Validator -> hasProperty(name)
     is VisionPrescription.LensSpecification -> hasProperty(name)
     is VisionPrescription.LensSpecification.Prism -> hasProperty(name)
+    is Dosage -> hasProperty(name)
+    is ElementDefinition -> hasProperty(name)
+    is MarketingStatus -> hasProperty(name)
+    is Population -> hasProperty(name)
+    is ProdCharacteristic -> hasProperty(name)
+    is ProductShelfLife -> hasProperty(name)
+    is SubstanceAmount -> hasProperty(name)
+    is Timing -> hasProperty(name)
     else -> false
   }
 
@@ -1604,6 +1628,14 @@ private fun BackboneElement.getAllChildren3(): CollectionsList<Any> =
     is VerificationResult.Validator -> getAllChildren()
     is VisionPrescription.LensSpecification -> getAllChildren()
     is VisionPrescription.LensSpecification.Prism -> getAllChildren()
+    is Dosage -> getAllChildren()
+    is ElementDefinition -> getAllChildren()
+    is MarketingStatus -> getAllChildren()
+    is Population -> getAllChildren()
+    is ProdCharacteristic -> getAllChildren()
+    is ProductShelfLife -> getAllChildren()
+    is SubstanceAmount -> getAllChildren()
+    is Timing -> getAllChildren()
     else -> emptyList()
   }
 

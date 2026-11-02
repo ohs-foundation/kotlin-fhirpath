@@ -123,6 +123,10 @@ abstract class FhirModelHelperGenerationTask : DefaultTask() {
         modelPackageName = modelPackageName,
         modelExtPackageName = modelExtPackageName,
         structureDefinitions = structureDefinitions.filter { it.kind == Kind.RESOURCE },
+        complexTypeStructureDefinitions =
+          structureDefinitions.filter {
+            it.kind == Kind.COMPLEX_TYPE && it.baseDefinition?.endsWith("/BackboneElement") == true
+          },
       )
       .writeTo(outputDir)
 

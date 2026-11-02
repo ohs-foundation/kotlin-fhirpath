@@ -19,13 +19,17 @@ package dev.ohs.fhir.fhirpath
 import dev.ohs.fhir.fhirpath.model.FhirR4ModelNavigator
 import dev.ohs.fhir.fhirpath.types.SimpleTypeInfo
 import dev.ohs.fhir.model.r4.Age
+import dev.ohs.fhir.model.r4.CodeableConcept
+import dev.ohs.fhir.model.r4.Dosage
 import dev.ohs.fhir.model.r4.Enumeration
 import dev.ohs.fhir.model.r4.Extension
 import dev.ohs.fhir.model.r4.HumanName
 import dev.ohs.fhir.model.r4.Observation
 import dev.ohs.fhir.model.r4.Patient
+import dev.ohs.fhir.model.r4.PositiveInt
 import dev.ohs.fhir.model.r4.Quantity
 import dev.ohs.fhir.model.r4.String as FhirString
+import dev.ohs.fhir.model.r4.Timing
 import dev.ohs.fhir.model.r4.terminologies.ObservationStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -157,6 +161,58 @@ class FhirR4ModelNavigatorTest {
 
     assertTrue(children.contains(FhirString("Chalmers")))
     assertTrue(children.contains(FhirString("Peter")))
+  }
+
+  // --- Complex types derived from backbone types (e.g. `Dosage`, `Timing`) ---
+
+  private val dosage =
+    Dosage(
+      text = FhirString("1 tablet twice daily"),
+      route = CodeableConcept(text = FhirString("oral")),
+      doseAndRate =
+        listOf(
+          Dosage.DoseAndRate(
+            dose = Dosage.DoseAndRate.Dose.Quantity(Quantity(unit = FhirString("tablet")))
+          )
+        ),
+    )
+
+  @Test
+  fun `can access property on complex type derived from backbone type`() {
+    assertEquals(
+      FhirString("1 tablet twice daily"),
+      FhirR4ModelNavigator.accessProperty(dosage, "text"),
+    )
+    assertEquals(
+      CodeableConcept(text = FhirString("oral")),
+      FhirR4ModelNavigator.accessProperty(dosage, "route"),
+    )
+  }
+
+  @Test
+  fun `can get all children on complex type derived from backbone type`() {
+    val children = FhirR4ModelNavigator.getAllChildren(dosage)
+    assertEquals(3, children.size)
+    assertTrue(children.contains(FhirString("1 tablet twice daily")))
+  }
+
+  @Test
+  fun `can access property on element nested in complex type`() {
+    val doseAndRate = dosage.doseAndRate.single()
+    assertEquals(
+      Quantity(unit = FhirString("tablet")),
+      FhirR4ModelNavigator.accessProperty(doseAndRate, "dose"),
+    )
+    assertEquals(1, FhirR4ModelNavigator.getAllChildren(doseAndRate).size)
+  }
+
+  @Test
+  fun `can access property on timing`() {
+    val repeat = Timing.Repeat(frequency = PositiveInt(value = 2))
+    val timing = Timing(code = CodeableConcept(text = FhirString("BID")), repeat = repeat)
+    assertEquals(repeat, FhirR4ModelNavigator.accessProperty(timing, "repeat"))
+    assertEquals(PositiveInt(value = 2), FhirR4ModelNavigator.accessProperty(repeat, "frequency"))
+    assertEquals(2, FhirR4ModelNavigator.getAllChildren(timing).size)
   }
 
   // --- Primitive types ---
