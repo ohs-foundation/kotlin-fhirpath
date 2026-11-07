@@ -41,6 +41,12 @@ class FhirPathEngine(
   class Config {
     var strictMode: Boolean = false
     var cacheParsedExpressions: Boolean = true
+
+    /**
+     * Returns the resource that `resolve()` finds for a Reference or string, given its reference
+     * (null for a Reference without one) and the item itself, or null if there is none.
+     */
+    var resolveReference: ((reference: String?, item: Any) -> Any?)? = null
   }
 
   var traces: Map<String, List<TraceEntry>> = emptyMap()
@@ -83,6 +89,7 @@ class FhirPathEngine(
         strictMode = config.strictMode,
         context = base,
         variables = variables,
+        resolveReference = config.resolveReference,
       )
 
     // Convert the items in the result collection from FHIR types to FHIRPath types if it has not

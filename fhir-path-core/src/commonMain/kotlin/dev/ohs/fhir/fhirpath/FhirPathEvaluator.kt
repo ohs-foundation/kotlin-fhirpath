@@ -70,6 +70,7 @@ internal class FhirPathEvaluator(
   val strictMode: Boolean = false,
   val context: Any? = null,
   variables: Map<String, Any?> = emptyMap(),
+  private val resolveReference: ((reference: String?, item: Any) -> Any?)? = null,
 ) : fhirpathBaseVisitor<Collection<Any>>() {
   private val resource: Any? = context
   private val contextStack = ArrayDeque<Collection<Any>>()
@@ -572,6 +573,28 @@ internal class FhirPathEvaluator(
             functionNode.paramList()!!.expression().single().text
           )
         return context.`as`(listOf(type), fhirPathTypeResolver)
+      }
+      "resolve" -> {
+        // See [specification](https://hl7.org/fhir/R5/fhirpath.html#functions). A reference to a
+        // contained resource (`#id`) is found in the resource the expression is evaluated on; any
+        // other is passed to `resolveReference`, and the item is ignored if it returns null.
+        return context.mapNotNull { item ->
+          val isReference = fhirPathTypeResolver.resolveFromObject(item)?.typeName == "Reference"
+          val reference =
+            (if (isReference) fhirModelNavigator.accessProperty(item, "reference") else item)
+              ?.toFhirPathType(fhirPathTypeResolver) as? String
+          if (reference == null && !isReference) return@mapNotNull null
+          if (reference != null && reference.startsWith("#")) {
+            (resource?.let { fhirModelNavigator.accessProperty(it, "contained") } as? Collection<*>)
+              ?.filterNotNull()
+              ?.firstOrNull {
+                fhirModelNavigator.accessProperty(it, "id")?.toFhirPathType(fhirPathTypeResolver) ==
+                  reference.drop(1)
+              }
+          } else {
+            resolveReference?.invoke(reference, item)
+          }
+        }
       }
       "ofType" -> {
         // See
