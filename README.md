@@ -304,6 +304,20 @@ not re-run the ANTLR lexer and parser on every invocation. On memory-constrained
 workloads with one-off expressions, caching can be disabled by passing
 `cacheParsedExpressions = false`.
 
+### Resolving references
+
+`resolve()` finds a reference to a contained resource (`#id`) in the resource the expression is
+evaluated on. This library holds no other resources, so any other reference is passed to
+`resolveReference`, with the reference (null for a `Reference` without one) and the `Reference` or
+string itself. The item is ignored if `resolveReference` returns null or is not set.
+
+```kotlin
+val fhirPathEngine = FhirPathEngine.forR4 {
+  resolveReference = { reference, item -> resources[reference] }
+}
+fhirPathEngine.evaluateExpression("Observation.subject.where(resolve() is Patient)", observation)
+```
+
 ## User Guide
 
 ### Adding the library dependency to your project

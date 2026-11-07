@@ -83,7 +83,6 @@ val skippedR5TestCaseToReasonMap =
       "Navigating a choice element by its suffixed name (`Observation.valueQuantity`) is not implemented. The r4 suite keeps this test commented out.",
     "testPeriodInvariantNew" to
       "https://chat.fhir.org/#narrow/channel/179266-fhirpath/topic/lowBoundary.20and.20highBoundary.20with.20incomplete.20date.20time/with/611113639",
-    "testMultipleResolve" to "Function `resolve` is not implemented.",
   )
 
 class ConformanceR5Test :
